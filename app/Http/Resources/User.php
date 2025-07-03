@@ -11,12 +11,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class User extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
     public function toArray(Request $request): array
     {
         return [
@@ -33,7 +27,7 @@ class User extends JsonResource
             'address_1' => $this->address_1,
             'address_2' => $this->address_2,
             'p_o_box' => $this->p_o_box,
-            'currency' => $this->currency,
+            'currency' => !empty($this->currency) ? ($this->currency == 'USD' ? '$' : 'FC') : null,
             'email' => $this->email,
             'phone' => $this->phone,
             'email_verified_at' => $this->email_verified_at,
@@ -44,6 +38,10 @@ class User extends JsonResource
             'api_token' => $this->api_token,
             'avatar_url' => $this->avatar_url != null ? $this->avatar_url : getWebURL() . '/assets/img/user.png',
             'status' => $this->status,
+            'has_product_in_unpaid_cart' => $this->hasProductInUnpaidCart($request->get('product_id')),
+            'average_rating' => round($this->averageRating(), 0),
+            'feedbacks' => CustomerFeedback::collection($this->receivedFeedbacks),
+            'unpaid_orders' => $this->unpaidOrders(),
             'roles' => Role::collection($this->roles)->sortByDesc('created_at')->toArray(),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),

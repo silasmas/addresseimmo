@@ -19,51 +19,31 @@ class Product extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $current_user = $request->user();
+
         return [
             'id' => $this->id,
             'product_name' => $this->product_name,
             'product_description' => $this->product_description,
             'quantity' => $this->quantity,
             'price' => formatDecimalNumber($this->price),
+            'currency' => !empty($this->currency) ? ($this->currency == 'USD' ? '$' : 'FC') : null,
             'type' => $this->type,
             'action' => $this->action,
             'is_shared' => $this->is_shared,
-            'category' => Category::make($this->category),
             'user' => User::make($this->user),
-            'photos' => collect($this->photos)->map(function ($photo) {
-                return [
-                    'id' => $photo->id,
-                    'file_name' => $photo->file_name,
-                    'file_url' => $photo->file_url,
-                ];
-            }),
-            'videos' => collect($this->videos)->map(function ($video) {
-                return [
-                    'id' => $video->id,
-                    'file_name' => $video->file_name,
-                    'file_url' => $video->file_url,
-                ];
-            }),
-            'audios' => collect($this->audios)->map(function ($audio) {
-                return [
-                    'id' => $audio->id,
-                    'file_name' => $audio->file_name,
-                    'file_url' => $audio->file_url,
-                ];
-            }),
-            'documents' => collect($this->documents)->map(function ($document) {
-                return [
-                    'id' => $document->id,
-                    'file_name' => $document->file_name,
-                    'file_url' => $document->file_url,
-                ];
-            }),
-            'icon' => $this->icon,
-            'image_url' => $this->image_url,
+            'converted_price' => $current_user ? $this->convertPrice($current_user->currency) : null,
+            'photos' => File::collection($this->photos),
+            'videos' => File::collection($this->videos),
+            'audios' => File::collection($this->audios),
+            'documents' => File::collection($this->documents),
+            'average_rating' => $this->averageRating() == null ? 0 : round($this->averageRating()),
+            'feedbacks' => CustomerFeedback::collection($this->receivedFeedbacks),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by
+            'updated_by' => $this->updated_by,
+            'category_id' => $this->category_id
         ];
     }
 }
