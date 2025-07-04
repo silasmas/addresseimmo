@@ -73,12 +73,16 @@
                             <li class="has-children">
                                 <a href="{{ route('product.home') }}">Services</a>
                                 <ul class="dropdown">
-                                    <li><a href="{{ route('account.entity', ['entity' => 'buy']) }}">Achat</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'rent']) }}">Location</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'build']) }}">Construction</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'sell']) }}">Vente</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'moving']) }}">Déménagement</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'ad']) }}">Annonce</a></li>
+                                    <li>
+                                        <a href="{{ route('account.entity', ['entity' => 'buy']) }}"><i class="bi bi-handbag me-2"></i>Achat</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('account.entity', ['entity' => 'rent']) }}"><i class="bi bi-clock me-2"></i>Location</a>
+                                    </li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'build']) }}"><i class="bi bi-bricks me-2"></i>Construction</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'sell']) }}"><i class="bi bi-cash-coin me-2"></i>Vente</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'moving']) }}"><i class="bi bi-luggage me-2"></i>Déménagement</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'ad']) }}"><i class="bi bi-megaphone me-2"></i>Annonce</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{ route('about') }}">A propos</a></li>
