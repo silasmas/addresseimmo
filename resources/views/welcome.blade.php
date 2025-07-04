@@ -37,7 +37,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
         <style>
-            .menu-bg-wrap { background-color: #199300; }
+            .menu-bg-wrap { background-color: #167c02; }
         </style>
 
         <title>
@@ -64,29 +64,24 @@
                 <div class="menu-bg-wrap">
                     <div class="site-navigation">
                         <a href="{{ route('home') }}" class="logo m-0 float-start">
+                            <img src="{{ asset('assets/img/logo-reverse-1.png') }}" width="50" alt="" srcset="">
                             AddrressImmo
                         </a>
 
                         <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-                            <li class="active"><a href="index.html">Home</a></li>
+                            <li class="active"><a href="index.html">Accueil</a></li>
                             <li class="has-children">
-                                <a href="properties.html">Properties</a>
+                                <a href="properties.html">Services</a>
                                 <ul class="dropdown">
-                                    <li><a href="#">Buy Property</a></li>
-                                    <li><a href="#">Sell Property</a></li>
-                                    <li class="has-children">
-                                        <a href="#">Dropdown</a>
-                                        <ul class="dropdown">
-                                            <li><a href="#">Sub Menu One</a></li>
-                                            <li><a href="#">Sub Menu Two</a></li>
-                                            <li><a href="#">Sub Menu Three</a></li>
-                                        </ul>
-                                    </li>
+                                    <li><a href="#">Achat</a></li>
+                                    <li><a href="#">Location</a></li>
+                                    <li><a href="#">Construction</a></li>
+                                    <li><a href="#">Vente</a></li>
+                                    <li><a href="#">Déménagement</a></li>
                                 </ul>
                             </li>
-                            <li><a href="services.html">Services</a></li>
-                            <li><a href="about.html">About</a></li>
-                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="about.html">A propos</a></li>
+                            <li><a href="contact.html">Nous contacter</a></li>
                         </ul>
 
                         <a href="#"
