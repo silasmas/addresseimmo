@@ -9,6 +9,8 @@ use App\Http\Controllers\Web\PublicController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
+Route::get('/about', [PublicController::class, 'about'])->name('about');
+Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::get('/symlink', [PublicController::class, 'symlink'])->name('symlink');
 Route::post('/search', [PublicController::class, 'search'])->name('search');
 Route::get('/change-lang/{locale}', [PublicController::class, 'changeLanguage'])->name('change_language');
@@ -17,15 +19,6 @@ Route::get('/products', [PublicController::class, 'products'])->name('product.ho
 Route::get('/products/{entity}', [PublicController::class, 'productEntity'])->name('product.entity');
 Route::post('/products/{entity}', [PublicController::class, 'addProductEntity']);
 Route::get('/products/{entity}/{id}', [PublicController::class, 'productDatas'])->whereNumber('id')->name('product.entity.datas');
-// Discussions
-Route::get('/discussions', [PublicController::class, 'discussions'])->name('discussion.home');
-Route::get('/discussions/{id}', [PublicController::class, 'discussionDatas'])->whereNumber('id')->name('discussion.datas');
-// Investors
-Route::get('/investors', [PublicController::class, 'investors'])->name('investor.home');
-Route::get('/investors/{id}', [PublicController::class, 'investorDatas'])->whereNumber('id')->name('investor.datas');
-// Crowdfundings
-Route::get('/crowdfunding', [PublicController::class, 'crowdfunding'])->name('crowdfunding.home');
-Route::get('/crowdfunding/{id}', [PublicController::class, 'crowdfundingDatas'])->whereNumber('id')->name('crowdfunding.datas');
 
 Route::middleware('auth')->group(function () {
     Route::get('/change-currency/{currency}', [PublicController::class, 'changeCurrency'])->name('change_currency');
@@ -33,13 +26,6 @@ Route::middleware('auth')->group(function () {
     // Products
     Route::post('/products', [PublicController::class, 'addProduct']);
     Route::post('/products/{entity}/{id}', [PublicController::class, 'updateProductEntity'])->whereNumber('id');
-    // Discussions
-    Route::post('/discussions', [PublicController::class, 'addDiscussion']);
-    Route::post('/discussions/{id}', [PublicController::class, 'updateDiscussion'])->whereNumber('id');
-    // Crowdfunding
-    Route::post('/crowdfunding', [PublicController::class, 'addCrowdfunding']);
-    Route::post('/crowdfunding/{id}', [PublicController::class, 'updateCrowdfunding'])->whereNumber('id');
-    Route::post('/crowdfunding/finance/{id}', [PublicController::class, 'financeCrowdfunding'])->whereNumber('id')->name('crowdfunding.finance');
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard.home');
     // Role

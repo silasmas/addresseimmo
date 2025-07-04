@@ -69,24 +69,32 @@
                         </a>
 
                         <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-                            <li class="active"><a href="index.html">Accueil</a></li>
+                            <li class="active"><a href="{{ route('home') }}">Accueil</a></li>
                             <li class="has-children">
-                                <a href="properties.html">Services</a>
+                                <a href="{{ route('product.home') }}">Services</a>
                                 <ul class="dropdown">
-                                    <li><a href="#">Achat</a></li>
-                                    <li><a href="#">Location</a></li>
-                                    <li><a href="#">Construction</a></li>
-                                    <li><a href="#">Vente</a></li>
-                                    <li><a href="#">Déménagement</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'buy']) }}">Achat</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'rent']) }}">Location</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'build']) }}">Construction</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'sell']) }}">Vente</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'moving']) }}">Déménagement</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'ad']) }}">Annonce</a></li>
                                 </ul>
                             </li>
-                            <li><a href="about.html">A propos</a></li>
-                            <li><a href="contact.html">Nous contacter</a></li>
+                            <li><a href="{{ route('about') }}">A propos</a></li>
+                            <li><a href="{{ route('contact') }}">Nous contacter</a></li>
+                            <li>
+@if (!empty($current_user))
+                                <a href="{{ route('account.home') }}">
+                                    <img src="{{ asset('assets/img/user.png') }}" width="40" height="40" alt="{{ $current_user->firstname . ' ' . $current_user->lastname }}" class="rounded-circle">
+                                </a>
+@else
+                                <a href="{{ route('login') }}">S'identifier</a>
+@endif
+                            </li>
                         </ul>
 
-                        <a href="#"
-                            class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none"
-                            data-toggle="collapse" data-target="#main-navbar">
+                        <a href="#" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none" data-toggle="collapse" data-target="#main-navbar">
                             <span></span>
                         </a>
                     </div>
@@ -105,13 +113,10 @@
                 <div class="row justify-content-center align-items-center">
                     <div class="col-lg-9 text-center">
                         <h1 class="heading" data-aos="fade-up">
-                            Easiest way to find your dream home
+                            Commencez ici
                         </h1>
-                        <form action="#" class="narrow-w form-search d-flex align-items-stretch mb-3" data-aos="fade-up"
-                            data-aos-delay="200">
-                            <input type="text" class="form-control px-4"
-                                placeholder="Your ZIP code or City. e.g. New York" />
-                            <button type="submit" class="btn btn-primary">Search</button>
+                        <form action="#" class="narrow-w form-search d-flex align-items-stretch mb-3" data-aos="fade-up" data-aos-delay="200">
+                            <input type="text" class="form-control px-4" placeholder="Your ZIP code or City. e.g. New York" />
                         </form>
                     </div>
                 </div>
