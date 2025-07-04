@@ -43,8 +43,10 @@ class CustomerOrder extends Model
 
     /**
      * Convert order price to user currency
+     * 
+     * @return float
      */
-    public function convertPriceAtThatTime($userCurrency)
+    public function convertPriceAtThatTime($userCurrency): float
     {
         // If the order currency and the user currency are the same, no conversion is required.
         if ($this->currency === $userCurrency) {
@@ -56,5 +58,17 @@ class CustomerOrder extends Model
 
         // Calculate the converted price
         return round($this->price_at_that_time * $conversionRate, 2);
+    }
+
+    /**
+     * Subtotal
+     * 
+     * @param  string  $userCurrency
+     * @return float
+     */
+    public function subtotalPrice($userCurrency): float
+    {
+        // On utilise la méthode de conversion de devise
+        return $this->convertPriceAtThatTime($userCurrency) * $this->quantity;
     }
 }

@@ -1,0 +1,132 @@
+/*
+    Custom styles
+
+    Author : Xanders Samoth | https://teams.xsamtech.com/xanderssamoth
+*/
+
+/* typography */
+pre {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    white-space: pre-wrap;
+    /* css-3 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -pre-wrap;
+    /* Opera 4-6 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */
+}
+
+a {
+    color: var(--bs-primary);
+}
+
+textarea {
+    resize: none;
+}
+
+/********** Custom colors **********/
+/* background */
+.adrm-bg-green {
+    background-color: #199300 !important;
+}
+
+.adrm-bg-green-transparent {
+    background-color: rgba(25, 147, 0, 0.5) !important;
+}
+
+a.adrm-bg-green-transparent:hover {
+    transition: .3s;
+    background-color: rgba(25, 147, 0, 0.7) !important;
+}
+
+.adrm-bg-red {
+    background-color: #e61212 !important;
+}
+
+.adrm-bg-red-transparent {
+    background-color: rgba(230, 18, 18, 0.5) !important;
+}
+
+/* button */
+.adrm-btn-green {
+    background-color: #199300 !important;
+    color: #fff !important;
+    border-color: #168300 !important;
+}
+
+.adrm-btn-green:hover {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #000 !important;
+}
+
+.adrm-btn-red {
+    background-color: #e61212 !important;
+    color: #fff !important;
+    border-color: #af0a0a !important;
+}
+
+.adrm-btn-red:hover {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #000 !important;
+}
+
+/* text */
+.adrm-text-green {
+    color: #199300 !important;
+}
+
+a:hover.adrm-text-green {
+    color: #147401 !important;
+}
+
+/* paragraph */
+.adrm-line-height-1 {
+    line-height: 1;
+}
+
+.adrm-line-height-1_4 {
+    line-height: 1.4;
+}
+
+.adrm-line-height-1_45 {
+    line-height: 1.45;
+}
+
+.adrm-line-height-1_5 {
+    line-height: 1.5;
+}
+
+/********** Custom bootstrap components **********/
+/* button */
+.btn {
+    font-size: 11pt;
+}
+
+/* stretched link */
+.card-body+.stretched-link::after {
+    background-color: rgba(70, 100, 150, 0.2) !important;
+    opacity: 0;
+    transition: .3s;
+}
+
+.card-body+.stretched-link.changed::after {
+    opacity: 1;
+}
+
+
+/* A modal over another modal */
+.modal:nth-of-type(even) {
+    z-index: 1052 !important;
+}
+
+.modal-backdrop.show:nth-of-type(even) {
+    z-index: 1051 !important;
+}
+
+/********** Miscellaneous **********/

@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
@@ -84,7 +85,7 @@ class User extends Authenticatable
     /**
      * Unpaid cart
      */
-    public function unpaidCart()
+    public function unpaidCart(): HasOne
     {
         return $this->hasOne(Cart::class)->where('is_paid', 0)->latest();
     }
@@ -94,7 +95,38 @@ class User extends Authenticatable
      */
     public function unpaidOrders()
     {
-        return $this->unpaidCart()->with('customer_orders')->first();
+        $orders = $this->unpaidCart()->with('customer_orders.product.photos')->first()->customer_orders ?? [];
+
+        // Get user currency
+        $userCurrency = $this->currency;
+
+        // Apply currency conversion on each order
+        foreach ($orders as $order) {
+            $order->converted_price = $order->convertPriceAtThatTime($userCurrency);
+        }
+
+        return $orders;
+    }
+
+    /**
+     * Unpaid cart total
+     * 
+     * @return float
+     */
+    public function unpaidCartTotal(): float
+    {
+        $unpaidCart = $this->unpaidCart()->with('customer_orders')->first();
+
+        // Si le panier existe, calcule le total
+        if ($unpaidCart) {
+            $userCurrency = $this->currency;
+
+            return $unpaidCart->customer_orders->sum(function ($order) use ($userCurrency) {
+                return $order->subtotalPrice($userCurrency);
+            });
+        }
+
+        return 0;
     }
 
     /**
