@@ -133,22 +133,18 @@
                     <!-- /.col-lg-4 -->
                     <div class="col-lg-4">
                         <div class="widget">
-                            <h3>Sources</h3>
+                            <h3>Liens utiles</h3>
                             <ul class="list-unstyled float-start links">
-                                <li><a href="#">About us</a></li>
-                                <li><a href="#">Services</a></li>
-                                <li><a href="#">Vision</a></li>
-                                <li><a href="#">Mission</a></li>
-                                <li><a href="#">Terms</a></li>
-                                <li><a href="#">Privacy</a></li>
+                                <li><a href="{{ route('about') }}">A propos</a></li>
+                                <li><a href="{{ route('product.home') }}">Services</a></li>
+                                <li><a href="{{ route('product.entity', ['entity' => 'sell']) }}">Vendre</a></li>
+                                <li><a href="{{ route('product.entity', ['entity' => 'buy']) }}">Acheter</a></li>
+                                <li><a href="{{ route('product.entity', ['entity' => 'rent']) }}">Louer</a></li>
                             </ul>
                             <ul class="list-unstyled float-start links">
-                                <li><a href="#">Partners</a></li>
-                                <li><a href="#">Business</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">FAQ</a></li>
-                                <li><a href="#">Creative</a></li>
+                                <li><a href="{{ route('product.entity', ['entity' => 'build']) }}">Construire</a></li>
+                                <li><a href="{{ route('product.entity', ['entity' => 'moving']) }}">Déménager</a></li>
+                                <li><a href="{{ route('product.entity', ['entity' => 'ad']) }}">Faire annonce</a></li>
                             </ul>
                         </div>
                         <!-- /.widget -->
@@ -156,11 +152,9 @@
                     <!-- /.col-lg-4 -->
                     <div class="col-lg-4">
                         <div class="widget">
-                            <h3>Links</h3>
+                            <h3>Chez nous</h3>
                             <ul class="list-unstyled links">
-                                <li><a href="#">Our Vision</a></li>
-                                <li><a href="#">About us</a></li>
-                                <li><a href="#">Contact us</a></li>
+                                <li><a href="{{ route('contact') }}">Nous contacter</a></li>
                             </ul>
 
                             <ul class="list-unstyled social">
@@ -192,26 +186,9 @@
 
                 <div class="row mt-5">
                     <div class="col-12 text-center">
-                        <!--
-                **==========
-                NOTE:
-                Please don't remove this copyright link unless you buy the license here https://untree.co/license/
-                **==========
-                -->
-
                         <p>
-                            Copyright &copy;
-                            <script>
-                                document.write(new Date().getFullYear());
-                            </script>
-                            . All Rights Reserved. &mdash; Designed with love by
-                            <a href="https://untree.co">Untree.co</a>
-                            <!-- License information: https://untree.co/license/ -->
+                            Copyright Addrressimmo &copy; {{ date('Y') }} . Tous droits réservés. &mdash; Designed by <a href="https://silasmas.com">SDEV</a>
                         </p>
-                        <div>
-                            Distributed by
-                            <a href="https://themewagon.com/" target="_blank">themewagon</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -223,7 +200,7 @@
         <div id="overlayer"></div>
         <div class="loader">
             <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Chargement...</span>
             </div>
         </div>
 
