@@ -41,6 +41,8 @@
             .menu-bg-wrap { background-color: #167c02; }
             .site-footer a { text-decoration: none!important; }
             #main-search .nav-link.active { font-weight: bold; color: black !important; border-bottom: 2px solid green !important; }
+            .property-item .property-content .price { color: #167c02; }
+            .property-item .property-content .price span:after { background-color: #167c02; }
         </style>
 
         <title>

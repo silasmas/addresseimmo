@@ -96,13 +96,14 @@
                 <div class="row mb-5 align-items-center">
                     <div class="col-lg-6">
                         <h2 class="font-weight-bold text-primary heading">
-                            Popular Properties
+                            Propriétés récentes
                         </h2>
                     </div>
                     <div class="col-lg-6 text-lg-end">
                         <p>
-                            <a href="#" target="_blank" class="btn btn-primary text-white py-3 px-4">View all
-                                properties</a>
+                            <a href="#" target="_blank" class="btn adrm-btn-green text-white py-3 px-4">
+                                Voir tout<i class="bi bi-chevron-double-right ms-2"></i>
+                            </a>
                         </p>
                     </div>
                 </div>
@@ -118,8 +119,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -132,8 +133,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -147,8 +147,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -161,8 +161,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -176,8 +175,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -190,8 +189,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -205,8 +203,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -219,8 +217,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -234,8 +231,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -248,8 +245,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -263,8 +259,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -277,8 +273,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -292,8 +287,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -306,8 +301,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -321,8 +315,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -335,8 +329,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -350,8 +343,8 @@
                                     <div class="property-content">
                                         <div class="price mb-2"><span>$1,291,000</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">5232 California Fake, Ave. 21BC</span>
-                                            <span class="city d-block mb-3">California, USA</span>
+                                            <span class="d-block mb-2 text-black-50">5232 Kinshasa Fake, Ave. 21BC</span>
+                                            <span class="city d-block mb-3">Kinshasa, RDC</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
@@ -364,8 +357,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="property-single.html" class="btn btn-primary py-2 px-3">See
-                                                details</a>
+                                            <a href="property-single.html" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
@@ -393,7 +385,7 @@
                             <h3 class="mb-3">Our Properties</h3>
                             <p>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                Voluptates, accusamus.
+                                Voluptates, accRDCmus.
                             </p>
                             <p><a href="#" class="learn-more">Learn More</a></p>
                         </div>
@@ -404,7 +396,7 @@
                             <h3 class="mb-3">Property for Sale</h3>
                             <p>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                Voluptates, accusamus.
+                                Voluptates, accRDCmus.
                             </p>
                             <p><a href="#" class="learn-more">Learn More</a></p>
                         </div>
@@ -415,7 +407,7 @@
                             <h3 class="mb-3">Real Estate Agent</h3>
                             <p>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                Voluptates, accusamus.
+                                Voluptates, accRDCmus.
                             </p>
                             <p><a href="#" class="learn-more">Learn More</a></p>
                         </div>
@@ -426,7 +418,7 @@
                             <h3 class="mb-3">House for Sale</h3>
                             <p>
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                Voluptates, accusamus.
+                                Voluptates, accRDCmus.
                             </p>
                             <p><a href="#" class="learn-more">Learn More</a></p>
                         </div>
@@ -651,7 +643,7 @@
                 <div class="col-lg-7 mx-auto text-center">
                     <h2 class="mb-4">Be a part of our growing real state agents</h2>
                     <p>
-                        <a href="#" target="_blank" class="btn btn-primary text-white py-3 px-4">Apply for Real
+                        <a href="#" target="_blank" class="btn adrm-btn-green text-white py-3 px-4">Apply for Real
                             Estate agent</a>
                     </p>
                 </div>
