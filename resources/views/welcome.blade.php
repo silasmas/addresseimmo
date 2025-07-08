@@ -1,110 +1,6 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="author" content="Untree.co" />
-        <link rel="shortcut icon" href="favicon.png" />
+@extends('layouts.app', ['page_title' => (!empty($current_user) ? 'Accueil' : 'Bienvenue sur Addrressimmo')])
 
-        <meta name="description" content="" />
-        <meta name="keywords" content="bootstrap, bootstrap5" />
-
-        <!-- Favicon -->
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/favicon/apple-touch-icon.png') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/favicon/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/favicon/favicon-16x16.png') }}">
-        <link rel="manifest" href="{{ asset('assets/img/favicon/site.webmanifest') }}">
-
-        <!-- Google font -->
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-        <!-- Font icons -->
-        <link rel="stylesheet" href="{{ asset('assets/fonts/icomoon/style.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/fonts/flaticon/font/flaticon.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/addons/fontawesome/css/all.min.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/addons/bootstrap-icons/font/bootstrap-icons.min.css') }}" />
-
-        <!-- Main styles -->
-        <link rel="stylesheet" href="{{ asset('assets/css/property/tiny-slider.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/css/property/aos.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/css/property/style.css') }}" />
-
-        <!-- Custom style -->
-        <link rel="stylesheet" href="{{ asset('assets/addons/cropper/css/cropper.min.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/addons/jquery/css/jquery-ui.min.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
-
-        <style>
-            .menu-bg-wrap { background-color: #167c02; }
-        </style>
-
-        <title>
-@if (!empty($page_title))
-            Addrressimmo /{{ $page_title }}
-@else
-            Addrressimmo
-@endif
-        </title>
-    </head>
-
-    <body>
-        <div class="site-mobile-menu site-navbar-target">
-            <div class="site-mobile-menu-header">
-                <div class="site-mobile-menu-close">
-                    <span class="icofont-close js-menu-toggle"></span>
-                </div>
-            </div>
-            <div class="site-mobile-menu-body"></div>
-        </div>
-
-        <nav class="site-nav">
-            <div class="container">
-                <div class="menu-bg-wrap">
-                    <div class="site-navigation">
-                        <a href="{{ route('home') }}" class="logo m-0 float-start">
-                            <img src="{{ asset('assets/img/logo-reverse-1.png') }}" width="50" alt="" srcset="">
-                            AddrressImmo
-                        </a>
-
-                        <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-                            <li class="active"><a href="{{ route('home') }}">Accueil</a></li>
-                            <li class="has-children">
-                                <a href="{{ route('product.home') }}">Services</a>
-                                <ul class="dropdown">
-                                    <li>
-                                        <a href="{{ route('account.entity', ['entity' => 'buy']) }}"><i class="bi bi-handbag me-2"></i>Achat</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('account.entity', ['entity' => 'rent']) }}"><i class="bi bi-clock me-2"></i>Location</a>
-                                    </li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'build']) }}"><i class="bi bi-bricks me-2"></i>Construction</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'sell']) }}"><i class="bi bi-cash-coin me-2"></i>Vente</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'moving']) }}"><i class="bi bi-luggage me-2"></i>Déménagement</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'ad']) }}"><i class="bi bi-megaphone me-2"></i>Annonce</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="{{ route('about') }}">A propos</a></li>
-                            <li><a href="{{ route('contact') }}">Nous contacter</a></li>
-                            <li>
-@if (!empty($current_user))
-                                <a href="{{ route('account.home') }}">
-                                    <img src="{{ asset('assets/img/user.png') }}" width="40" height="40" alt="{{ $current_user->firstname . ' ' . $current_user->lastname }}" class="rounded-circle">
-                                </a>
-@else
-                                <a href="{{ route('login') }}">S'identifier</a>
-@endif
-                            </li>
-                        </ul>
-
-                        <a href="#" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none" data-toggle="collapse" data-target="#main-navbar">
-                            <span></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
+@section('app-content')
 
         <div class="hero">
             <div class="hero-slide">
@@ -115,13 +11,81 @@
 
             <div class="container">
                 <div class="row justify-content-center align-items-center">
-                    <div class="col-lg-9 text-center">
+                    <div class="col-lg-8 text-center">
                         <h1 class="heading" data-aos="fade-up">
                             Commencez ici
                         </h1>
-                        <form action="#" class="narrow-w form-search d-flex align-items-stretch mb-3" data-aos="fade-up" data-aos-delay="200">
-                            <input type="text" class="form-control px-4" placeholder="Your ZIP code or City. e.g. New York" />
-                        </form>
+                        <div id="main-search" class="card card-body">
+                            <!-- Tabs navs -->
+                            <ul class="nav nav-tabs nav-fill mb-3 d-flex flex-nowrap" id="ex1" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a data-mdb-tab-init class="nav-link bg-transparent active" id="ex2-tab-1" href="#ex2-tabs-1" role="tab" aria-controls="ex2-tabs-1" aria-selected="true" >
+                                        <i class="bi bi-handbag me-sm-2 fs-6 align-middle"></i><span class="d-sm-inline d-block mt-2">Acheter</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a data-mdb-tab-init class="nav-link bg-transparent" id="ex2-tab-2" href="#ex2-tabs-2" role="tab" aria-controls="ex2-tabs-2" aria-selected="false" >
+                                        <i class="bi bi-clock me-sm-2 fs-6 align-middle"></i><span class="d-sm-inline d-block mt-2">Louer</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a data-mdb-tab-init class="nav-link bg-transparent" id="ex2-tab-3" href="#ex2-tabs-3" role="tab" aria-controls="ex2-tabs-3" aria-selected="false">
+                                        <i class="bi bi-cash-coin me-sm-2 fs-6 align-middle"></i><span class="d-sm-inline d-block mt-2">Vendre</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <!-- Tabs navs -->
+
+                            <!-- Tabs content -->
+                            <div class="tab-content" id="ex2-content">
+                                <div class="tab-pane fade show active" id="ex2-tabs-1" role="tabpanel" aria-labelledby="ex2-tab-1">
+                                    <form action="#" class="form-search d-flex align-items-stretch my-2 border border-success rounded-pill" data-aos="fade-up" data-aos-delay="200">
+                                        <div class="input-group">
+                                            <div class="input-group-text border-0 me-0 pe-1 py-4">
+                                                <i class="bi bi-geo-alt"></i>
+                                            </div>
+                                            <input type="text" class="form-control px-3 py-4" placeholder="Saisir adresse entière, commune ou quartier" />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="ex2-tabs-2" role="tabpanel" aria-labelledby="ex2-tab-2">
+                                    <form action="#" class="form-search d-flex align-items-stretch my-2 border border-success rounded-pill" data-aos="fade-up" data-aos-delay="200">
+                                        <div class="input-group">
+                                            <div class="input-group-text border-0 me-0 pe-1 py-4">
+                                                <i class="bi bi-geo-alt"></i>
+                                            </div>
+                                            <input type="text" class="form-control px-3 py-4" placeholder="Saisir adresse entière, commune ou quartier" />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="ex2-tabs-3" role="tabpanel" aria-labelledby="ex2-tab-3">
+                                    <form action="#" class="form-search d-sm-flex justify-content-center align-items-center pt-3 py-2" data-aos="fade-up" data-aos-delay="200">
+                                        <div class="form-check form-check-inline mt-sm-0 mt-2">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked/>
+                                            <label class="form-check-label" for="inlineRadio1">Parcelle</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline mt-sm-0 mt-2">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option1" />
+                                            <label class="form-check-label" for="inlineRadio1">Maison</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline mt-sm-0 mt-2">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option1" />
+                                            <label class="form-check-label" for="inlineRadio1">Appartement</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline mt-sm-0 mt-2">
+                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option2" />
+                                            <label class="form-check-label" for="inlineRadio2">Equipement</label>
+                                        </div>
+
+                                        <button type="button" class="btn adrm-btn-green mt-sm-0 mt-2 rounded-pill">Commencer</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- Tabs content -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -805,134 +769,4 @@
             </div>
         </div>
 
-        <div class="site-footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Contact</h3>
-                            <address>43 Raymouth Rd. Baltemoer, London 3910</address>
-                            <ul class="list-unstyled links">
-                                <li><a href="tel://11234567890">+1(123)-456-7890</a></li>
-                                <li><a href="tel://11234567890">+1(123)-456-7890</a></li>
-                                <li>
-                                    <a href="mailto:info@mydomain.com">info@mydomain.com</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- /.widget -->
-                    </div>
-                    <!-- /.col-lg-4 -->
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Sources</h3>
-                            <ul class="list-unstyled float-start links">
-                                <li><a href="#">About us</a></li>
-                                <li><a href="#">Services</a></li>
-                                <li><a href="#">Vision</a></li>
-                                <li><a href="#">Mission</a></li>
-                                <li><a href="#">Terms</a></li>
-                                <li><a href="#">Privacy</a></li>
-                            </ul>
-                            <ul class="list-unstyled float-start links">
-                                <li><a href="#">Partners</a></li>
-                                <li><a href="#">Business</a></li>
-                                <li><a href="#">Careers</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">FAQ</a></li>
-                                <li><a href="#">Creative</a></li>
-                            </ul>
-                        </div>
-                        <!-- /.widget -->
-                    </div>
-                    <!-- /.col-lg-4 -->
-                    <div class="col-lg-4">
-                        <div class="widget">
-                            <h3>Links</h3>
-                            <ul class="list-unstyled links">
-                                <li><a href="#">Our Vision</a></li>
-                                <li><a href="#">About us</a></li>
-                                <li><a href="#">Contact us</a></li>
-                            </ul>
-
-                            <ul class="list-unstyled social">
-                                <li>
-                                    <a href="#"><span class="icon-instagram"></span></a>
-                                </li>
-                                <li>
-                                    <a href="#"><span class="icon-twitter"></span></a>
-                                </li>
-                                <li>
-                                    <a href="#"><span class="icon-facebook"></span></a>
-                                </li>
-                                <li>
-                                    <a href="#"><span class="icon-linkedin"></span></a>
-                                </li>
-                                <li>
-                                    <a href="#"><span class="icon-pinterest"></span></a>
-                                </li>
-                                <li>
-                                    <a href="#"><span class="icon-dribbble"></span></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- /.widget -->
-                    </div>
-                    <!-- /.col-lg-4 -->
-                </div>
-                <!-- /.row -->
-
-                <div class="row mt-5">
-                    <div class="col-12 text-center">
-                        <!--
-                **==========
-                NOTE:
-                Please don't remove this copyright link unless you buy the license here https://untree.co/license/
-                **==========
-                -->
-
-                        <p>
-                            Copyright &copy;
-                            <script>
-                                document.write(new Date().getFullYear());
-                            </script>
-                            . All Rights Reserved. &mdash; Designed with love by
-                            <a href="https://untree.co">Untree.co</a>
-                            <!-- License information: https://untree.co/license/ -->
-                        </p>
-                        <div>
-                            Distributed by
-                            <a href="https://themewagon.com/" target="_blank">themewagon</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /.container -->
-        </div>
-        <!-- /.site-footer -->
-
-        <!-- Preloader -->
-        <div id="overlayer"></div>
-        <div class="loader">
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
-        <script src="{{ asset('assets/addons/jquery/js/jquery.min.js') }}"></script>
-        <script src="{{ asset('assets/addons/jquery/jquery-ui/jquery-ui.min.js') }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/i18n/jquery-ui-i18n.min.js"></script>
-        <script src="{{ asset('assets/addons/jquery/datetimepicker/js/jquery.datetimepicker.full.min.js') }}"></script>
-        <script src="{{ asset('assets/js/property/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/js/property/tiny-slider.js') }}"></script>
-        <script src="{{ asset('assets/js/property/aos.js') }}"></script>
-        <script src="{{ asset('assets/js/property/navbar.js') }}"></script>
-        <script src="{{ asset('assets/js/property/counter.js') }}"></script>
-        <script src="{{ asset('assets/js/property/custom.js') }}"></script>
-        <!-- Preloader -->
-        <script src="{{ asset('assets/addons/autosize/js/autosize.min.js') }}"></script>
-        <script src="{{ asset('assets/addons/cropper/js/cropper.min.js') }}"></script>
-        <script src="{{ asset('assets/js/scripts.custom.js') }}"></script>
-    </body>
-
-</html>
+@endsection
