@@ -58,6 +58,16 @@ class PublicController extends Controller
     }
 
     /**
+     * GET: Create symbolic link
+     *
+     * @return \Illuminate\View\View
+     */
+    public function symlink()
+    {
+        return view('symlink');
+    }
+
+    /**
      * GET: Home page
      *
      * @return \Illuminate\View\View
@@ -68,13 +78,23 @@ class PublicController extends Controller
     }
 
     /**
-     * GET: Create symbolic link
+     * GET: About page
      *
      * @return \Illuminate\View\View
      */
-    public function symlink()
+    public function about()
     {
-        return view('symlink');
+        return view('about');
+    }
+
+    /**
+     * GET: Contact page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function contact()
+    {
+        return view('contact');
     }
 
     /**
@@ -124,129 +144,6 @@ class PublicController extends Controller
             $items = $current_user->unpaidOrders();
         }
 
-        if ($entity == 'projects') {
-            $entity_title = __('miscellaneous.menu.account.project.title');
-            $categories = Category::where('for_service', 2)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Processing plant',
-                        'fr' => 'Usine de transformation'
-                    ],
-                    'category_description' => [
-                        'en' => 'Industrial establishment that transforms agricultural raw materials into finished or semi-finished products.',
-                        'fr' => 'Etablissement industriel qui transforme les matières premières agricoles en produits finis ou semi-finis.'
-                    ],
-                    'for_service' => 2,
-                    'alias' => 'manufacturing-processing',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 2]])->first();
-            // Get user projects
-            $query = Product::where([['type', 'project'], ['category_id', $categoryId], ['user_id', $current_user->id]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-        }
-
-        if ($entity == 'products') {
-            $entity_title = __('miscellaneous.menu.account.product.title');
-            $categories = Category::where('for_service', 0)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Cash crops',
-                        'fr' => 'Cultures de rente'
-                    ],
-                    'category_description' => [
-                        'en' => 'Coffee, Oil palm, Rubber, Cocoa, Rice, Tea.',
-                        'fr' => 'Café, Palmier à huile, Caoutchouc, Cacao, Riz, Thé.'
-                    ],
-                    'for_service' => 0,
-                    'alias' => '',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 0]])->first();
-            // Get user products
-            $query = Product::where([['type', 'product'], ['category_id', $categoryId], ['user_id', $current_user->id]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-        }
-
-        if ($entity == 'services') {
-            $entity_title = __('miscellaneous.menu.account.service.title');
-            $categories = Category::where('for_service', 1)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Manufacturing and processing',
-                        'fr' => 'Fabrication et transformation'
-                    ],
-                    'category_description' => [
-                        'en' => 'Set of operations that enable raw materials from agriculture to be transformed into finished or semi-finished products.',
-                        'fr' => 'Ensemble des opérations qui permettent de transformer les matières premières issues de l\'agriculture en produits finis ou semi-finis.'
-                    ],
-                    'for_service' => 1,
-                    'alias' => '',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 1]])->first();
-            // Get user services
-            $query = Product::where([['type', 'service'], ['category_id', $categoryId], ['user_id', $current_user->id]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-        }
-
         return view('account', [
             'entity' => $entity,
             'entity_title' => $entity_title,
@@ -280,128 +177,8 @@ class PublicController extends Controller
         $categories = null;
         $items = null;
 
-        if ($entity == 'project') {
-            $entity_title = __('miscellaneous.menu.public.products.projects');
-            $categories = Category::where('for_service', 2)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Processing plant',
-                        'fr' => 'Usine de transformation'
-                    ],
-                    'category_description' => [
-                        'en' => 'Industrial establishment that transforms agricultural raw materials into finished or semi-finished products.',
-                        'fr' => 'Etablissement industriel qui transforme les matières premières agricoles en produits finis ou semi-finis.'
-                    ],
-                    'for_service' => 2,
-                    'alias' => 'manufacturing-processing',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 2]])->first();
-            // Get user projects
-            $query = Product::where([['type', 'project'], ['category_id', $categoryId]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-        }
-
-        if ($entity == 'product') {
-            $entity_title = __('miscellaneous.menu.public.products.products');
-            $categories = Category::where('for_service', 0)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Cash crops',
-                        'fr' => 'Cultures de rente'
-                    ],
-                    'category_description' => [
-                        'en' => 'Coffee, Oil palm, Rubber, Cocoa, Rice, Tea.',
-                        'fr' => 'Café, Palmier à huile, Caoutchouc, Cacao, Riz, Thé.'
-                    ],
-                    'for_service' => 0,
-                    'alias' => '',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 0]])->first();
-            // Get user products
-            $query = Product::where([['type', 'product'], ['category_id', $categoryId]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-        }
-
-        if ($entity == 'service') {
-            $entity_title = __('miscellaneous.menu.public.products.services');
-            $entity_title = __('miscellaneous.menu.account.service.title');
-            $categories = Category::where('for_service', 1)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Manufacturing and processing',
-                        'fr' => 'Fabrication et transformation'
-                    ],
-                    'category_description' => [
-                        'en' => 'Set of operations that enable raw materials from agriculture to be transformed into finished or semi-finished products.',
-                        'fr' => 'Ensemble des opérations qui permettent de transformer les matières premières issues de l\'agriculture en produits finis ou semi-finis.'
-                    ],
-                    'for_service' => 1,
-                    'alias' => '',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 1]])->first();
-            // Get user services
-            $query = Product::where([['type', 'service'], ['category_id', $categoryId]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+        if ($entity == 'buy') {
+            $entity_title = 'Acheter une maison';
         }
 
         return view('products', [
@@ -423,21 +200,17 @@ class PublicController extends Controller
     public function productDatas($entity, $id)
     {
         $entity_title = null;
+        $selected_product = 'null';
 
-        if ($entity == 'project') {
-            $entity_title = __('miscellaneous.menu.public.products.about_project');
-        }
-
-        if ($entity == 'product') {
-            $entity_title = __('miscellaneous.menu.public.products.about_product');
-        }
-
-        if ($entity == 'service') {
-            $entity_title = __('miscellaneous.menu.public.products.about_service');
+        if ($entity == 'buy') {
+            $entity_title = 'Détails sur la propriété';
+            // $selected_product = Product::find($id);
         }
 
         return view('products', [
-            'entity_title' => $entity_title
+            'entity_title' => $entity_title,
+            'entity' => $entity,
+            'selected_product' => $selected_product,
         ]);
     }
 
