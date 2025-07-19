@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Http\Controllers\ApiClientManager;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Post as ResourcesPost;
+use App\Http\Resources\Product as ResourcesProduct;
+use App\Http\Resources\User as ResourcesUser;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\File;
+use App\Models\Post;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
@@ -23,6 +30,13 @@ use Illuminate\Validation\Rules;
  */
 class PublicController extends Controller
 {
+    public static $api_client_manager;
+
+    public function __construct()
+    {
+        $this::$api_client_manager = new ApiClientManager();
+    }
+
     // ==================================== HTTP GET METHODS ====================================
     /**
      * GET: Change language
@@ -58,16 +72,6 @@ class PublicController extends Controller
     }
 
     /**
-     * GET: Create symbolic link
-     *
-     * @return \Illuminate\View\View
-     */
-    public function symlink()
-    {
-        return view('symlink');
-    }
-
-    /**
      * GET: Home page
      *
      * @return \Illuminate\View\View
@@ -75,6 +79,16 @@ class PublicController extends Controller
     public function index()
     {
         return view('welcome');
+    }
+
+    /**
+     * GET: Create symbolic link
+     *
+     * @return \Illuminate\View\View
+     */
+    public function symlink()
+    {
+        return view('symlink');
     }
 
     /**
@@ -98,8 +112,8 @@ class PublicController extends Controller
     }
 
     /**
-     * GET: Create symbolic link
-     *
+     * GET: Search something
+     * 
      * @return \Illuminate\View\View
      */
     public function search(Request $request)
@@ -114,13 +128,41 @@ class PublicController extends Controller
     }
 
     /**
+     * GET: Create symbolic link
+     *
+     * @return \Illuminate\View\View
+     */
+    public function cart()
+    {
+        $cartItems = session()->get('cart', []);
+
+        return view('cart', ['items' => $cartItems]);
+    }
+
+    /**
      * GET: Account page
      *
      * @return \Illuminate\View\View
      */
     public function account()
     {
-        return view('account', ['countries' => showCountries()]);
+        return view('account');
+    }
+
+    /**
+     * GET: User profile page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function profile($id)
+    {
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            return redirect('/')->with('error_message', __('notifications.find_user_404'));
+        }
+
+        return view('profile', ['user' => $user]);
     }
 
     /**
@@ -134,22 +176,207 @@ class PublicController extends Controller
     {
         $current_user = User::find(Auth::id());
         $entity_title = null;
+        $cart = null;
         $category = null;
         $categories = null;
         $items = null;
 
         if ($entity == 'cart') {
             $entity_title = __('miscellaneous.menu.account.cart');
+            // Get user unpaid cart
+            $cart = $current_user->unpaidCart()->first();
             // Get user unpaid orders
             $items = $current_user->unpaidOrders();
+        }
+
+        if ($entity == 'projects') {
+            $entity_title = __('miscellaneous.menu.account.project.title');
+            $categories = Category::withCount('products')->where('for_service', 2)->get();
+
+            if ($categories->isEmpty()) {
+                Category::create([
+                    'category_name' => [
+                        'en' => 'Processing plant',
+                        'fr' => 'Usine de transformation'
+                    ],
+                    'category_description' => [
+                        'en' => 'Industrial establishment that transforms agricultural raw materials into finished or semi-finished products.',
+                        'fr' => 'Etablissement industriel qui transforme les matières premières agricoles en produits finis ou semi-finis.'
+                    ],
+                    'for_service' => 2,
+                    'alias' => 'processing-plant',
+                ]);
+            }
+
+            $categories_ids = $categories->pluck('id')->toArray();
+
+            // If $categories_ids is empty, we have a problem
+            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
+
+            if ($categoryId === null) {
+                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
+            }
+
+            // Get the first category in the case user has not yet selected his category
+            $category = Category::where([['id', $categoryId], ['for_service', 2]])->first();
+            // Get user projects
+            $query = Product::where([['type', 'project'], ['category_id', $categoryId], ['user_id', $current_user->id]]);
+
+            // Sort by "action" if needed
+            $query->when($request->action, function ($query) use ($request) {
+                return $query->where('action', $request->action);
+            });
+
+            // Filter by price if values ​​are passed in the query
+            $fromPrice = $request->input('from_price', 0);
+            $toPrice = $request->input('to_price', 999999);
+
+            if ($fromPrice > $toPrice) {
+                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
+            }
+
+            // Add price filter to query
+            $query->whereBetween('price', [$fromPrice, $toPrice]);
+
+            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+
+            // Ajouter la méthode convertPrice au résultat paginé
+            $items->getCollection()->transform(function ($item) use ($current_user) {
+                // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
+                $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
+
+                return $item;
+            });
+        }
+
+        if ($entity == 'products') {
+            $entity_title = __('miscellaneous.menu.account.product.title');
+            $categories = Category::withCount('products')->where('for_service', 0)->get();
+
+            if ($categories->isEmpty()) {
+                Category::create([
+                    'category_name' => [
+                        'en' => 'Cash crops',
+                        'fr' => 'Cultures de rente'
+                    ],
+                    'category_description' => [
+                        'en' => 'Coffee, Oil palm, Rubber, Cocoa, Rice, Tea.',
+                        'fr' => 'Café, Palmier à huile, Caoutchouc, Cacao, Riz, Thé.'
+                    ],
+                    'for_service' => 0,
+                    'alias' => 'cash-crops',
+                ]);
+            }
+
+            $categories_ids = $categories->pluck('id')->toArray();
+
+            // If $categories_ids is empty, we have a problem
+            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
+
+            if ($categoryId === null) {
+                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
+            }
+
+            // Get the first category in the case user has not yet selected his category
+            $category = Category::where([['id', $categoryId], ['for_service', 0]])->first();
+            // Get user products
+            $query = Product::where([['type', 'product'], ['category_id', $categoryId], ['user_id', $current_user->id]]);
+
+            // Sort by "action" if needed
+            $query->when($request->action, function ($query) use ($request) {
+                return $query->where('action', $request->action);
+            });
+
+            // Filter by price if values ​​are passed in the query
+            $fromPrice = $request->input('from_price', 0);
+            $toPrice = $request->input('to_price', 999999);
+
+            if ($fromPrice > $toPrice) {
+                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
+            }
+
+            // Add price filter to query
+            $query->whereBetween('price', [$fromPrice, $toPrice]);
+
+            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+
+            // Ajouter la méthode convertPrice au résultat paginé
+            $items->getCollection()->transform(function ($item) use ($current_user) {
+                // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
+                $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
+
+                return $item;
+            });
+        }
+
+        if ($entity == 'services') {
+            $entity_title = __('miscellaneous.menu.account.service.title');
+            $categories = Category::withCount('products')->where('for_service', 1)->get();
+
+            if ($categories->isEmpty()) {
+                Category::create([
+                    'category_name' => [
+                        'en' => 'Manufacturing and processing',
+                        'fr' => 'Fabrication et transformation'
+                    ],
+                    'category_description' => [
+                        'en' => 'Set of operations that enable raw materials from agriculture to be transformed into finished or semi-finished products.',
+                        'fr' => 'Ensemble des opérations qui permettent de transformer les matières premières issues de l\'agriculture en produits finis ou semi-finis.'
+                    ],
+                    'for_service' => 1,
+                    'alias' => 'manufacturing-processing',
+                ]);
+            }
+
+            $categories_ids = $categories->pluck('id')->toArray();
+
+            // If $categories_ids is empty, we have a problem
+            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
+
+            if ($categoryId === null) {
+                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
+            }
+
+            // Get the first category in the case user has not yet selected his category
+            $category = Category::where([['id', $categoryId], ['for_service', 1]])->first();
+            // Get user services
+            $query = Product::where([['type', 'service'], ['category_id', $categoryId], ['user_id', $current_user->id]]);
+
+            // Sort by "action" if needed
+            $query->when($request->action, function ($query) use ($request) {
+                return $query->where('action', $request->action);
+            });
+
+            // Filter by price if values ​​are passed in the query
+            $fromPrice = $request->input('from_price', 0);
+            $toPrice = $request->input('to_price', 999999);
+
+            if ($fromPrice > $toPrice) {
+                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
+            }
+
+            // Add price filter to query
+            $query->whereBetween('price', [$fromPrice, $toPrice]);
+
+            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+
+            // Ajouter la méthode convertPrice au résultat paginé
+            $items->getCollection()->transform(function ($item) use ($current_user) {
+                // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
+                $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
+
+                return $item;
+            });
         }
 
         return view('account', [
             'entity' => $entity,
             'entity_title' => $entity_title,
+            'cart' => $cart,
             'category' => $category,
             'categories' => $categories,
             'items' => $items,
+            'countries' => showCountries()
         ]);
     }
 
@@ -177,8 +404,196 @@ class PublicController extends Controller
         $categories = null;
         $items = null;
 
-        if ($entity == 'buy') {
-            $entity_title = 'Acheter une maison';
+        if ($entity == 'project') {
+            $entity_title = __('miscellaneous.menu.account.project.title');
+            $categories = Category::withCount('products')->where('for_service', 2)->get();
+
+            if ($categories->isEmpty()) {
+                Category::create([
+                    'category_name' => [
+                        'en' => 'Processing plant',
+                        'fr' => 'Usine de transformation'
+                    ],
+                    'category_description' => [
+                        'en' => 'Industrial establishment that transforms agricultural raw materials into finished or semi-finished products.',
+                        'fr' => 'Etablissement industriel qui transforme les matières premières agricoles en produits finis ou semi-finis.'
+                    ],
+                    'for_service' => 2,
+                    'alias' => 'processing-plant',
+                ]);
+            }
+
+            $categories_ids = $categories->pluck('id')->toArray();
+
+            // If $categories_ids is empty, we have a problem
+            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
+
+            if ($categoryId === null) {
+                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
+            }
+
+            // Get the first category in the case user has not yet selected his category
+            $category = Category::where([['id', $categoryId], ['for_service', 2]])->first();
+            // Get user projects
+            $query = Product::where([['type', 'project'], ['category_id', $categoryId]]);
+
+            // Sort by "action" if needed
+            $query->when($request->action, function ($query) use ($request) {
+                return $query->where('action', $request->action);
+            });
+
+            // Filter by price if values ​​are passed in the query
+            $fromPrice = $request->input('from_price', 0);
+            $toPrice = $request->input('to_price', 999999);
+
+            if ($fromPrice > $toPrice) {
+                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
+            }
+
+            // Add price filter to query
+            $query->whereBetween('price', [$fromPrice, $toPrice]);
+
+            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+
+            if (Auth::check()) {
+                $current_user = User::find(Auth::id());
+
+                // Ajouter la méthode convertPrice au résultat paginé
+                $items->getCollection()->transform(function ($item) use ($current_user) {
+                    // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
+                    $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
+
+                    return $item;
+                });
+            }
+        }
+
+        if ($entity == 'product') {
+            $entity_title = __('miscellaneous.menu.account.product.title');
+            $categories = Category::withCount('products')->where('for_service', 0)->get();
+
+            if ($categories->isEmpty()) {
+                Category::create([
+                    'category_name' => [
+                        'en' => 'Cash crops',
+                        'fr' => 'Cultures de rente'
+                    ],
+                    'category_description' => [
+                        'en' => 'Coffee, Oil palm, Rubber, Cocoa, Rice, Tea.',
+                        'fr' => 'Café, Palmier à huile, Caoutchouc, Cacao, Riz, Thé.'
+                    ],
+                    'for_service' => 0,
+                    'alias' => 'cash-crops',
+                ]);
+            }
+
+            $categories_ids = $categories->pluck('id')->toArray();
+
+            // If $categories_ids is empty, we have a problem
+            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
+
+            if ($categoryId === null) {
+                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
+            }
+
+            // Get the first category in the case user has not yet selected his category
+            $category = Category::where([['id', $categoryId], ['for_service', 0]])->first();
+            // Get user products
+            $query = Product::where([['type', 'product'], ['category_id', $categoryId]]);
+
+            // Sort by "action" if needed
+            $query->when($request->action, function ($query) use ($request) {
+                return $query->where('action', $request->action);
+            });
+
+            // Filter by price if values ​​are passed in the query
+            $fromPrice = $request->input('from_price', 0);
+            $toPrice = $request->input('to_price', 999999);
+
+            if ($fromPrice > $toPrice) {
+                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
+            }
+
+            // Add price filter to query
+            $query->whereBetween('price', [$fromPrice, $toPrice]);
+
+            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+
+            if (Auth::check()) {
+                $current_user = User::find(Auth::id());
+
+                // Ajouter la méthode convertPrice au résultat paginé
+                $items->getCollection()->transform(function ($item) use ($current_user) {
+                    // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
+                    $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
+
+                    return $item;
+                });
+            }
+        }
+
+        if ($entity == 'service') {
+            $entity_title = __('miscellaneous.menu.account.service.title');
+            $categories = Category::withCount('products')->where('for_service', 1)->get();
+
+            if ($categories->isEmpty()) {
+                Category::create([
+                    'category_name' => [
+                        'en' => 'Manufacturing and processing',
+                        'fr' => 'Fabrication et transformation'
+                    ],
+                    'category_description' => [
+                        'en' => 'Set of operations that enable raw materials from agriculture to be transformed into finished or semi-finished products.',
+                        'fr' => 'Ensemble des opérations qui permettent de transformer les matières premières issues de l\'agriculture en produits finis ou semi-finis.'
+                    ],
+                    'for_service' => 1,
+                    'alias' => 'manufacturing-processing',
+                ]);
+            }
+
+            $categories_ids = $categories->pluck('id')->toArray();
+
+            // If $categories_ids is empty, we have a problem
+            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
+
+            if ($categoryId === null) {
+                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
+            }
+
+            // Get the first category in the case user has not yet selected his category
+            $category = Category::where([['id', $categoryId], ['for_service', 1]])->first();
+            // Get user services
+            $query = Product::where([['type', 'service'], ['category_id', $categoryId]]);
+
+            // Sort by "action" if needed
+            $query->when($request->action, function ($query) use ($request) {
+                return $query->where('action', $request->action);
+            });
+
+            // Filter by price if values ​​are passed in the query
+            $fromPrice = $request->input('from_price', 0);
+            $toPrice = $request->input('to_price', 999999);
+
+            if ($fromPrice > $toPrice) {
+                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
+            }
+
+            // Add price filter to query
+            $query->whereBetween('price', [$fromPrice, $toPrice]);
+
+            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+
+            if (Auth::check()) {
+                $current_user = User::find(Auth::id());
+
+                // Ajouter la méthode convertPrice au résultat paginé
+                $items->getCollection()->transform(function ($item) use ($current_user) {
+                    // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
+                    $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
+
+                    return $item;
+                });
+            }
         }
 
         return view('products', [
@@ -191,7 +606,7 @@ class PublicController extends Controller
     }
 
     /**
-     * GET: Home page
+     * GET: Product details
      *
      * @param  string  $entity
      * @param  string  $id
@@ -200,11 +615,22 @@ class PublicController extends Controller
     public function productDatas($entity, $id)
     {
         $entity_title = null;
-        $selected_product = 'null';
+        $selected_product = Product::find($id);
 
-        if ($entity == 'buy') {
-            $entity_title = 'Détails sur la propriété';
-            // $selected_product = Product::find($id);
+        if (is_null($selected_product)) {
+            return redirect('/')->with('error_message', __('notifications.find_product_404'));
+        }
+
+        if ($entity == 'project') {
+            $entity_title = __('miscellaneous.menu.public.products.about_project');
+        }
+
+        if ($entity == 'product') {
+            $entity_title = __('miscellaneous.menu.public.products.about_product');
+        }
+
+        if ($entity == 'service') {
+            $entity_title = __('miscellaneous.menu.public.products.about_service');
         }
 
         return view('products', [
@@ -214,9 +640,141 @@ class PublicController extends Controller
         ]);
     }
 
+    /**
+     * GET: Posts page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function discussions()
+    {
+        $posts = request()->has('category_id') ? Post::where([['for_category_id', request()->get('category_id')], ['type', 'post']])->orderByDesc('created_at')->paginate(5)->appends(request()->query()) : Post::where('type', 'post')->orderByDesc('created_at')->paginate(5)->appends(request()->query());
+        $project_categories = Category::where('for_service', 2)->get();
+        $product_categories = Category::where('for_service', 0)->get();
+        $service_categories = Category::where('for_service', 1)->get();
+
+        return view('discussions', [
+            'posts' => ResourcesPost::collection($posts),
+            'posts_req' => $posts,
+            'posts_req_currentPage' => $posts->currentPage(),
+            'posts_req_lastPage' => $posts->lastPage(),
+            'posts_req_total' => $posts->total(),
+            'project_categories' => $project_categories,
+            'product_categories' => $product_categories,
+            'service_categories' => $service_categories,
+        ]);
+    }
+
+    /**
+     * GET: Post details
+     *
+     * @param  string  $id
+     * @return \Illuminate\View\View
+     */
+    public function discussionDatas($id)
+    {
+        $entity_title = __('miscellaneous.admin.post.details');
+        $selected_post = Post::find($id);
+
+        if (is_null($selected_post)) {
+            return redirect('/')->with('error_message', __('notifications.find_error'));
+        }
+
+        $related_posts = Post::where([['id', '<>', $selected_post->id], ['for_category_id', '=', $selected_post->for_category_id]])->take(3)->get();
+        $project_categories = Category::where('for_service', 2)->get();
+        $product_categories = Category::where('for_service', 0)->get();
+        $service_categories = Category::where('for_service', 1)->get();
+
+        return view('discussions', [
+            'entity_title' => $entity_title,
+            'selected_post' => $selected_post,
+            'related_posts' => ResourcesPost::collection($related_posts),
+            'project_categories' => $project_categories,
+            'product_categories' => $product_categories,
+            'service_categories' => $service_categories,
+        ]);
+    }
+
+    /**
+     * GET: Investors page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function investors()
+    {
+        $investors = Auth::check() ? User::where('id', '<>', Auth::id())->whereHas('roles', function ($query) {
+                                            $query->where('role_name->fr', 'Investisseur');
+                                        })->orderByDesc('users.created_at')->paginate(12)->appends(request()->query())
+                                    : User::whereHas('roles', function ($query) {
+                                        $query->where('role_name->fr', 'Investisseur');
+                                    })->orderByDesc('users.created_at')->paginate(12)->appends(request()->query());
+
+        $role_investor = null;
+        $role_investor_exists = Role::where('role_name->fr', 'Investisseur')->exists();
+
+        if (!$role_investor_exists) {
+            $role_investor = Role::create([
+                'role_name' => [
+                    'en' => 'Investor',
+                    'fr' => 'Investisseur',
+                ],
+                'role_description' => [
+                    'en' => 'A person who invests their money in a project on the platform.',
+                    'fr' => 'Personne qui investit son argent pour un projet sur la plateforme.',
+                ]
+            ]);
+        }
+
+        $role_investor = Role::where('role_name->fr', 'Investisseur')->first();
+
+        return view('investors', [
+            'role_investor' => $role_investor,
+            'investors' => ResourcesUser::collection($investors),
+            'investors_req' => $investors,
+            'investors_req_currentPage' => $investors->currentPage(),
+            'investors_req_lastPage' => $investors->lastPage(),
+            'investors_req_total' => $investors->total(),
+        ]);
+    }
+
+    /**
+     * GET: Investor details
+     *
+     * @param  string  $id
+     * @return \Illuminate\View\View
+     */
+    public function investorDatas($id)
+    {
+        $entity_title = __('miscellaneous.admin.investor.details');
+        $investor_role_id = Role::where('role_name->fr', 'Investisseur')->first()->id;
+        $selected_investor = User::find($id);
+
+        if (is_null($selected_investor)) {
+            return redirect('/')->with('error_message', __('notifications.find_investor_404'));
+        }
+
+        if (!$selected_investor->roles->contains('id', $investor_role_id)) {
+            return redirect('/')->with('error_message', __('notifications.find_error'));
+        }
+
+        return view('investors', [
+            'entity_title' => $entity_title,
+            'selected_investor' => $selected_investor,
+        ]);
+    }
+
+    /**
+     * GET: Crowdfundings page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function crowdfunding()
+    {
+        return view('crowdfundings');
+    }
+
     // ==================================== HTTP DELETE METHODS ====================================
     /**
-     * GET: Delete product
+     * GET: Delete something
      *
      * @param  string $entity
      * @param  int $id
@@ -261,7 +819,154 @@ class PublicController extends Controller
         }
     }
 
+    /**
+     * Display the message about transaction in waiting.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function transactionWaiting()
+    {
+        return view('transaction_message');
+    }
+
+    /**
+     * Display the message about transaction done.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function transactionMessage($order_number)
+    {
+        // Find payment by order number API
+        $payment1 = $this::$api_client_manager::call('GET', getApiURL() . '/payment/find_by_order_number/' . $order_number);
+
+        return view('transaction_message', [
+            'message_content' => __('notifications.transaction_done'),
+            'status_code' => (string) $payment1->data->status,
+            'payment' => $payment1->data,
+        ]);
+    }
+
+    /**
+     * GET: Current user account
+     *
+     * @param $amount
+     * @param $currency
+     * @param $code
+     * @param $cart_id
+     * @return \Illuminate\View\View
+     */
+    public function paid($amount = null, $currency = null, $code, $cart_id)
+    {
+        $cart = Cart::find($cart_id);
+
+        if ($code == '0') {
+            return view('transaction_message', [
+                'amount' => $amount,
+                'currency' => $currency,
+                'status_code' => $code,
+                'cart' => $cart,
+                'message_content' => __('notifications.processing_succeed')
+            ]);
+        }
+
+        if ($code == '1') {
+            // Find payment by order number API
+            $payment = $this::$api_client_manager::call('GET', getApiURL() . '/payment/find_by_order_number/' . Session::get('order_number'));
+
+            if ($payment->success) {
+                // Update payment status API
+                $this::$api_client_manager::call('PUT', getApiURL() . '/payment/switch_status/' . $payment->data->id . '/2');
+            }
+
+            return view('transaction_message', [
+                'amount' => $amount,
+                'currency' => $currency,
+                'status_code' => $code,
+                'cart' => $cart,
+                'status_code' => $code,
+                'message_content' => __('notifications.process_canceled')
+            ]);
+        }
+
+        if ($code == '2') {
+            // Find payment by order number API
+            $payment = $this::$api_client_manager::call('GET', getApiURL() . '/payment/find_by_order_number/' . Session::get('order_number'));
+
+            if ($payment->success) {
+                // Update payment status API
+                $this::$api_client_manager::call('PUT', getApiURL() . '/payment/switch_status/' . $payment->data->id . '/2');
+            }
+
+            return view('transaction_message', [
+                'amount' => $amount,
+                'currency' => $currency,
+                'status_code' => $code,
+                'cart' => $cart,
+                'status_code' => $code,
+                'message_content' => __('notifications.process_failed')
+            ]);
+        }
+    }
+
     // ==================================== HTTP POST METHODS ====================================
+    /**
+     * POST: Run cart payment
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Support\Facades\Redirect
+     */
+    public function runPay(Request $request)
+    {
+        $inputs = [
+            'transaction_type_id' => $request->transaction_type_id,
+            'other_phone' => $request->other_phone_code . $request->other_phone_number,
+            'user_id' => $request->user_id,
+            'cart_id' => $request->cart_id,
+            'app_url' => $request->app_url
+        ];
+
+        if ($inputs['transaction_type_id'] == null) {
+            return redirect()->back()->with('error_message', __('notifications.transaction_type_error'));
+        }
+
+        if ($inputs['transaction_type_id'] == 1) {
+            if (trim($request->other_phone_code) == null OR trim($request->other_phone_number) == null) {
+                return redirect()->back()->with('error_message', __('validation.custom.phone.incorrect'));
+            }
+        }
+
+        if ($inputs['transaction_type_id'] != null) {
+            if ($inputs['transaction_type_id'] == 1) {
+                if ($request->other_phone_code == null or $request->other_phone_number == null) {
+                    return redirect()->back()->with('error_message', __('validation.custom.phone.incorrect'));
+                }
+
+                $cart = $this::$api_client_manager::call('POST', getApiURL() . '/product/purchase/' . $inputs['cart_id'] . '/' . $inputs['user_id'], null, $inputs);
+
+                if ($cart->success) {
+                    return redirect()->route('transaction.waiting', [
+                        'app_id' => '-',
+                        'success_message' => $cart->data->result_response->order_number . '-' . $inputs['user_id'],
+                    ]);
+
+                } else {
+                    return redirect()->back()->with('error_message', $cart->message);
+                }
+            }
+
+            if ($inputs['transaction_type_id'] == 2) {
+                $cart = $this::$api_client_manager::call('POST', getApiURL() . '/product/purchase/' . $inputs['cart_id'] . '/' . $inputs['user_id'], null, $inputs);
+
+                if ($cart->success) {
+                    return redirect($cart->data->result_response->url)->with('order_number', $cart->data->result_response->order_number);
+
+                } else {
+                    return redirect()->back()->with('error_message', $cart->message);
+                }
+            }
+        }
+    }
+
     /**
      * POST: Update account
      *
@@ -443,16 +1148,16 @@ class PublicController extends Controller
             return response()->json(['status' => 'success', 'message' => __('notifications.registered_data')]);
         }
 
-        if ($entity == 'product') {
-            $request->validate([
-                'product_name' => ['required', 'string', 'max:255'],
-                'price' => ['required', 'float'],
-                'quantity' => ['required', 'integer', 'min:1'],
-            ], [
-                'product_name.required' => __('validation.required'),
-                'price' => __('validation.required'),
-                'quantity' => __('validation.required'),
-            ]);
+        if ($entity == 'project' OR $entity == 'product' OR $entity == 'service') {
+            // $request->validate([
+            //     'product_name' => ['required', 'string', 'max:255'],
+            //     'price' => ['required', 'float'],
+            //     'quantity' => ['required', 'integer', 'min:1'],
+            // ], [
+            //     'product_name.required' => __('validation.required'),
+            //     'price' => __('validation.required'),
+            //     'quantity' => __('validation.required'),
+            // ]);
 
             $product = Product::create([
                 'product_name' => $request->product_name,
@@ -469,7 +1174,7 @@ class PublicController extends Controller
             ]);
 
             // If image files exist
-            if ($request->hasFile('images_urls')) {
+            if ($request->hasFile('files_urls')) {
                 $files = $request->file('files_urls', []);
                 $fileNames = $request->input('files_names', []);
 
@@ -541,7 +1246,97 @@ class PublicController extends Controller
     }
 
     /**
-     * POST: Add a product entity
+     * POST: Add a post
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addDiscussion(Request $request)
+    {
+        $post = Post::create([
+            'posts_title' => $request->posts_title,
+            'posts_content' => $request->posts_content,
+            'event_start_at' => $request->event_start_at,
+            'event_end_at' => $request->event_end_at,
+            'answered_for' => $request->answered_for,
+            'type' => $request->type,
+            'for_category_id' => $request->for_category_id,
+            'user_id' => Auth::id(),
+        ]);
+
+        // If image files exist
+        if ($request->hasFile('files_urls')) {
+            $files = $request->file('files_urls', []);
+            $fileNames = $request->input('files_names', []);
+
+            // Types of extensions for different file types
+            $video_extensions = ['mp4', 'avi', 'mov', 'mkv', 'webm'];
+            $photo_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $document_extensions = ['pdf', 'doc', 'docx', 'txt'];
+            $audio_extensions = ['mp3', 'wav', 'flac'];
+
+            foreach ($files as $key => $singleFile) {
+                // Checking the file extension
+                $file_extension = $singleFile->getClientOriginalExtension();
+
+                // File type check
+                $custom_uri = '';
+                $is_valid_type = false;
+                $file_type = null;
+
+                if (in_array($file_extension, $video_extensions)) { // File is a video
+                    $custom_uri = 'videos/posts';
+                    $file_type = 'video';
+                    $is_valid_type = true;
+
+                } elseif (in_array($file_extension, $photo_extensions)) { // File is a photo
+                    $custom_uri = 'photos/posts';
+                    $file_type = 'photo';
+                    $is_valid_type = true;
+
+                } elseif (in_array($file_extension, $audio_extensions)) { // File is an audio
+                    $custom_uri = 'audios/posts';
+                    $file_type = 'audio';
+                    $is_valid_type = true;
+
+                } elseif (in_array($file_extension, $document_extensions)) { // File is a document
+                    $custom_uri = 'documents/posts';
+                    $file_type = 'video';
+                    $is_valid_type = true;
+                }
+
+                // If the extension does not match any valid type
+                if (!$is_valid_type) {
+                    return $this->handleError(__('notifications.type_is_not_file'));
+                }
+
+                // Generate a unique path for the file
+                $filename = $singleFile->getClientOriginalName();
+                $file_url =  $custom_uri . '/' . $post->id . '/' . $filename;
+
+                // Upload file
+                try {
+                    $singleFile->storeAs($custom_uri . '/' . $post->id, $filename, 'public');
+
+                } catch (\Throwable $th) {
+                    return $this->handleError($th, __('notifications.create_work_file_500'), 500);
+                }
+
+                // Creating the database record for the file
+                File::create([
+                    'file_name' => trim($fileNames[$key] ?? $filename),
+                    'file_url' => getWebURL() . '/storage/' . $file_url,
+                    'file_type' => $file_type,
+                    'post_id' => $post->id
+                ]);
+            }
+
+            return response()->json(['status' => 'success', 'message' => __('notifications.registered_data')]);
+        }
+    }
+
+    /**
+     * POST: Update a product entity
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $entity
@@ -552,15 +1347,53 @@ class PublicController extends Controller
     {
         if ($entity == 'add-to-cart') {
             $request->validate([
-                'quantity'   => 'required|integer|min:1',
+                'quantity' => 'required|integer|min:1',
             ]);
 
-            $user = User::find(Auth::id());
+            $product = Product::find($id);  // We get product to check the stock
 
             try {
-                $user->addProductToCart($id, $request->quantity);
+                if (Auth::check()) {
+                    // If user is connected, we add to its normal cart
+                    $user = User::find(Auth::id());
 
-                return response()->json(['message' => __('notifications.added_data')]);
+                    $user->addProductToCart($id, $request->quantity);
+
+                    $inCart = $user->hasProductInUnpaidCart($id);  // Check if product is in the cart
+                    $inStock = $product->quantity > 0;  // Check if prouct is in stock
+                    $isLoggedIn = true;
+
+                } else {
+                    // If user is connected, we store product in the session
+                    $cart = session()->get('cart', []);
+                    // Product photos
+                    $photos = $product->photos()->pluck('file_url');
+                    // Add product in the session cart
+                    $cart[$id] = [
+                        'id' => $product->id,
+                        'product_name' => $product->product_name,
+                        'product_description' => $product->product_description,
+                        'quantity' => $request->quantity,
+                        'price' => $product->price,
+                        'currency' => $product->currency,
+                        'type' => $product->type,
+                        'action' => $product->action,
+                        'photos' => $photos,
+                    ];
+
+                    session()->put('cart', $cart);
+
+                    $inCart = true;  // Le produit est dans la session "panier"
+                    $inStock = $product->quantity > 0;
+                    $isLoggedIn = false;  // L'utilisateur n'est pas connecté
+                }
+
+                return response()->json([
+                    'message' => __('notifications.added_data'),
+                    'inCart' => $inCart,
+                    'inStock' => $inStock,
+                    'isLoggedIn' => $isLoggedIn,
+                ]);
             } catch (\Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 422);
             }

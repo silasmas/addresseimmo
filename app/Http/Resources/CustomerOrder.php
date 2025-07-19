@@ -22,7 +22,7 @@ class CustomerOrder extends JsonResource
         return [
             'id' => $this->id,
             'price_at_that_time' => $this->price_at_that_time,
-            'currency' => $this->currency,
+            'currency' => !empty($this->currency) ? ($this->currency == 'USD' ? '$' : 'FC') : null,
             'quantity' => $this->quantity,
             'product' => Product::make($this->product),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

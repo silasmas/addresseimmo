@@ -1,4 +1,4 @@
-@extends('layouts.app', ['page_title' => !empty($entity_title) ? $entity_title : 'Toutes les propriétés'])
+@extends('layouts.app', ['page_title' => !empty($entity_title) ? $entity_title : __('miscellaneous.menu.public.products.products')])
 
 @section('app-content')
 

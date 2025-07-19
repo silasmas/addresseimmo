@@ -38,6 +38,15 @@ class Product extends Model
     }
 
     /**
+     * MANY-TO-MANY
+     * Several categories for several products (having "project" type)
+     */
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'category_product');
+    }
+
+    /**
      * ONE-TO-MANY
      * One user for several products
      */
@@ -171,7 +180,7 @@ class Product extends Model
      * @param  string  $period
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function mostOrdered($limit = 10, $period = null)
+    public static function mostOrdered($limit = 10, $type, $period = null)
     {
         $startDate = match ($period) {
             'daily'      => Carbon::now()->startOfDay(),
@@ -201,6 +210,7 @@ class Product extends Model
                             }
 
                         }], DB::raw('price_at_that_time * quantity'))
+                        ->where('products.type', $type)
                         ->orderByDesc('total_quantity_ordered')
                         ->take($limit)->get();
     }

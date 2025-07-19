@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\PasswordReset;
+use App\Models\PasswordReset;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * @author Xanders
+ * @see https://team.xsamtech.com/xanderssamoth
+ */
 class NewPasswordController extends Controller
 {
     /**
@@ -29,33 +32,167 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        // User inputs
+        $inputs = [
+            'former_password' => session()->get('former_password'),
+            'new_password' => $request->new_password,
+            'confirm_new_password' => $request->confirm_new_password
+        ];
+        $user = session()->has('email') ? User::where('email', session()->get('email'))->first() : User::where('phone', session()->get('phone'))->first();
+
+        if ($inputs['former_password'] == null) {
+            // return redirect()->back()->with('error_message', __('validation.custom.former_password.incorrect'));
+            throw ValidationException::withMessages([
+                'new_password' => __('validation.custom.former_password.incorrect'),
+            ]);
+        }
+
+        if ($inputs['new_password'] == null) {
+            // return redirect()->back()->with('error_message', __('validation.custom.former_password.incorrect'));
+            throw ValidationException::withMessages([
+                'new_password' => __('validation.custom.former_password.incorrect'),
+            ]);
+        }
+
+        if ($inputs['confirm_new_password'] == null) {
+            // return redirect()->back()->with('error_message', __('notifications.confirm_new_password'));
+            throw ValidationException::withMessages([
+                'new_password' => __('notifications.confirm_new_password'),
+            ]);
+        }
+
+        if (Hash::check($inputs['former_password'], $user->password) == false) {
+            // return redirect()->back()->with('error_message', __('auth.password'));
+            throw ValidationException::withMessages([
+                'new_password' => __('auth.password'),
+            ]);
+        }
+
+        if ($inputs['confirm_new_password'] != $inputs['new_password']) {
+            // return redirect()->back()->with('error_message', __('notifications.confirm_new_password'));
+            throw ValidationException::withMessages([
+                'confirm_new_password' => __('notifications.confirm_new_password'),
+            ]);
+        }
+
+        // if (preg_match('#^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$#', $inputs['new_password']) == 0) {
+        //     return $this->handleError($inputs['new_password'], __('validation.custom.new_password.incorrect'), 400);
+        // }
+
+        // Update password reset
+        if (!empty($user->email) and !empty($user->phone)) {
+            $password_reset = PasswordReset::where([['email', $user->email], ['phone', $user->phone]])->first();
+            $random_int_stringified = (string) random_int(1000000, 9999999);
+
+            // If password_reset doesn't exist, create it.
+            if ($password_reset == null) {
+                PasswordReset::create([
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'token' => $random_int_stringified,
+                    'former_password' => $inputs['new_password'],
+                ]);
+            }
+
+            // If password_reset exists, update it
+            if ($password_reset != null) {
+                $password_reset->update([
+                    'token' => $random_int_stringified,
+                    'former_password' => $inputs['new_password'],
+                    'updated_at' => now(),
+                ]);
+            }
+
+        } else {
+            if (!empty($user->email)) {
+                $password_reset = PasswordReset::where('email', $user->email)->first();
+                $random_int_stringified = (string) random_int(1000000, 9999999);
+
+                // If password_reset doesn't exist, create it.
+                if ($password_reset == null) {
+                    PasswordReset::create([
+                        'email' => $user->email,
+                        'token' => $random_int_stringified,
+                        'former_password' => $inputs['new_password'],
+                    ]);
+                }
+
+                // If password_reset exists, update it
+                if ($password_reset != null) {
+                    $password_reset->update([
+                        'token' => $random_int_stringified,
+                        'former_password' => $inputs['new_password'],
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+            if (!empty($user->phone)) {
+                $password_reset = PasswordReset::where('phone', $user->phone)->first();
+                $random_int_stringified = (string) random_int(1000000, 9999999);
+
+                // If password_reset doesn't exist, create it.
+                if ($password_reset == null) {
+                    PasswordReset::create([
+                        'phone' => $user->phone,
+                        'token' => $random_int_stringified,
+                        'former_password' => $inputs['new_password'],
+                    ]);
+                }
+
+                // If password_reset exists, update it
+                if ($password_reset != null) {
+                    $password_reset->update([
+                        'token' => $random_int_stringified,
+                        'former_password' => $inputs['new_password'],
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+        }
+
+        // update "password" and "password_visible" column
+        $user->update([
+            'password' => Hash::make($inputs['new_password']),
+            'updated_at' => now(),
         ]);
 
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        // If the user is a parent, change its children's password according to its own
+        if (!empty($user->parental_code)) {
+            $children = User::where('belongs_to', $user->id)->get();
 
-                event(new PasswordReset($user));
-            }
-        );
+            foreach ($children as $child):
+                $child->update([
+                    'password' => $user->password,
+                    'updated_at' => now(),
+                ]);
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                            ->withErrors(['email' => __($status)]);
+                if (!empty($child->email)) {
+                    $child_password_reset = PasswordReset::where('email', $child->email)->first();
+
+                    $child_password_reset->update([
+                        'former_password' => $inputs['password'],
+                        'updated_at' => now(),
+                    ]);
+
+                } else {
+                    if (!empty($child->phone)) {
+                        $child_password_reset = PasswordReset::where('phone', $child->phone)->first();
+
+                        $child_password_reset->update([
+                            'former_password' => $inputs['password'],
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            endforeach;
+        }
+
+        if (session()->has('email')) session()->forget('email');
+        if (session()->has('phone')) session()->forget('phone');
+
+        session()->forget('former_password');
+
+        return redirect()->route('login')->with('success_message', __('notifications.update_password_success'));
     }
 }
