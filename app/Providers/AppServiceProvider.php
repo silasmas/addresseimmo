@@ -42,8 +42,8 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('user_orders', $user_orders);
             }
 
-            $popular_moving_services = Product::where(6, 'moving', 'monthly');
-            $popular_build_services = Product::where(6, 'build', 'monthly');
+            $popular_moving_services = Product::mostOrdered(6, 'moving', 'monthly');
+            $popular_build_services = Product::mostOrdered(6, 'build', 'monthly');
 
             $view->with('cartService', $cartService);
             $view->with('session_cart_total', $sessionCartTotal);
