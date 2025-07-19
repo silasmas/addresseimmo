@@ -38,11 +38,19 @@
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
         <style>
+            textarea { resize: none; }
+            #showPassword i, #showConfirmPassword i, #showNewPassword i, #showConfirmNewPassword i { font-size: 1.6rem; }
             .menu-bg-wrap { background-color: #167c02; }
             .site-footer a { text-decoration: none!important; }
             #main-search .nav-link.active { font-weight: bold; color: black !important; border-bottom: 2px solid green !important; }
             .property-item .property-content .price { color: #167c02; }
             .property-item .property-content .price span:after { background-color: #167c02; }
+            /* Image preview to upload */
+            #image-preview-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+            .preview-thumbnail { position: relative; display: inline-block; width: 100px; height: 100px; }
+            .preview-thumbnail img { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; }
+            .preview-thumbnail .remove-image { position: absolute; top: 0; right: 0; background-color: rgba(255, 0, 0, 0.7); color: white; border-radius: 50%; cursor: pointer; font-size: 14px; padding: 0 5.5px; }
+            .preview-thumbnail .remove-image:hover { background-color: rgba(255, 0, 0, 0.3); }
         </style>
 
         <title>
@@ -219,5 +227,63 @@
         <script type="text/javascript" src="{{ asset('assets/addons/autosize/js/autosize.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/addons/cropper/js/cropper.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/scripts.custom.js') }}"></script>
+        <script type="text/javascript">
+            $(function () {
+                /**
+                 * Image preview to upload
+                 */
+                $('#files_urls').on('change', function (e) {
+                    // Récupérer les fichiers
+                    const files = e.target.files;
+                    const imagePreviewContainer = $('#image-preview-container');
+
+                    // Effacer les vignettes existantes
+                    imagePreviewContainer.empty();
+
+                    // Créer une vignette pour chaque fichier sélectionné
+                    Array.from(files).forEach(file => {
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+
+                            const imageUrl = e.target.result;
+                            const fileName = file.name;
+
+                            // Créer l'élément de la vignette avec la croix
+                            const imageThumbnail = $(`
+                            <div class="preview-thumbnail">
+                                <img src="${imageUrl}" alt="${fileName}" />
+                                <span class="remove-image">&times;</span>
+                                </div>
+                                `);
+
+                            // Ajouter la vignette au conteneur
+                            imagePreviewContainer.append(imageThumbnail);
+
+                            // Gérer la suppression de l'image
+                            imageThumbnail.find('.remove-image').on('click', function () {
+
+                                // Supprimer le fichier de l'input
+                                const fileList = Array.from($('#files_urls')[0].files);
+                                const index = fileList.findIndex(f => f.name === fileName);
+
+                                if (index !== -1) {
+                                    fileList.splice(index, 1);
+                                }
+
+                                // Mettre à jour les fichiers de l'input
+                                $('#files_urls')[0].files = new FileListItems(fileList);
+
+                                // Supprimer la vignette de l'UI
+                                imageThumbnail.remove();
+                            });
+                        };
+
+                        reader.readAsDataURL(file);
+                    });
+                });
+
+            });
+        </script>
     </body>
 </html>
