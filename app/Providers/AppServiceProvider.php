@@ -42,16 +42,18 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('user_orders', $user_orders);
             }
 
-            $popular_projects = Product::mostOrdered(6, 'project', 'monthly');
-            $popular_products = Product::mostOrdered(6, 'product', 'monthly');
-            $popular_services = Product::mostOrdered(6, 'service', 'monthly');
+            $popular_houses = Product::mostOrdered(6, 'house', 'monthly');
+            $popular_apartments = Product::mostOrdered(6, 'apartment', 'monthly');
+            $popular_plots = Product::mostOrdered(6, 'plot', 'monthly');
+            $popular_equipments = Product::mostOrdered(6, 'equipment', 'monthly');
 
             $view->with('cartService', $cartService);
             $view->with('session_cart_total', $sessionCartTotal);
             $view->with('current_user', $current_user);
-            $view->with('popular_projects', ResourcesProduct::collection($popular_projects)->resolve());
-            $view->with('popular_products', ResourcesProduct::collection($popular_products)->resolve());
-            $view->with('popular_services', ResourcesProduct::collection($popular_services)->resolve());
+            $view->with('popular_houses', ResourcesProduct::collection($popular_houses)->resolve());
+            $view->with('popular_apartments', ResourcesProduct::collection($popular_apartments)->resolve());
+            $view->with('popular_plots', ResourcesProduct::collection($popular_plots)->resolve());
+            $view->with('popular_equipments', ResourcesProduct::collection($popular_equipments)->resolve());
             $view->with('current_locale', app()->getLocale());
             $view->with('available_locales', config('app.available_locales'));
         });
