@@ -7,11 +7,10 @@
 // Common variables
 const navigator = window.navigator;
 const currentLanguage = $('html').attr('lang');
-const browserLanguage = (navigator.language || navigator.userLanguage).substring(0, 2);
-const currentUser = $('[name="strt-visitor"]').attr('content');
-const currentHost = $('[name="strt-url"]').attr('content');
-const apiHost = $('[name="strt-api-url"]').attr('content');
-const headers = { 'Authorization': 'Bearer ' + $('[name="strt-ref"]').attr('content'), 'Accept': $('.mime-type').val(), 'X-localization': navigator.language };
+const currentUser = $('[name="jeb-visitor"]').attr('content');
+const currentHost = $('[name="jeb-url"]').attr('content');
+const apiHost = $('[name="jeb-api-url"]').attr('content');
+const headers = { 'Authorization': 'Bearer ' + $('[name="jeb-ref"]').attr('content'), 'Accept': $('.mime-type').val(), 'X-localization': navigator.language };
 // Modals
 const modalUser = $('#cropModalUser');
 // Preview images
@@ -101,31 +100,15 @@ $(function () {
     autosize($('textarea'));
 
     /* jQuery Date picker */
-    // Ensure the localization exists
-    if ($.datepicker.regional[browserLanguage]) {
-        $.datepicker.setDefaults($.datepicker.regional[browserLanguage]);
-
-    } else {
-        // fallback to english if language is not found
-        $.datepicker.setDefaults($.datepicker.regional['fr']);
-    }
-
-    // Initialize the datepicker
     $('#birthdate, #register_birthdate, #update_birthdate').datepicker({
+        dateFormat: currentLanguage.startsWith('fr') || currentLanguage.startsWith('ln') ? 'dd/mm/yy' : 'mm/dd/yy',
         onSelect: function () {
             $(this).focus();
         }
     });
 
-    // $('#birthdate, #register_birthdate, #update_birthdate').datepicker({
-    //     dateFormat: currentLanguage.startsWith('fr') || currentLanguage.startsWith('ln') ? 'dd/mm/yy' : 'mm/dd/yy',
-    //     onSelect: function () {
-    //         $(this).focus();
-    //     }
-    // });
-
     /* jQuery DateTime picker */
-    jQuery('#outflow_date').datetimepicker({
+    jQuery('#outflow_date, [id^="end_date"]').datetimepicker({
         format: 'd/m/Y H:i'
     });
     jQuery.datetimepicker.setLocale('fr');
@@ -135,13 +118,9 @@ $(function () {
         var files = e.target.files;
         var done = function (url) {
             retrievedAvatar.src = url;
-            // var modal = new bootstrap.Modal(document.getElementById('cropModalUser'), { keyboard: false });
-            // modal.show();
+            var modal = new bootstrap.Modal(document.getElementById('cropModalUser'), { keyboard: false });
 
-            $('#cropModalUser').modal({
-                backdrop: 'static',
-                keyboard: false
-            });
+            modal.show();
         };
 
         if (files && files.length > 0) {
@@ -190,7 +169,7 @@ $(function () {
                 formData.append('image_64', base64_data);
 
                 $.ajax({
-                    url: currentHost + '/account',
+                    url: currentHost + '/account/settings',
                     type: 'POST',
                     data: formData,
                     contentType: false, // IMPORTANT : do not specify a contentType
@@ -221,13 +200,9 @@ $(function () {
         var files = e.target.files;
         var done = function (url) {
             retrievedImageProfile.src = url;
-            // var modal = new bootstrap.Modal(document.getElementById('cropModal_profile'), { keyboard: false });
-            // modal.show();
+            var modal = new bootstrap.Modal(document.getElementById('cropModal_profile'), { keyboard: false });
 
-            $('#cropModal_profile').modal({
-                backdrop: 'static',
-                keyboard: false
-            });
+            modal.show();
         };
 
         if (files && files.length > 0) {

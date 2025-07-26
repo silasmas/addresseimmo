@@ -1,4 +1,4 @@
-@extends('layouts.app', ['page_title' => 'S’identifier'])
+@extends('layouts.app', ['page_title' => __('miscellaneous.login_title1')])
 
 @section('app-content')
 
@@ -6,12 +6,12 @@
             <div class="container">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-lg-9 text-center mt-5">
-                        <h1 class="heading" data-aos="fade-up">S’identifier</h1>
+                        <h1 class="heading" data-aos="fade-up">@lang('miscellaneous.login_title1')</h1>
 
                         <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
                             <ol class="breadcrumb text-center justify-content-center">
-                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Accueil</a></li>
-                                <li class="breadcrumb-item active text-white-50" aria-current="page">S’identifier</li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
+                                <li class="breadcrumb-item active text-white-50" aria-current="page">@lang('miscellaneous.login_title1')</li>
                             </ol>
                         </nav>
                     </div>
@@ -23,13 +23,15 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-7 col-sm-6 mb-5 mb-lg-0 text-sm-start text-center" data-aos="fade-up" data-aos-delay="100">
-                        <i class="bi bi-shield-lock text-danger" style="font-size: 5rem;"></i>
-                        <div class="contact-info">
-                            <h4 class="mb-4 px-0">Vos données sont sécurisées avec nous. Alors vous devez vous identifier pour être sûr que c’est bien vous.</h4>
-                            <a href="{{ route('register') }}" class="btn btn-outline-success border pt-0 pb-sm-2 pb-0 rounded-pill fs-5">
-                                Cliquez ici pour vous inscrire <span class="fs-1 d-inline-block" style="vertical-align: -3px;">&raquo;</span>
-                            </a>
+                        <div class="d-sm-flex align-items-sm-center">
+                            <i class="bi bi-shield-lock mx-3 text-danger" style="font-size: 5rem;"></i>
+                            <div id="contactInfo" class="contact-info">
+                                <h4 class="mb-4 px-0">@lang('miscellaneous.login_description')</h4>
+                            </div>
                         </div>
+                        <a href="{{ route('register') }}" class="btn btn-outline-success border rounded-pill fs-5">
+                            @lang('miscellaneous.go_register') <i class="bi bi-chevron-double-right" style="vertical-align: -1px;"></i>
+                        </a>
                     </div>
                     <div class="col-lg-5 col-sm-6" data-aos="fade-up" data-aos-delay="200">
                         <form method="POST" action="{{ route('login') }}">
@@ -48,13 +50,13 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="" id="checkDefault">
                                         <label class="form-check-label" for="checkDefault">
-                                            Rester connecté
+                                            @lang('miscellaneous.remember_me')
                                         </label>
                                     </div>
 
                                     <a href="{{ route('password.request') }}" class="btn-link ms-2">
-                                        Mot de passe oublié
-                                         <span class="fs-3 d-inline-block" style="vertical-align: -3px;">&raquo;</span>
+                                        @lang('miscellaneous.forgotten_password')
+                                         <i class="bi bi-chevron-double-right" style="vertical-align: -1px;"></i>
                                     </a>
                                 </div>
     @error('login')
@@ -73,7 +75,7 @@
     @enderror
 
                                 <div class="col-12">
-                                    <input type="submit" value="Connexion" class="btn adrm-btn-green w-100 text-uppercase" />
+                                    <input type="submit" value="@lang('auth.login')" class="btn adrm-btn-green w-100 text-uppercase" />
                                 </div>
                             </div>
                         </form>

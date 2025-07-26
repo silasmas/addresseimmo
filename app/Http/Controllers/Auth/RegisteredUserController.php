@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\PasswordReset;
 use App\Models\Role;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -26,7 +25,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register', ['countries' => showCountries()]);
+        // return view('auth.register', ['countries' => showCountries()]);
+        return view('auth.register', ['countries' => []]);
     }
 
     /**

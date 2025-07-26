@@ -66,6 +66,62 @@
     </head>
 
     <body>
+        <!-- ### Crop user image ### -->
+        <div class="modal fade" id="cropModalUser" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header py-0 border-bottom-0">
+                        <button type="button" class="btn-close mt-1" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body pb-3">
+                        <h5 class="text-center text-muted">{{ __('miscellaneous.crop_before_save') }}</h5>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12 mb-sm-0 mb-4">
+                                    <div class="bg-image">
+                                        <img src="" id="retrieved_image" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-white" data-bs-dismiss="modal">@lang('miscellaneous.cancel')</button>
+                        <button type="button" id="crop_avatar" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">{{ __('miscellaneous.register') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ### Crop other user image ### -->
+        <div class="modal fade" id="cropModal_profile" tabindex="-1" aria-hidden="true" data-bs-backdrop="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header py-0 border-bottom-0">
+                        <button type="button" class="btn-close mt-1" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="text-center text-muted">Recadrer l'image avant de l'enregistrer</h5>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12 mb-sm-0 mb-4">
+                                    <div class="bg-image">
+                                        <img src="" id="retrieved_image_profile" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-white" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" id="crop_profile" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">Enregistrer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="site-mobile-menu site-navbar-target">
             <div class="site-mobile-menu-header">
                 <div class="site-mobile-menu-close">
