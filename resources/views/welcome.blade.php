@@ -414,7 +414,7 @@
                             <span class="flaticon-house-1"></span>
                             <h3 class="mb-3">Equipement</h3>
                             <p>
-                                Vente et achat d'outils de construction ou de décoration.
+                                Vente et achat d'outils et matériaux de construction ou de décoration.
                             </p>
                             <p><a href="#" class="learn-more">Voir plus</a></p>
                         </div>

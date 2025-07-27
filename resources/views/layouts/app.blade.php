@@ -71,10 +71,10 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header py-0 border-bottom-0">
-                        <button type="button" class="btn-close mt-1" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        <button type="button" class="btn-close mt-1" data-bs-dismiss="modal" aria-label="@lang('miscellaneous.close')"></button>
                     </div>
                     <div class="modal-body pb-3">
-                        <h5 class="text-center text-muted">{{ __('miscellaneous.crop_before_save') }}</h5>
+                        <h5 class="text-center text-muted">@lang('miscellaneous.crop_before_save')</h5>
 
                         <div class="container">
                             <div class="row">
@@ -99,10 +99,10 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header py-0 border-bottom-0">
-                        <button type="button" class="btn-close mt-1" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        <button type="button" class="btn-close mt-1" data-bs-dismiss="modal" aria-label="@lang('miscellaneous.close')"></button>
                     </div>
                     <div class="modal-body">
-                        <h5 class="text-center text-muted">Recadrer l'image avant de l'enregistrer</h5>
+                        <h5 class="text-center text-muted">@lang('miscellaneous.crop_before_save')</h5>
 
                         <div class="container">
                             <div class="row">
@@ -115,8 +115,8 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-white" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" id="crop_profile" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">Enregistrer</button>
+                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-white" data-bs-dismiss="modal">@lang('miscellaneous.cancel')</button>
+                        <button type="button" id="crop_profile" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">@lang('miscellaneous.register')</button>
                     </div>
                 </div>
             </div>
@@ -160,17 +160,58 @@
                             <li class="{{ Route::is('about') ? 'active' : '' }}"><a href="{{ route('about') }}">A propos</a></li>
                             <li class="{{ Route::is('contact') ? 'active' : '' }}"><a href="{{ route('contact') }}">Nous contacter</a></li>
                             <li>
+                                <a class="d-inline-block position-relative" href="{{ !empty($current_user) ? route('account.entity', ['entity' => 'cart']) : route('cart') }}">
+                                    <i class="bi bi-cart3 fs-5 align-middle"></i>
 @if (!empty($current_user))
-                                <a href="{{ route('account.home') }}">
+    @if (count($user_orders) > 0)
+                                    <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: 10px; right: -5px;">
+                                        {{ count($user_orders) }}
+                                        <span class="visually-hidden">{{ trans_choice('miscellaneous.items', count($user_orders), ['count' => count($user_orders)]) }}</span>
+                                    </span>
+    @endif
+@else
+    @session('cart')
+        @php
+            $cartItems = session()->get('cart', []);
+        @endphp
+
+        @if (count($cartItems) > 0)
+                                    <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: 10px; right: -5px;">
+                                        {{ count($cartItems) }}
+                                        <span class="visually-hidden">{{ trans_choice('miscellaneous.items', count($cartItems), ['count' => count($cartItems)]) }}</span>
+                                    </span>
+        @endif
+    @endsession
+@endif
+                                </a>
+                            </li>
+@if (!empty($current_user))
+                            <li class="has-children">
+                                <a role="button">
                                     <img src="{{ $current_user->avatar_url ?? asset('assets/img/user.png') }}" width="40" height="40" alt="{{ $current_user->firstname . ' ' . $current_user->lastname }}" class="rounded-circle">
                                 </a>
-@else
-                                <a href="{{ route('login') }}">S'identifier</a>
-@endif
+                                <ul class="dropdown">
+                                    <li><a href="{{ route('account.home') }}"><i class="bi bi-person me-2"></i>Mon compte</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'cart']) }}"><i class="bi bi-cart3 me-2"></i>Mon panier</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'offers']) }}"><i class="bi bi-house-door me-2"></i>Mes offres</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'customers']) }}"><i class="bi bi-people me-2"></i>Mes clients</a></li>
+                                    <hr>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST">
+@csrf
+                                            <button type="submit" class="btn-sm bg-transparent py-0 border-0 text-start text-dark" style="padding-left: 1.2rem;"><i class="bi bi-power me-2"></i>Quitter la session</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
+@else
+                            <li>
+                                <a href="{{ route('login') }}">S'identifier</a>
+                            </li>
+@endif
                         </ul>
 
-                        <a href="#" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none" data-toggle="collapse" data-target="#main-navbar">
+                        <a role="button" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none" data-toggle="collapse" data-target="#main-navbar">
                             <span></span>
                         </a>
                     </div>

@@ -42,9 +42,9 @@
                                 </div>
                                 <div class="col-12 mb-3 position-relative">
                                     <input type="password" name="password" id="sign_password" class="form-control @error('password') is-invalid @enderror" placeholder="Mot de passe" />
-                                    <button id="showPassword" class="btn bg-transparent position-absolute" style="top: 3px; right: 16px; z-index: 999; padding: 5px;" onclick="event.preventDefault(); passwordVisible(this, 'sign_password');">
+                                    <a role="button" id="showPassword" class="btn bg-transparent position-absolute" style="top: 3px; right: 16px; z-index: 999; padding: 5px;" onclick="event.preventDefault(); passwordVisible(this, 'sign_password');">
                                         <i class="bi bi-eye-fill"></i>
-                                    </button>
+                                    </a>
                                 </div>
                                 <div class="col-12 mb-3 d-flex justify-content-between align-items-center">
                                     <div class="form-check">
