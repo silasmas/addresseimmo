@@ -170,7 +170,7 @@ class Product extends Model
      */
     public static function mostRecent($limit = 10): Collection
     {
-        return self::orderBy('created_at', 'desc')->take($limit)->get();
+        return self::doesntHave('customer_orders')->orderByDesc('created_at')->take($limit)->get();
     }
 
     /**
@@ -180,40 +180,41 @@ class Product extends Model
      * @param  string  $period
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function mostOrdered($limit = 10, $action, $period = null)
+    public static function popularServices($limit = 10, $period = null)
     {
         $startDate = match ($period) {
             'daily'      => Carbon::now()->startOfDay(),
             'weekly'     => Carbon::now()->subDays(7),
             'monthly'    => Carbon::now()->subDays(30),
-            'half-yearly'=> Carbon::now()->subMonths(6),
+            'half-yearly' => Carbon::now()->subMonths(6),
             'yearly'     => Carbon::now()->subYear(),
             default      => null,
         };
 
         return self::select('products.*')
-                        ->withSum(['customer_orders as total_quantity_ordered' => function ($q) use ($startDate) {
-                            $q->join('carts', 'customer_orders.cart_id', '=', 'carts.id');
-                            // ->where('carts.is_paid', 1);
-
-                            if ($startDate) {
-                                $q->where('customer_orders.created_at', '>=', $startDate);
-                            }
-
-                        }], 'quantity')
-                        ->withSum(['customer_orders as total_revenue' => function ($q) use ($startDate) {
-                            $q->join('carts', 'customer_orders.cart_id', '=', 'carts.id')
-                            ->where('carts.is_paid', 1);
-
-                            if ($startDate) {
-                                $q->where('customer_orders.created_at', '>=', $startDate);
-                            }
-
-                        }], DB::raw('price_at_that_time * quantity'))
-                        ->where('products.action', $action)
-                        ->orderByDesc('total_quantity_ordered')
-                        ->take($limit)->get();
+            ->join('customer_orders', 'products.id', '=', 'customer_orders.product_id') // Ajout de la jointure explicite
+            ->join('carts', 'customer_orders.cart_id', '=', 'carts.id')
+            ->withSum(['customer_orders as total_quantity_ordered' => function ($q) use ($startDate) {
+                if ($startDate) {
+                    $q->where('customer_orders.created_at', '>=', $startDate);
+                }
+            }], 'quantity')
+            ->withSum(['customer_orders as total_revenue' => function ($q) use ($startDate) {
+                $q->where('carts.is_paid', 1);
+                if ($startDate) {
+                    $q->where('customer_orders.created_at', '>=', $startDate);
+                }
+            }], DB::raw('customer_orders.price_at_that_time * customer_orders.quantity'))
+            ->where('products.is_service', 1)
+            ->where(function ($q) {
+                $q->where('products.action', '=', 'build')
+                    ->orWhere('products.action', '=', 'moving');
+            })
+            ->orderByDesc('total_quantity_ordered')
+            ->take($limit)
+            ->get();
     }
+
 
     /**
      * Search products with filter
@@ -237,14 +238,14 @@ class Product extends Model
     public static function searchWithFilters($data, array $filters, $perPage = 15)
     {
         return self::query()
-                    ->where('quantity', '>', 0)
-                    ->when(isset($data), fn($q) => $q->where('product_name', 'LIKE', '%' . $data))
-                    ->when(isset($filters['category_id']), fn($q) => $q->where('category_id', $filters['category_id']))
-                    ->when(isset($filters['user_id']), fn($q) => $q->where('user_id', $filters['user_id']))
-                    ->when(isset($filters['type']), fn($q) => $q->where('type', $filters['type']))
-                    ->when(isset($filters['action']), fn($q) => $q->where('action', $filters['action']))
-                    ->orderBy('price', 'asc')
-                    ->paginate($perPage);
+            ->where('quantity', '>', 0)
+            ->when(isset($data), fn($q) => $q->where('product_name', 'LIKE', '%' . $data))
+            ->when(isset($filters['category_id']), fn($q) => $q->where('category_id', $filters['category_id']))
+            ->when(isset($filters['user_id']), fn($q) => $q->where('user_id', $filters['user_id']))
+            ->when(isset($filters['type']), fn($q) => $q->where('type', $filters['type']))
+            ->when(isset($filters['action']), fn($q) => $q->where('action', $filters['action']))
+            ->orderBy('price', 'asc')
+            ->paginate($perPage);
     }
 
     /**

@@ -27,10 +27,16 @@ class Product extends JsonResource
             'product_description' => $this->product_description,
             'quantity' => $this->quantity,
             'price' => formatDecimalNumber($this->price),
-            'currency' => !empty($this->currency) ? ($this->currency == 'USD' ? '$' : 'FC') : null,
+            'currency' => !empty($this->currency) ? ($this->currency == 'USD' ? '$' : ($this->currency == 'CDF' ? 'FC' : null)) : null,
             'action' => $this->action,
-            'type' => $this->type,
+            'country' => $this->country,
+            'city' => $this->city,
+            'address' => $this->address,
+            'municipality' => $this->municipality,
+            'neighborhood' => $this->neighborhood,
+            'street' => $this->street,
             'is_shared' => $this->is_shared,
+            'type' => $this->type,
             'user' => User::make($this->user),
             'converted_price' => $current_user ? $this->convertPrice($current_user->currency) : null,
             'photos' => File::collection($this->photos),
@@ -43,7 +49,8 @@ class Product extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
-            'category_id' => $this->category_id
+            'category_id' => $this->category_id,
+            'user_id' => $this->user_id
         ];
     }
 }

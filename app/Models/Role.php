@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Spatie\Translatable\HasTranslations;
 
 /**
  * @author Xanders
@@ -13,7 +12,7 @@ use Spatie\Translatable\HasTranslations;
  */
 class Role extends Model
 {
-    use HasFactory, HasTranslations;
+    use HasFactory;
 
     protected $table = 'roles';
 
@@ -23,13 +22,6 @@ class Role extends Model
      * @var array<int, string>
      */
     protected $guarded = [];
-
-    /**
-     * Translatable attributes.
-     *
-     * @var array<int, string>
-     */
-    protected $translatable = ['role_name', 'role_description'];
 
     /**
      * MANY-TO-MANY
