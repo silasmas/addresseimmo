@@ -282,7 +282,7 @@
                         <h2 class="font-weight-bold heading text-primary mb-4">
                             Nos agents
                         </h2>
-                        <p class="text-black-50">Ils vous accompagnent dans toutes vos démarches d'acquisition de maison, de parcelle ou d'appartement.</p>
+                        <p class="text-black-50">Ils vous accompagnent dans toutes vos démarches d’acquisition de maison, de parcelle ou d'appartement.</p>
                     </div>
                 </div>
     @if ($agents_req->total() > 0)
