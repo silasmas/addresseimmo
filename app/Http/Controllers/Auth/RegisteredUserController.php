@@ -81,34 +81,22 @@ class RegisteredUserController extends Controller
         ]);
 
         $role_member = null;
-        $role_admin_exists = Role::where('role_name->fr', 'Administrateur')->exists();
-        $role_member_exists = Role::where('role_name->fr', 'Membre')->exists();
+        $role_admin_exists = Role::where('role_name', 'Administrateur')->exists();
+        $role_member_exists = Role::where('role_name', 'Membre')->exists();
 
         if (!$role_admin_exists) {
             // Add "Administrateur" role (the first role)
             Role::create([
-                'role_name' => [
-                    'en' => 'Administrator',
-                    'fr' => 'Administrateur',
-                ],
-                'role_description' => [
-                    'en' => 'Responsible for managing the operation of the platform.',
-                    'fr' => 'Responsable de la gestion du fonctionnement de la plateforme.',
-                ]
+                'role_name' => 'Administrateur',
+                'role_description' => 'Responsable de la gestion du fonctionnement de la plateforme.'
             ]);
         }
 
         if (!$role_member_exists) {
             // Add "Membre" role
             $role_member = Role::create([
-                'role_name' => [
-                    'en' => 'Member',
-                    'fr' => 'Membre',
-                ],
-                'role_description' => [
-                    'en' => 'Person who orders products or services published on the platform.',
-                    'fr' => 'Personne qui commande des produits ou des services publiés sur la plateforme.',
-                ]
+                'role_name' => 'Membre',
+                'role_description' => 'Personne qui commande des produits ou des services publiés sur la plateforme.'
             ]);
 
         } else {

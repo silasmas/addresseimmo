@@ -33,7 +33,7 @@
 
         <!-- Custom style -->
         <link rel="stylesheet" href="{{ asset('assets/addons/cropper/css/cropper.min.css') }}" />
-        <link rel="stylesheet" href="{{ asset('assets/addons/jquery/css/jquery-ui.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/addons/jquery/jquery-ui/jquery-ui.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/addons/mdb/css/mdb.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-white" data-bs-dismiss="modal">@lang('miscellaneous.cancel')</button>
+                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-dark" data-bs-dismiss="modal">@lang('miscellaneous.cancel')</button>
                         <button type="button" id="crop_avatar" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">{{ __('miscellaneous.register') }}</button>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-white" data-bs-dismiss="modal">@lang('miscellaneous.cancel')</button>
+                        <button type="button" class="btn btn-secondary px-4 rounded-pill text-dark" data-bs-dismiss="modal">@lang('miscellaneous.cancel')</button>
                         <button type="button" id="crop_profile" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">@lang('miscellaneous.register')</button>
                     </div>
                 </div>
