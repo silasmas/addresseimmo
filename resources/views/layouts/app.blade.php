@@ -4,10 +4,13 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="author" content="Untree.co" />
-        <link rel="shortcut icon" href="favicon.png" />
-
         <meta name="description" content="" />
         <meta name="keywords" content="bootstrap, bootstrap5" />
+        <meta name="adrm-url" content="{{ getWebURL() }}">
+        <meta name="adrm-api-url" content="{{ getApiURL() }}">
+        <meta name="adrm-visitor" content="{{ !empty($current_user) ? $current_user['id'] : null }}">
+        <meta name="adrm-ref" content="{{ !empty($current_user) ? $current_user['api_token'] : null }}">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Favicon -->
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/favicon/apple-touch-icon.png') }}">
@@ -194,7 +197,7 @@
                                     <li><a href="{{ route('account.home') }}"><i class="bi bi-person me-2"></i>Mon compte</a></li>
                                     <li><a href="{{ route('account.entity', ['entity' => 'cart']) }}"><i class="bi bi-cart3 me-2"></i>Mon panier</a></li>
                                     <li><a href="{{ route('account.entity', ['entity' => 'offers']) }}"><i class="bi bi-house-door me-2"></i>Mes offres</a></li>
-                                    <li><a href="{{ route('account.entity', ['entity' => 'customers']) }}"><i class="bi bi-people me-2"></i>Mes clients</a></li>
+                                    {{-- <li><a href="{{ route('account.entity', ['entity' => 'customers']) }}"><i class="bi bi-people me-2"></i>Mes clients</a></li> --}}
                                     <hr>
                                     <li>
                                         <form action="{{ route('logout') }}" method="POST">

@@ -7,10 +7,10 @@
 // Common variables
 const navigator = window.navigator;
 const currentLanguage = $('html').attr('lang');
-const currentUser = $('[name="jeb-visitor"]').attr('content');
-const currentHost = $('[name="jeb-url"]').attr('content');
-const apiHost = $('[name="jeb-api-url"]').attr('content');
-const headers = { 'Authorization': 'Bearer ' + $('[name="jeb-ref"]').attr('content'), 'Accept': $('.mime-type').val(), 'X-localization': navigator.language };
+const currentUser = $('[name="adrm-visitor"]').attr('content');
+const currentHost = $('[name="adrm-url"]').attr('content');
+const apiHost = $('[name="adrm-api-url"]').attr('content');
+const headers = { 'Authorization': 'Bearer ' + $('[name="adrm-ref"]').attr('content'), 'Accept': $('.mime-type').val(), 'X-localization': navigator.language };
 // Modals
 const modalUser = $('#cropModalUser');
 // Preview images
@@ -169,7 +169,7 @@ $(function () {
                 formData.append('image_64', base64_data);
 
                 $.ajax({
-                    url: currentHost + '/account/settings',
+                    url: currentHost + '/account',
                     type: 'POST',
                     data: formData,
                     contentType: false, // IMPORTANT : do not specify a contentType
