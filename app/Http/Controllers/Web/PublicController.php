@@ -177,9 +177,9 @@ class PublicController extends Controller
         $entity_title = null;
         $cart = null;
         $category = null;
-        $categories = null;
-        $items = null;
-        $countries = null;
+        $categories = [];
+        $items = [];
+        $countries = [];
 
         if ($entity == 'settings') {
             $entity_title = 'Paramètres du compte';
