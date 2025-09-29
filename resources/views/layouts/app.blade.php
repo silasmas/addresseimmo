@@ -291,16 +291,12 @@
                             <li class="has-children{{ Route::is('product.home') || Route::is('product.entity') ? ' active' : '' }}">
                                 <a href="{{ route('product.home') }}">Services</a>
                                 <ul class="dropdown">
-                                    <li>
-                                        <a href="{{ route('product.entity', ['entity' => 'buy']) }}"><i class="bi bi-handbag me-2"></i>Achat</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('product.entity', ['entity' => 'rent']) }}"><i class="bi bi-clock me-2"></i>Location</a>
-                                    </li>
-                                    <li><a href="{{ route('product.entity', ['entity' => 'build']) }}"><i class="bi bi-bricks me-2"></i>Construction</a></li>
-                                    <li><a href="{{ route('product.entity', ['entity' => 'sell']) }}"><i class="bi bi-cash-coin me-2"></i>Vente</a></li>
+                                    <li><a href="{{ route('product.entity', ['entity' => 'sell']) }}"><i class="bi bi-handbag me-2"></i>Achat</a></li>
+                                    <li><a href="{{ route('product.entity', ['entity' => 'rent']) }}"><i class="bi bi-clock me-2"></i>Location</a></li>
+                                    <li><a href="{{ route('account.entity', ['entity' => 'offers', 'action' => 'sell']) }}"><i class="bi bi-cash-coin me-2"></i>Vente</a></li>
                                     <li><a href="{{ route('product.entity', ['entity' => 'moving']) }}"><i class="bi bi-luggage me-2"></i>Déménagement</a></li>
-                                    <li><a href="{{ route('product.entity', ['entity' => 'ad']) }}"><i class="bi bi-megaphone me-2"></i>Annonce</a></li>
+                                    <li><a href="{{ route('product.entity', ['entity' => 'build']) }}"><i class="bi bi-bricks me-2"></i>Construction</a></li>
+                                    <li><a href="{{ route('product.entity', ['entity' => 'design']) }}"><i class="bi bi-megaphone me-2"></i>Décoration intérieure</a></li>
                                 </ul>
                             </li>
                             <li class="{{ Route::is('about') ? 'active' : '' }}"><a href="{{ route('about') }}">A propos</a></li>

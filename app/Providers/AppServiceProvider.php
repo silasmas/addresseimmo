@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
             $sell_products = Product::doesntHave('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $buy_products = Product::whereHas('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $rent_products = Product::doesntHave('customer_orders')->where('action', 'rent')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
-            $agents = User::whereHas('roles', function ($query) { $query->where('role_name->fr', 'Agent'); })->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $agents = User::whereHas('roles', function ($query) { $query->where('role_name', 'Agent'); })->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $customer_feedbacks = CustomerFeedback::orderByDesc('created_at')->paginate(7)->appends(request()->query());
 
             $view->with('cartService', $cartService);

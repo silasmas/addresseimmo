@@ -59,28 +59,16 @@
                                     </form>
                                 </div>
                                 <div class="tab-pane fade" id="ex2-tabs-3" role="tabpanel" aria-labelledby="ex2-tab-3">
-                                    <form action="#" class="form-search d-sm-flex justify-content-center align-items-center pt-3 py-2" data-aos="fade-up" data-aos-delay="200">
+                                    <form action="#" class="form-search d-sm-flex justify-content-center align-items-center py-sm-2 py-1" data-aos="fade-up" data-aos-delay="200" style="margin-bottom: 0.65em">
+@forelse ($product_categories as $index => $category)
                                         <div class="form-check form-check-inline mt-sm-0 mt-2">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked/>
-                                            <label class="form-check-label" for="inlineRadio1">Parcelle</label>
+                                            <input class="form-check-input" type="radio" name="category_id" id="category_{{ $category['id'] }}" value="{{ $category['category_name'] }}" {{ $index == 0 ? 'checked' : '' }} />
+                                            <label class="form-check-label" for="category_{{ $category['id'] }}">{{ $category['category_name'] }}</label>
                                         </div>
+@empty
+@endforelse
 
-                                        <div class="form-check form-check-inline mt-sm-0 mt-2">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option1" />
-                                            <label class="form-check-label" for="inlineRadio1">Maison</label>
-                                        </div>
-
-                                        <div class="form-check form-check-inline mt-sm-0 mt-2">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option1" />
-                                            <label class="form-check-label" for="inlineRadio1">Appartement</label>
-                                        </div>
-
-                                        <div class="form-check form-check-inline mt-sm-0 mt-2">
-                                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option2" />
-                                            <label class="form-check-label" for="inlineRadio2">Equipement</label>
-                                        </div>
-
-                                        <button type="button" class="btn adrm-btn-green mt-sm-0 mt-2 rounded-pill">Commencer</button>
+                                        <button type="button" class="btn adrm-btn-green mt-sm-0 mt-4 rounded-pill">Commencer</button>
                                     </form>
                                 </div>
                             </div>

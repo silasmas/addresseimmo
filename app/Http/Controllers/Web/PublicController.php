@@ -234,199 +234,27 @@ class PublicController extends Controller
     {
         $entity_title = null;
         $category = null;
-        $categories = null;
-        $items = null;
+        $categories = [];
+        $items = [];
 
-        if ($entity == 'project') {
-            $entity_title = __('miscellaneous.menu.account.project.title');
-            $categories = Category::withCount('products')->where('for_service', 2)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Processing plant',
-                        'fr' => 'Usine de transformation'
-                    ],
-                    'category_description' => [
-                        'en' => 'Industrial establishment that transforms agricultural raw materials into finished or semi-finished products.',
-                        'fr' => 'Etablissement industriel qui transforme les matières premières agricoles en produits finis ou semi-finis.'
-                    ],
-                    'for_service' => 2,
-                    'alias' => 'processing-plant',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 2]])->first();
-            // Get user projects
-            $query = Product::where([['type', 'project'], ['category_id', $categoryId]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            // Filter by price if values ​​are passed in the query
-            $fromPrice = $request->input('from_price', 0);
-            $toPrice = $request->input('to_price', 999999);
-
-            if ($fromPrice > $toPrice) {
-                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
-            }
-
-            // Add price filter to query
-            $query->whereBetween('price', [$fromPrice, $toPrice]);
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-
-            if (Auth::check()) {
-                $current_user = User::find(Auth::id());
-
-                // Ajouter la méthode convertPrice au résultat paginé
-                $items->getCollection()->transform(function ($item) use ($current_user) {
-                    // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
-                    $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
-
-                    return $item;
-                });
-            }
+        if ($entity == 'sell') {
+            $entity_title = 'Vente propriétés ou équipements';
         }
 
-        if ($entity == 'product') {
-            $entity_title = __('miscellaneous.menu.account.product.title');
-            $categories = Category::withCount('products')->where('for_service', 0)->get();
-
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Cash crops',
-                        'fr' => 'Cultures de rente'
-                    ],
-                    'category_description' => [
-                        'en' => 'Coffee, Oil palm, Rubber, Cocoa, Rice, Tea.',
-                        'fr' => 'Café, Palmier à huile, Caoutchouc, Cacao, Riz, Thé.'
-                    ],
-                    'for_service' => 0,
-                    'alias' => 'cash-crops',
-                ]);
-            }
-
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 0]])->first();
-            // Get user products
-            $query = Product::where([['type', 'product'], ['category_id', $categoryId]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            // Filter by price if values ​​are passed in the query
-            $fromPrice = $request->input('from_price', 0);
-            $toPrice = $request->input('to_price', 999999);
-
-            if ($fromPrice > $toPrice) {
-                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
-            }
-
-            // Add price filter to query
-            $query->whereBetween('price', [$fromPrice, $toPrice]);
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-
-            if (Auth::check()) {
-                $current_user = User::find(Auth::id());
-
-                // Ajouter la méthode convertPrice au résultat paginé
-                $items->getCollection()->transform(function ($item) use ($current_user) {
-                    // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
-                    $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
-
-                    return $item;
-                });
-            }
+        if ($entity == 'rent') {
+            $entity_title = 'Location maisons, appartements, etc.';
         }
 
-        if ($entity == 'service') {
-            $entity_title = __('miscellaneous.menu.account.service.title');
-            $categories = Category::withCount('products')->where('for_service', 1)->get();
+        if ($entity == 'build') {
+            $entity_title = 'Service de construction';
+        }
 
-            if ($categories->isEmpty()) {
-                Category::create([
-                    'category_name' => [
-                        'en' => 'Manufacturing and processing',
-                        'fr' => 'Fabrication et transformation'
-                    ],
-                    'category_description' => [
-                        'en' => 'Set of operations that enable raw materials from agriculture to be transformed into finished or semi-finished products.',
-                        'fr' => 'Ensemble des opérations qui permettent de transformer les matières premières issues de l\'agriculture en produits finis ou semi-finis.'
-                    ],
-                    'for_service' => 1,
-                    'alias' => 'manufacturing-processing',
-                ]);
-            }
+        if ($entity == 'desing') {
+            $entity_title = 'Décoration intérieure';
+        }
 
-            $categories_ids = $categories->pluck('id')->toArray();
-
-            // If $categories_ids is empty, we have a problem
-            $categoryId = $request->category_id ?? ($categories_ids[0] ?? null);
-
-            if ($categoryId === null) {
-                return redirect()->route('home')->with('error_message', __('notifications.find_category_404'));
-            }
-
-            // Get the first category in the case user has not yet selected his category
-            $category = Category::where([['id', $categoryId], ['for_service', 1]])->first();
-            // Get user services
-            $query = Product::where([['type', 'service'], ['category_id', $categoryId]]);
-
-            // Sort by "action" if needed
-            $query->when($request->action, function ($query) use ($request) {
-                return $query->where('action', $request->action);
-            });
-
-            // Filter by price if values ​​are passed in the query
-            $fromPrice = $request->input('from_price', 0);
-            $toPrice = $request->input('to_price', 999999);
-
-            if ($fromPrice > $toPrice) {
-                return redirect()->back()->with('error_message', __('notifications.min_max_price_error'));
-            }
-
-            // Add price filter to query
-            $query->whereBetween('price', [$fromPrice, $toPrice]);
-
-            $items = $query->orderByDesc('updated_at')->paginate(12)->appends($request->query());
-
-            if (Auth::check()) {
-                $current_user = User::find(Auth::id());
-
-                // Ajouter la méthode convertPrice au résultat paginé
-                $items->getCollection()->transform(function ($item) use ($current_user) {
-                    // Ajouter la méthode convertPrice() avec la devise de l'utilisateur
-                    $item->converted_price = $item->convertPrice($current_user->currency); // Devise de l'utilisateur
-
-                    return $item;
-                });
-            }
+        if ($entity == 'moving') {
+            $entity_title = 'Service de déménagement';
         }
 
         return view('products', [

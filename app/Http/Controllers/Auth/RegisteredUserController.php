@@ -100,7 +100,7 @@ class RegisteredUserController extends Controller
             ]);
 
         } else {
-            $role_member = Role::where('role_name->fr', 'Membre')->first();
+            $role_member = Role::where('role_name', 'Membre')->first();
         }
 
         // Register user with role
