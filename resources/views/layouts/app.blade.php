@@ -43,6 +43,7 @@
         <style>
             textarea { resize: none; }
             #showPassword i, #showConfirmPassword i, #showNewPassword i, #showConfirmNewPassword i { font-size: 1.6rem; }
+            #offerForm label { font-size: 14px; }
             .menu-bg-wrap { background-color: #167c02; }
             .site-footer a { text-decoration: none!important; }
             #main-search .nav-link.active { font-weight: bold; color: black !important; border-bottom: 2px solid green !important; }
@@ -125,6 +126,148 @@
             </div>
         </div>
 
+@if (Route::is('account.entity'))
+        <!-- ### Publish an offer ### -->
+        <div class="modal fade" id="addOfferModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header py-0 border-bottom-0">
+                        <button type="button" class="btn-close mt-2" data-bs-dismiss="modal" aria-label="@lang('miscellaneous.close')"></button>
+                    </div>
+
+                    <div class="modal-body pt-0">
+                        <h2 class="text-center" style="font-weight: 700;">Publier une offre</h2>
+                        <hr>
+
+                        <form id="offerForm" action="{{ route('product.home') }}" method="POST">
+    @csrf
+                            <div class="row g-3">
+                                <!-- Product name -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="product_name" class="form-label mb-0">Nom de l'offre</label>
+                                    <input type="text" class="form-control" id="product_name" name="product_name" required>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="product_description" class="form-label mb-0">Description</label>
+                                    <textarea class="form-control" id="product_description" name="product_description" rows="2"></textarea>
+                                </div>
+
+                                <!-- Action -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="action" class="form-label mb-0">Action</label>
+                                    <select class="form-select" id="action" name="action">
+                                        <option value="sell">Vente</option>
+                                        <option value="rent">Location</option>
+                                        <option value="build">Construction</option>
+                                        <option value="moving">Déménagement</option>
+                                    </select>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="col-sm-6 col-6">
+                                    <label for="price" class="form-label mb-0">Prix</label>
+                                    <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                                </div>
+
+                                <!-- Currency -->
+                                <div class="col-sm-6 col-6">
+                                    <label for="currency" class="form-label mb-0">Devise</label>
+                                    <select class="form-select" id="currency" name="currency">
+                                        <option class="small" disabled>Choisir devise</option>
+                                        <option>USD</option>
+                                        <option>CDF</option>
+                                    </select>
+                                </div>
+
+                                <!-- Country -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="country" class="form-label mb-0">Pays</label>
+                                    <select class="form-select" id="country" name="country">
+                                        <option class="small" disabled>Choisir pays</option>
+    @forelse ($countries as $country)
+                                        <option>{{ $country['name'] }}</option>
+    @empty
+    @endforelse
+                                    </select>
+                                </div>
+
+                                <!-- City -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="city" class="form-label mb-0">Ville</label>
+                                    <input type="text" class="form-control" id="city" name="city" required>
+                                </div>
+
+                                <!-- Address -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="address" class="form-label mb-0">Description</label>
+                                    <textarea class="form-control" id="address" name="address" rows="2"></textarea>
+                                </div>
+
+                                <!-- Is service -->
+                                <div class="col-sm-6 col-12 text-center">
+                                    <label class="form-label">Est-ce un service ?</label>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_service" id="service_yes" value="1">
+                                            <label class="form-check-label" for="service_yes">Oui</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_service" id="service_no" value="0">
+                                            <label class="form-check-label" for="service_no">Non</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Type -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="type" class="form-label mb-0">Type</label>
+                                    <select class="form-select" id="type" name="type">
+                                        <option value="house">Maison</option>
+                                        <option value="apartment">Appartement</option>
+                                        <option value="plot">Parcelle</option>
+                                        <option value="equipment">Equipement</option>
+                                    </select>
+                                </div>
+
+                                <!-- Category -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="category_id" class="form-label mb-0">@lang('miscellaneous.admin.product.data.category')</label>
+                                    <select class="form-select" id="category_id" name="category_id">
+    @forelse ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+    @empty
+                                        <option disabled>@lang('miscellaneous.empty_list')</option>
+    @endforelse
+                                    </select>
+                                </div>
+
+                                <!-- Upload images -->
+                                <div class="col-sm-12">
+                                    <label for="files_urls">@lang('miscellaneous.upload.upload_images')</label>
+                                    <input type="file" id="files_urls" name="files_urls[]" class="form-control" multiple>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div id="image-preview-container" class="mt-2"></div> <!-- Conteneur pour les vignettes -->
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-start;">
+                                <button type="submit" class="btn adrm-btn-green rounded-pill" style="width: 250px">
+                                    <span style="color: #fff;">@lang('miscellaneous.register')</span>
+                                </button>
+                                <img id="loading-icon" class="ms-2 d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="" width="40" height="40">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+@endif
+
         <div class="site-mobile-menu site-navbar-target">
             <div class="site-mobile-menu-header">
                 <div class="site-mobile-menu-close">
@@ -191,7 +334,7 @@
 @if (!empty($current_user))
                             <li class="has-children">
                                 <a role="button">
-                                    <img src="{{ $current_user->avatar_url ?? asset('assets/img/user.png') }}" width="40" height="40" alt="{{ $current_user->firstname . ' ' . $current_user->lastname }}" class="rounded-circle">
+                                    <img src="{{ !empty($current_user['avatar_url']) ? $current_user['avatar_url'] : asset('assets/img/user.png') }}" width="40" height="40" alt="{{ $current_user['firstname'] . ' ' . $current_user['lastname'] }}" class="user-image rounded-circle">
                                 </a>
                                 <ul class="dropdown">
                                     <li><a href="{{ route('account.home') }}"><i class="bi bi-person me-2"></i>Mon compte</a></li>

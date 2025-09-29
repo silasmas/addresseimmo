@@ -17,9 +17,9 @@ Route::get('/cart', [PublicController::class, 'cart'])->name('cart');
 Route::get('/change-lang/{locale}', [PublicController::class, 'changeLanguage'])->name('change_language');
 // Products
 Route::get('/products', [PublicController::class, 'products'])->name('product.home');
+Route::get('/products/{id}', [PublicController::class, 'productDatas'])->whereNumber('id')->name('product.datas');
 Route::get('/products/{entity}', [PublicController::class, 'productEntity'])->name('product.entity');
 Route::post('/products/{entity}', [PublicController::class, 'addProductEntity']);
-Route::get('/products/{entity}/{id}', [PublicController::class, 'productDatas'])->whereNumber('id')->name('product.entity.datas');
 
 Route::middleware('auth')->group(function () {
     Route::get('/change-currency/{currency}', [PublicController::class, 'changeCurrency'])->name('change_currency');

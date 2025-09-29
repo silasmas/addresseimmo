@@ -114,8 +114,8 @@
                             <div class="property-slider">
         @foreach ($recent_properties as $product)
                                 <div class="property-item">
-                                    <a href="{{ route('product.entity.datas', ['entity' => 'sell', 'id' => $product['id']]) }}" class="img">
-                                        <img src="images/img_1.jpg" alt="Image" class="img-fluid" />
+                                    <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img">
+                                        <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
                                     </a>
 
                                     <div class="property-content">
@@ -134,7 +134,7 @@
                                                 </span>
                                             </div>
 
-                                            <a href="{{ route('product.entity.datas', ['entity' => 'sell', 'id' => $product['id']]) }}" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
+                                            <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>

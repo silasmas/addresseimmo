@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\ApiClientManager;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Product as ResourcesProduct;
 use App\Http\Resources\User as ResourcesUser;
 use App\Models\Cart;
 use App\Models\Category;
@@ -178,6 +179,12 @@ class PublicController extends Controller
         $category = null;
         $categories = null;
         $items = null;
+        $countries = null;
+
+        if ($entity == 'settings') {
+            $entity_title = 'Paramètres du compte';
+            $countries = showCountries();
+        }
 
         if ($entity == 'cart') {
             $entity_title = 'Mon panier';
@@ -187,8 +194,12 @@ class PublicController extends Controller
             $items = $current_user->unpaidOrders();
         }
 
-        if ($entity == 'settings') {
-            $entity_title = 'Paramètres du compte';
+        if ($entity == 'offers') {
+            $entity_title = 'Mes offres';
+            $countries = showCountries();
+            $products = Product::where('user_id', $current_user->id)->where('is_shared', 1)->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $categories = Category::orderByDesc('category_name')->get();
+            $items = ResourcesProduct::collection($products)->resolve();
         }
 
         return view('account', [
@@ -198,7 +209,7 @@ class PublicController extends Controller
             'category' => $category,
             'categories' => $categories,
             'items' => $items,
-            'countries' => showCountries()
+            'countries' => $countries
         ]);
     }
 
@@ -430,34 +441,20 @@ class PublicController extends Controller
     /**
      * GET: Product details
      *
-     * @param  string  $entity
-     * @param  string  $id
+     * @param  int  $id
      * @return \Illuminate\View\View
      */
-    public function productDatas($entity, $id)
+    public function productDatas($id)
     {
-        $entity_title = null;
+        $entity_title = 'A propos de l’offre';
         $selected_product = Product::find($id);
 
         if (is_null($selected_product)) {
-            return redirect('/')->with('error_message', __('notifications.find_product_404'));
-        }
-
-        if ($entity == 'project') {
-            $entity_title = __('miscellaneous.menu.public.products.about_project');
-        }
-
-        if ($entity == 'product') {
-            $entity_title = __('miscellaneous.menu.public.products.about_product');
-        }
-
-        if ($entity == 'service') {
-            $entity_title = __('miscellaneous.menu.public.products.about_service');
+            return redirect('/')->with('error_message', 'Produit non trouvé');
         }
 
         return view('products', [
             'entity_title' => $entity_title,
-            'entity' => $entity,
             'selected_product' => $selected_product,
         ]);
     }

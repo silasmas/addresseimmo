@@ -25,13 +25,13 @@
         </div>
 
         <div class="section">
-            <div class="container">
-                <div class="row mb-5">
-                    <div class="col-lg-3 col-sm-4 mx-auto">
+            <div class="container-fluid container-lg">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-sm-4 mx-auto mb-3">
                         <div class="card border mb-3 rounded-4">
-                            <div class="card-body text-center p-2">
+                            <div class="card-body text-center px-2">
                                 <div class="bg-image mb-3 position-relative">
-                                    <img src="{{ !empty($current_user['avatar_url']) ? $current_user['avatar_url'] : asset('assets/img/user.png') }}" alt="{{ Auth::user()->firstname . ' ' . Auth::user()->lastname }}" class="user-image img-fluid img-thumbnail rounded-4">
+                                    <img src="{{ !empty($current_user['avatar_url']) ? $current_user['avatar_url'] : asset('assets/img/user.png') }}" alt="{{ $current_user['firstname'] . ' ' . $current_user['lastname'] }}" class="user-image img-fluid img-thumbnail rounded-4">
     @if (Route::is('account.entity'))
                                     <form method="POST">
                                         <input type="hidden" name="user_id" id="user_id" value="{{ $current_user['id'] }}">
@@ -52,7 +52,7 @@
 
                         <div class="list-group">
                             <a href="{{ route('account.home') }}" class="list-group-item list-group-item-action{{ Route::is('account.home') ? ' active' : '' }}">
-                                <i class="bi bi-person-lines-fill me-3 fs-5 align-middle"></i>@lang('miscellaneous.account.personal_infos.title')
+                                <i class="bi bi-person me-3 fs-5 align-middle"></i>@lang('miscellaneous.account.personal_infos.title')
                             </a>
                             <a href="{{ route('account.entity', ['entity' => 'settings']) }}" class="list-group-item list-group-item-action{{ !empty($entity) && $entity == 'settings' ? ' active' : '' }}">
                                 <i class="bi bi-gear me-3 fs-5 align-middle"></i>Paramètres du compte
@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-9 col-sm-8 col-12">
+                    <div class="col-lg-9 col-sm-8 col-12 mb-3">
     @if (!empty($entity))
         @include('partials.account.' . $entity)
     @else

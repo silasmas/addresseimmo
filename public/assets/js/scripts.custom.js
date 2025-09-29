@@ -175,7 +175,7 @@ $(function () {
                     contentType: false, // IMPORTANT : do not specify a contentType
                     processData: false, // IMPORTANT : do not transform the data
                     success: function (res) {
-                        $('.user-image').attr('src', currentHost + '/storage/' + res.avatar_url);
+                        $('.user-image').attr('src', currentHost + res.avatar_url);
                         $('#ajax-alert-container').html(`<div class="position-relative">
                                                             <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
                                                                 <div class="col-lg-4 col-sm-6 mx-auto">

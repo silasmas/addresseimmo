@@ -1,10 +1,10 @@
 
                         <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4">
                             <div class="mt-sm-0 my-4 text-center">
-                                <h1 class="card-title fw-bolder"><span class="text-gradient d-inline">Paramètres du compte</span></h1>
+                                <h1 class="card-title fw-bolder"><span class="adrm-text-green d-inline">Paramètres du compte</span></h1>
                             </div>
 
-                            <form method="POST" action="{{ route('account.entity', ['entity' => 'settings']) }}">
+                            <form method="POST" action="{{ route('account.home') }}">
 @csrf
                                 <div class="row g-3">
                                     <div class="col-lg-4 col-sm-6">
@@ -99,7 +99,7 @@
 
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-8 mx-auto">
-                                        <button type="submit" class="btn bg-gradient-primary-to-secondary w-100 mt-4 rounded-pill text-white">Enregistrer les modifications</button>
+                                        <button type="submit" class="btn adrm-btn-green w-100 mt-4 rounded-pill">Enregistrer les modifications</button>
                                     </div>
                                 </div>
                             </form>
