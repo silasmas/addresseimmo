@@ -50,7 +50,7 @@
                         <p class="mt-4 mb-0">
                             <button class="btn btn-lg adrm-btn-red position-relative" data-id="{{ $product['id'] }}">
                                 <span id="icon-cart-text-{{ $product['id'] }}" class="icon-cart-text">Ajouter au panier</span>
-                                <img id="ajax-loading-{{ $product['id'] }}" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30" style="position: absolute; top: 2px; right: 43%; display: none;">
+                                <img id="ajax-loading-{{ $product['id'] }}" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30" style="position: absolute; top: 2px; right: 43%;">
                             </button>
                         </p>
 {{-- @if (!empty($current_user))
