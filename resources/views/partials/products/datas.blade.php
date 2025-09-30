@@ -1,4 +1,4 @@
-{{ dd($selected_product->resolve()) }}
+
         <div class="hero page-inner overlay" style="background-image: url('../../images/hero_bg_3.jpg')">
             <div class="container">
                 <div class="row justify-content-center align-items-center">
@@ -26,8 +26,8 @@
                     <div class="col-lg-7">
                         <div class="img-property-slide-wrap">
                             <div class="img-property-slide">
-@forelse ($selected_product->photos as $photo)
-                                <img src="{{ $photo->file_url }}" alt="Image" class="img-fluid" style="max-height: 500px!important; object-fit: cover;" />
+@forelse ($selected_product['photos'] as $photo)
+                                <img src="{{ $photo['file_url'] }}" alt="Image" class="img-fluid" style="max-height: 500px!important; object-fit: cover;" />
 @empty
                                 <img src="{{ asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
 @endforelse
@@ -35,19 +35,19 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <h2 class="heading text-primary">{{ $selected_product->product_name }}</h2>
-                        <p class="meta">{{ $selected_product->address }}</p>
-                        <p class="text-black-50">{{ $selected_product->product_description }}</p>
+                        <h2 class="heading text-primary">{{ $selected_product['product_name'] }}</h2>
+                        <p class="meta">{{ $selected_product['address'] }}</p>
+                        <p class="text-black-50">{{ $selected_product['product_description'] }}</p>
 
                         <div class="d-block agent-box p-5">
                             <div class="img mb-4">
-                                <img src="{{ $selected_product->user->avatar_url }}" alt="Image" class="img-fluid" />
+                                <img src="{{ $selected_product['user']['avatar_url'] }}" alt="Image" class="img-fluid" />
                             </div>
 
                             <div class="text">
-                                <h3 class="mb-0 fw-bold">{{ $selected_product->user->firstname . ' ' . $selected_product->user->lastname }}</h3>
-                                <div class="meta mb-3">{{ $selected_product->user->selected_role->role_name }}</div>
-                                <p class="small fst-italic">Date de publication : {{ $selected_product->created_at_explicit }}</p>
+                                <h3 class="mb-0 fw-bold">{{ $selected_product['user']['firstname'] . ' ' . $selected_product['user']['lastname'] }}</h3>
+                                <div class="meta mb-3">{{ $selected_product['user']['selected_role']['role_name'] }}</div>
+                                <p class="small fst-italic">Date de publication : {{ $selected_product['created_at_explicit'] }}</p>
                             </div>
                         </div>
                     </div>

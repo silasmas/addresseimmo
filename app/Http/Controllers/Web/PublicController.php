@@ -283,7 +283,7 @@ class PublicController extends Controller
 
         return view('products', [
             'entity_title' => $entity_title,
-            'selected_product' => new ResourcesProduct($selected_product),
+            'selected_product' => (new ResourcesProduct($selected_product))->resolve(),
         ]);
     }
 
