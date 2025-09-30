@@ -45,7 +45,7 @@
                             </div>
 
                             <div class="text">
-                                <h2 class="h2 mb-0 fw-bold">{{ $selected_product->user->firstname . ' ' . $selected_product->user->lastname }}</h2>
+                                <h3 class="mb-0 fw-bold">{{ $selected_product->user->firstname . ' ' . $selected_product->user->lastname }}</h3>
                                 <div class="meta mb-3">{{ $selected_product->user->selected_role->role_name }}</div>
                             </div>
                         </div>
