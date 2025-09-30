@@ -1,4 +1,4 @@
-
+{{ dd($selected_product->user->selected_role) }}
         <div class="hero page-inner overlay" style="background-image: url('../../images/hero_bg_3.jpg')">
             <div class="container">
                 <div class="row justify-content-center align-items-center">
