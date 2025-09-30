@@ -30,7 +30,7 @@
     @if (!empty($product['type']))
                                                     <span class="d-block d-flex align-items-center">
                                                         <span class="bi bi-flag me-2"></span>
-                                                        <span class="caption">{{ $product['type'] }}</span>
+                                                        <span class="caption">{{ $product['readable_type'] }}</span>
                                                     </span>
     @endif
                                                 </div>

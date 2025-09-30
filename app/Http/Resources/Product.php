@@ -19,6 +19,42 @@ class Product extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $type = null;
+
+        switch ($this->type) {
+            case 'equipped_house':
+                $type = 'Maison équipée';
+                break;
+
+            case 'empty_house':
+                $type = 'Maison vide';
+                break;
+
+            case 'unfinished_house':
+                $type = 'Maison inachevée';
+                break;
+
+            case 'equipped_apartment':
+                $type = 'Appartement équipé';
+                break;
+
+            case 'empty_apartment':
+                $type = 'Appartement vide';
+                break;
+
+            case 'empty_plot':
+                $type = 'Parcelle vide';
+                break;
+
+            case 'house_plot':
+                $type = 'Concession maison';
+                break;
+
+            default:
+                $type = null;
+                break;
+        }
+
         // Vérifier si l'utilisateur est connecté
         if ($user = auth()->user()) {
             // Si l'utilisateur est connecté, récupérer sa devise
@@ -60,6 +96,7 @@ class Product extends JsonResource
             'street' => $this->street,
             'is_shared' => $this->is_shared,
             'type' => $this->type,
+            'readable_type' => $type,
             'user' => User::make($this->user),
             'category' => Category::make($this->category),
             'photos' => File::collection($this->photos),
