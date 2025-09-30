@@ -229,25 +229,25 @@
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
                         <div class="counter-wrap mb-5 mb-lg-0">
                             <span class="number"><span class="countup text-primary">{{ $sell_products_req->total() }}</span></span>
-                            <span class="caption text-black-50"># {{ $sell_products_req->total() > 1 : 'offres' : 'offre' }} à vendre</span>
+                            <span class="caption text-black-50"># {{ $sell_products_req->total() > 1 ? 'offres' : 'offre' }} à vendre</span>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
                         <div class="counter-wrap mb-5 mb-lg-0">
                             <span class="number"><span class="countup text-primary">{{ $rent_products_req->total() }}</span></span>
-                            <span class="caption text-black-50"># {{ $rent_products_req->total() > 1 : 'propriétés' : 'propriété' }} en location</span>
+                            <span class="caption text-black-50"># {{ $rent_products_req->total() > 1 ? 'propriétés' : 'propriété' }} en location</span>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
                         <div class="counter-wrap mb-5 mb-lg-0">
                             <span class="number"><span class="countup text-primary">{{ $buy_products_req->total() }}</span></span>
-                            <span class="caption text-black-50"># {{ $buy_products_req->total() > 1 : 'propriétés' : 'propriété' }} vendues</span>
+                            <span class="caption text-black-50"># {{ $buy_products_req->total() > 1 ? 'propriétés' : 'propriété' }} vendues</span>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
                         <div class="counter-wrap mb-5 mb-lg-0">
                             <span class="number"><span class="countup text-primary">{{ $agents_req->total() }}</span></span>
-                            <span class="caption text-black-50"># {{ $agents_req->total() > 1 : 'agents' : 'agent' }}</span>
+                            <span class="caption text-black-50"># {{ $agents_req->total() > 1 ? 'agents' : 'agent' }}</span>
                         </div>
                     </div>
                 </div>
