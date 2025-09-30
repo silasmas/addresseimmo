@@ -53,8 +53,8 @@
                                     <div class="col-lg-4 col-sm-6">
                                         <label for="currency" class="form-label fw-bold">Devise</label>
                                         <select name="currency" id="currency" class="form-select">
-                                            <option {{ $current_user['currency'] == 'USD' ? 'selected' : '' }}>USD</option>
-                                            <option {{ $current_user['currency'] == 'CDF' ? 'selected' : '' }}>CDF</option>
+                                            <option {{ $current_user['currency'] == 'USD' ? 'selected' : '' }} value="USD">Dollar américain</option>
+                                            <option {{ $current_user['currency'] == 'CDF' ? 'selected' : '' }} value="CDF">Franc congolais</option>
                                         </select>
                                     </div>
 
