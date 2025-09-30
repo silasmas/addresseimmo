@@ -1,15 +1,15 @@
-@extends('layouts.app', ['page_title' => !empty($entity_title) ? $entity_title : __('miscellaneous.menu.public.products.products')])
+@extends('layouts.app', ['page_title' => !empty($entity_title) ? $entity_title : 'Produits'])
 
 @section('app-content')
 
-    @if (!empty($entity))
-        @if (!empty($selected_product))
-            @include('partials.products.datas')
-        @else
-            @include('partials.products.' . $entity)
-        @endif
+    @if (!empty($selected_product))
+        @include('partials.products.datas')
     @else
-        @include('partials.products.home')
+        @if (!empty($entity))
+            @include('partials.products.' . $entity)
+        @else
+            @include('partials.products.home')
+        @endif
     @endif
 
 @endsection
