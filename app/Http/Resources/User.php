@@ -54,7 +54,7 @@ class User extends JsonResource
             'has_product_in_unpaid_cart' => $this->hasProductInUnpaidCart($request->get('product_id')),
             'average_rating' => round($this->averageRating(), 0),
             'unpaid_orders' => $this->unpaidOrders(),
-            'unpaid_cart_total' => $this->unpaidCartTotal(),
+            'unpaid_cart_total' => formatIntegerNumber($this->unpaidCartTotal()),
             'roles' => Role::collection($this->roles)->sortByDesc('created_at')->toArray(),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),

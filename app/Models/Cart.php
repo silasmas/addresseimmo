@@ -70,7 +70,18 @@ class Cart extends Model
     {
         // Si la devise de l'utilisateur n'est pas donnée
         if ($userCurrency = null) {
-            return round($this->customer_orders->sum('price_at_that_time'), 2);
+            return $this->customer_orders->sum(function ($order) use ($userCurrency) {
+                // Si la devise de l'ordre est la même que celle de l'utilisateur
+                if ($order->currency == 'USD') {
+                    return round($order->price_at_that_time, 2);
+                }
+
+                // Si les devises sont différentes, on effectue la conversion
+                $conversionRate = getExchangeRate($order->currency, 'USD');
+
+                // Retourner le prix converti
+                return round($order->price_at_that_time * $conversionRate, 2);
+            });
 
         } else {
             return $this->customer_orders->sum(function ($order) use ($userCurrency) {
