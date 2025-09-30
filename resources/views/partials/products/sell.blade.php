@@ -1,4 +1,4 @@
-{{ dd($sell_products_req) }}
+
         <div class="hero page-inner overlay" style="background-image: url('../images/hero_bg_1.jpg')">
             <div class="container">
                 <div class="row justify-content-center align-items-center">
@@ -90,7 +90,7 @@
 @endforelse
                 </div>
                 <div class="row align-items-center py-5">
-                    <div class="col-lg-3">Pagination ({{ $sell_products_req->perPage() }} sur {{ $sell_products_req->total() }})</div>
+                    <div class="col-lg-3">Pagination ({{ $sell_products_req->lastPage() }} sur {{ $sell_products_req->total() }})</div>
                     <div class="col-lg-6 text-center">
                         {{ $sell_products_req->links() }}
                     </div>
