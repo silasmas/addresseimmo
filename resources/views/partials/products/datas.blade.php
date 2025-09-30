@@ -42,15 +42,18 @@
 {{ $selected_product['product_description'] }}
                         </pre>
 
+                        <p class="meta"><u>Prix</u> : {{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</p>
                         <p class="mb-0">
                             <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                         </p>
 @if ($selected_product['user_id'] == $current_user['id'])
                         <p class="mt-3 mb-0">
-                            <button class="btn btn-lg adrm-btn-green"><i class="bi bi-cart3 me-2"></i>Modifier l'offre</button>
+                            <button class="btn btn-lg btn-primary"><i class="bi bi-pencil me-2"></i>Modifier l'offre</button>
                         </p>
 @endif
+                    </div>
 
+                    <div class="col-lg-6">
                         <div class="d-block agent-box p-5">
                             <div class="img mb-4">
                                 <img src="{{ $selected_product['user']['avatar_url'] }}" alt="Image" class="img-fluid" />
