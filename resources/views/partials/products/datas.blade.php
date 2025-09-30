@@ -1,4 +1,4 @@
-{{ dd($selected_product->user->selected_role) }}
+
         <div class="hero page-inner overlay" style="background-image: url('../../images/hero_bg_3.jpg')">
             <div class="container">
                 <div class="row justify-content-center align-items-center">
@@ -46,8 +46,7 @@
 
                             <div class="text">
                                 <h2 class="h2 mb-0 fw-bold">{{ $selected_product->user->firstname . ' ' . $selected_product->user->lastname }}</h2>
-                                <div class="meta mb-3">{{ $selected_product->user->selected_role->user->role_name }}</div>
-                                {{-- <p>{{ $selected_product->user->avatar_url }}</p> --}}
+                                <div class="meta mb-3">{{ $selected_product->user->selected_role->role_name }}</div>
                             </div>
                         </div>
                     </div>
