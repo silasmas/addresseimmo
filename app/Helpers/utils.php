@@ -156,10 +156,11 @@ if (!function_exists('addItemsToExplodedArray')) {
 if (!function_exists('getExchangeRate')) {
     function getExchangeRate($baseCurrency, $targetCurrency)
     {
+        $baseCur = $baseCurrency ?? 'CDF';
         $apiKey = config('services.exchangerate.key');
         // ExchangeRate API URL
         // $url = 'https://v6.exchangerate-api.com/v6/' . $apiKey . '/pair/'. $baseCurrency . '/' . $targetCurrency;
-        $url = "https://v6.exchangerate-api.com/v6/{$apiKey}/pair/{$baseCurrency}/{$targetCurrency}";
+        $url = "https://v6.exchangerate-api.com/v6/{$apiKey}/pair/{$baseCur}/{$targetCurrency}";
 
         // Create a Guzzle client
         $client = new Client();
