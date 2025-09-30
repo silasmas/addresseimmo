@@ -11,12 +11,12 @@
                             <div class="row g-3">
 @forelse ($items as $product)
                                 <div class="col-lg-4 col-sm-6">
-                                    <div class="property-item mb-30">
+                                    <div class="property-item mb-30 border">
                                         <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img">
                                             <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
                                         </a>
 
-                                        <div class="property-content">
+                                        <div class="property-content p-3">
                                             <div class="price mb-2"><span>{{ $product['converted_price'] . ' ' . $current_user['readable_currency'] }}</span></div>
                                             <div>
                                                 <span class="d-block mb-2 text-black-50">{{ $product['address'] }}</span>
