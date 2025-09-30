@@ -84,7 +84,7 @@
                     </div>
 @empty
                     <div class="d-flex justify-content-center align-items-center flex-column">
-                        <p class="mb-0"><i class="bi bi-house fs-1"></i></p>
+                        <p class="mb-0"><i class="bi bi-bricks fs-1"></i></p>
                         <p class="mb-0">La liste est vide</p>
                     </div>
 @endforelse
