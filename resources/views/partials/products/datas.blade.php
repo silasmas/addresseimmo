@@ -46,7 +46,7 @@
                         <p class="mt-3 mb-0">
                             <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                         </p>
-@if ($selected_product['user_id'] == $current_user['id'])
+@if (!empty($current_user) && $selected_product['user_id'] == $current_user['id'])
                         <p class="mt-3 mb-0">
                             <button class="btn btn-lg btn-primary"><i class="bi bi-pencil me-2"></i>Modifier l'offre</button>
                         </p>
