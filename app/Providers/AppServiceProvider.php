@@ -52,8 +52,10 @@ class AppServiceProvider extends ServiceProvider
             $recent_properties = Product::mostRecent(7);
             $popular_services = Product::popularServices(7, 'monthly');
             $sell_products = Product::doesntHave('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
-            $buy_products = Product::whereHas('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $rent_products = Product::doesntHave('customer_orders')->where('action', 'rent')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $build_products = Product::doesntHave('customer_orders')->where('action', 'build')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $design_products = Product::doesntHave('customer_orders')->where('action', 'design')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $moving_products = Product::doesntHave('customer_orders')->where('action', 'moving')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $agents = User::whereHas('roles', function ($query) { $query->where('role_name', 'Agent'); })->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $customer_feedbacks = CustomerFeedback::orderByDesc('created_at')->paginate(7)->appends(request()->query());
 
@@ -68,10 +70,14 @@ class AppServiceProvider extends ServiceProvider
             // Statistics
             $view->with('sell_products', ResourcesProduct::collection($sell_products)->resolve());
             $view->with('sell_products_req', $sell_products);
-            $view->with('buy_products', ResourcesProduct::collection($buy_products)->resolve());
-            $view->with('buy_products_req', $buy_products);
             $view->with('rent_products', ResourcesProduct::collection($rent_products)->resolve());
             $view->with('rent_products_req', $rent_products);
+            $view->with('build_products', ResourcesProduct::collection($build_products)->resolve());
+            $view->with('build_products_req', $build_products);
+            $view->with('design_products', ResourcesProduct::collection($design_products)->resolve());
+            $view->with('design_products_req', $design_products);
+            $view->with('moving_products', ResourcesProduct::collection($moving_products)->resolve());
+            $view->with('moving_products_req', $moving_products);
             $view->with('agents', ResourcesProduct::collection($agents)->resolve());
             $view->with('agents_req', $agents);
             // Other
