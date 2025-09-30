@@ -200,7 +200,7 @@
                                 <div class="col-sm-6 col-12">
                                     <label for="category_id" class="form-label mb-0">@lang('miscellaneous.admin.product.data.category')</label>
                                     <select class="form-select" id="category_id" name="category_id">
-                                        <option class="small" disabled selected>Choisir un type</option>
+                                        <option class="small" disabled selected>Choisir une catégorie</option>
     @forelse ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->category_name }}</option>
     @empty
