@@ -10,14 +10,14 @@
 
                             <div class="row g-3">
 @forelse ($items as $product)
-                                <div class="col-sm-6">
+                                <div class="col-lg-4 col-sm-6">
                                     <div class="property-item mb-30">
                                         <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img">
                                             <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
                                         </a>
 
                                         <div class="property-content">
-                                            <div class="price mb-2"><span>{{ $product['converted_price'] . ' ' . $current_user['currency'] }}</span></div>
+                                            <div class="price mb-2"><span>{{ $product['converted_price'] . ' ' . $current_user['readable_currency'] }}</span></div>
                                             <div>
                                                 <span class="d-block mb-2 text-black-50">{{ $product['address'] }}</span>
                                                 <span class="city d-block mb-3">{{ $product['city'] . ', ' . $product['country'] }}</span>

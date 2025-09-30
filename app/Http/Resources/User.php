@@ -39,7 +39,7 @@ class User extends JsonResource
             'address_1' => $this->address_1,
             'address_2' => $this->address_2,
             'p_o_box' => $this->p_o_box,
-            'currency' => $currency,
+            'readable_currency' => $currency,
             'email' => $this->email,
             'phone' => $this->phone,
             'email_verified_at' => $this->email_verified_at,

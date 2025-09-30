@@ -40,7 +40,7 @@ class Product extends JsonResource
             }
 
         } else {
-            $currency = null;
+            $currency = $this->currency;
         }
 
         return [
@@ -49,7 +49,7 @@ class Product extends JsonResource
             'product_description' => $this->product_description,
             'quantity' => $this->quantity,
             'price' => formatDecimalNumber($this->price),
-            'currency' => $currency,
+            'readable_currency' => $currency,
             'action' => $this->action,
             'country' => $this->country,
             'city' => $this->city,
