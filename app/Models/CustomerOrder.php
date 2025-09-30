@@ -66,9 +66,16 @@ class CustomerOrder extends Model
      * @param  string  $userCurrency
      * @return float
      */
-    public function subtotalPrice($userCurrency): float
+    public function subtotalPrice($userCurrency = null): float
     {
+        $quantity = $this->quantity ?? 1;
+
+        // Si la devise de l'utilisateur n'est pas donnée
+        if ($userCurrency == null) {
+            return $this->price_at_that_time * $quantity;
+        }
+
         // On utilise la méthode de conversion de devise
-        return $this->convertPriceAtThatTime($userCurrency) * $this->quantity;
+        return $this->convertPriceAtThatTime($userCurrency) * $quantity;
     }
 }

@@ -19,11 +19,24 @@ class Cart extends JsonResource
      */
     public function toArray(Request $request)
     {
+        // Vérifier si l'utilisateur est connecté
+        if ($user = auth()->user()) {
+            // Si l'utilisateur est connecté, récupérer sa devise
+            $userCurrency = $user->currency;
+            // Convertir le prix en fonction de la devise de l'utilisateur
+            $generalTotal = $this->totalConvertedAmount($userCurrency);
+
+        } else {
+            // Si l'utilisateur n'est pas connecté, retourner le prix d'origine
+            $generalTotal = $this->totalConvertedAmount();
+        }
+
         return [
             'id' => $this->id,
             'payment_code' => $this->payment_code,
             'is_paid' => $this->is_paid,
             'total_amount' => $this->totalAmount(),
+            'readable_total_amount' => $generalTotal,
             'orders' => CustomerOrder::collection($this->customer_orders),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s')

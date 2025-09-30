@@ -11,9 +11,9 @@
                                         <th>
                                             <td></td>
                                             <td>Offre</td>
-                                            <td>Description</td>
-                                            <td>Type</td>
-                                            <td>Prix</td>
+                                            <td>Prix unitaire</td>
+                                            <td>Quantité</td>
+                                            <td>Prix total</td>
                                         </th>
                                     </thead>
 
@@ -36,9 +36,9 @@
                                                     {{ $item['product']['product_name'] }}
                                                 </a>
                                             </td>
-                                            <td>{{ $item['product']['product_description'] }}</td>
-                                            <td>{{ $item['product']['type'] }}</td>
-                                            <td>{{ $item['converted_price'] . ' ' . $current_user['currency'] }}</td>
+                                            <td>{{ $item['converted_price_at_that_time'] . ' ' . $current_user['readable_currency'] }}</td>
+                                            <td>{{ $item['quantity'] }}</td>
+                                            <td>{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
                                         </tr>
     @endforeach
                                     </tbody>
