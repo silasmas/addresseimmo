@@ -22,7 +22,7 @@
 
         <div class="section">
             <div class="container">
-                <div class="row justify-content-between">
+                <div class="row">
                     <div class="col-lg-7">
                         <div class="img-property-slide-wrap">
                             <div class="img-property-slide">
@@ -35,11 +35,15 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <h2 class="heading adrm-text-green mb-4 fw-bold">{{ $selected_product['product_name'] }}</h2>
+                        <h2 class="heading adrm-text-green mb-4">{{ $selected_product['product_name'] }}</h2>
                         <p class="meta">{{ $selected_product['address'] }}</p>
                         <pre class="text-black-50">
 {{ $selected_product['product_description'] }}
                         </pre>
+
+                        <p class="mb-0">
+                            <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                        </p>
 
                         <div class="d-block agent-box p-5">
                             <div class="img mb-4">
@@ -49,7 +53,7 @@
                             <div class="text">
                                 <h3 class="mb-0 fw-bold">{{ $selected_product['user']['firstname'] . ' ' . $selected_product['user']['lastname'] }}</h3>
                                 <div class="meta mb-3">{{ $selected_product['user']['selected_role']['role_name'] }}</div>
-                                <p class="small mb-0 fst-italic"><u>Date de publication</u><br>{{ ucfirst($selected_product['created_at_explicit']) }}</p>
+                                <p class="small fst-italic"><u>Date de publication</u><br>{{ ucfirst($selected_product['created_at_explicit']) }}</p>
                             </div>
                         </div>
                     </div>
