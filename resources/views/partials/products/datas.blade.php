@@ -38,6 +38,7 @@
                     <div class="col-lg-5">
                         <h2 class="heading adrm-text-green mb-4">{{ $selected_product['product_name'] }}</h2>
                         <p class="meta">{{ $selected_product['address'] }}</p>
+                        <h5 class="meta text-black"><u>{{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</u></h5>
                         <pre class="text-black-50">
 {{ $selected_product['product_description'] }}
                         </pre>
@@ -56,7 +57,6 @@
                         <p class="meta"><u>Catégorie</u> : <strong>{{ $selected_product['category']['category_name'] }}</strong></p>
                         <p class="meta"><u>Type</u> : <strong>{{ $selected_product['readable_type'] }}</strong></p>
                         <p class="meta"><u>Action</u> : <strong>{{ $selected_product['readable_action'] }}</strong></p>
-                        <p class="meta"><u>Prix</u> : <strong>{{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</strong></p>
 @if (!empty($selected_product['country']))
                         <p class="meta"><u>Pays</u> : <strong>{{ $selected_product['country'] }}</strong></p>
 @endif
