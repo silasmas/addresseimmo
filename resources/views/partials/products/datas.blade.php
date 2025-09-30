@@ -26,9 +26,11 @@
                     <div class="col-lg-7">
                         <div class="img-property-slide-wrap">
                             <div class="img-property-slide">
-                                <img src="../../images/img_1.jpg" alt="Image" class="img-fluid" />
-                                <img src="../../images/img_2.jpg" alt="Image" class="img-fluid" />
-                                <img src="../../images/img_3.jpg" alt="Image" class="img-fluid" />
+@forelse ($selected_product->photos as $photo)
+                                <img src="{{ $photo->file_url }}" alt="Image" class="img-fluid" />
+@empty
+                                <img src="{{ asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
+@endforelse
                             </div>
                         </div>
                     </div>
