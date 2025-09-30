@@ -567,8 +567,13 @@
                                     fileList.splice(index, 1);
                                 }
 
+                                // Créer un objet DataTransfer pour mettre à jour la liste des fichiers
+                                const dataTransfer = new DataTransfer();
+
+                                fileList.forEach(f => dataTransfer.items.add(f));
+
                                 // Mettre à jour les fichiers de l'input
-                                $('#files_urls')[0].files = new FileListItems(fileList);
+                                $('#files_urls')[0].files = dataTransfer.files;
 
                                 // Supprimer la vignette de l'UI
                                 imageThumbnail.remove();
