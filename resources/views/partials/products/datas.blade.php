@@ -27,7 +27,7 @@
                         <div class="img-property-slide-wrap">
                             <div class="img-property-slide">
 @forelse ($selected_product->photos as $photo)
-                                <img src="{{ $photo->file_url }}" alt="Image" class="img-fluid" />
+                                <img src="{{ $photo->file_url }}" alt="Image" class="img-fluid" style="max-height: 500px!important; object-fit: cover;" />
 @empty
                                 <img src="{{ asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
 @endforelse
