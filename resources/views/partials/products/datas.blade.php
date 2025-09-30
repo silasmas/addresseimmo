@@ -37,8 +37,8 @@
 
                     <div class="col-lg-5">
                         <h2 class="heading adrm-text-green mb-4">{{ $selected_product['product_name'] }}</h2>
+                        <h4 class="meta text-black"><u>{{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</u></h4>
                         <p class="meta">{{ $selected_product['address'] }}</p>
-                        <h5 class="meta text-black"><u>{{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</u></h5>
                         <pre class="text-black-50">
 {{ $selected_product['product_description'] }}
                         </pre>
