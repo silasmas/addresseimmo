@@ -117,6 +117,8 @@ class Product extends JsonResource
             'feedbacks' => CustomerFeedback::collection($this->receivedFeedbacks),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'created_at_explicit' => explicitDate($this->created_at->format('Y-m-d H:i:s')),
+            'updated_at_explicit' => explicitDate($this->updated_at->format('Y-m-d H:i:s')),
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
             'category_id' => $this->category_id,
