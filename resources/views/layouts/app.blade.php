@@ -37,6 +37,7 @@
         <!-- Custom style -->
         <link rel="stylesheet" href="{{ asset('assets/addons/cropper/css/cropper.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/addons/jquery/jquery-ui/jquery-ui.min.css') }}" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="{{ asset('assets/addons/mdb/css/mdb.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
@@ -513,7 +514,7 @@
         <script type="text/javascript" src="{{ asset('assets/addons/jquery/jquery-ui/jquery-ui.min.js') }}"></script>
         {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/i18n/jquery-ui-i18n.min.js"></script> --}}
         {{-- <script type="text/javascript" src="{{ asset('assets/addons/jquery/datetimepicker/js/jquery.datetimepicker.full.min.js') }}"></script> --}}
-        <script type="text/javascript" src="{{ asset('assets/js/property/bootstrap.bundle.min.js') }}"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="{{ asset('assets/addons/mdb/js/mdb.umd.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/property/tiny-slider.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/property/aos.js') }}"></script>
