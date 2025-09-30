@@ -50,12 +50,20 @@
                                         <input type="text" name="p_o_box" class="form-control" id="p_o_box" value="{{ $current_user['p_o_box'] }}">
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4 col-sm-6">
+                                        <label for="currency" class="form-label fw-bold">Devise</label>
+                                        <select name="currency" id="currency">
+                                            <option>USD</option>
+                                            <option>CDF</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-4 col-sm-6">
                                         <label for="address_1" class="form-label fw-bold">Adresse 1</label>
                                         <textarea class="form-control" name="address_1" id="address_1">{{ $current_user['address_1'] }}</textarea>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4 col-sm-6">
                                         <label for="address_2" class="form-label fw-bold">Adresse 2 (Facultatif)</label>
                                         <textarea class="form-control" name="address_2" id="address_2">{{ $current_user['address_2'] }}</textarea>
                                     </div>

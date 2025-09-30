@@ -519,8 +519,12 @@ class PublicController extends Controller
             $rules['birthdate'] = ['nullable', 'date_format:d/m/Y'];
         }
 
-        if ($request->has('p_o_box')) {
-            $rules['p_o_box'] = ['nullable', 'string', 'max:255'];
+        if ($request->has('country')) {
+            $rules['country'] = ['nullable', 'string', 'max:255'];
+        }
+
+        if ($request->has('city')) {
+            $rules['city'] = ['nullable', 'string', 'max:255'];
         }
 
         if ($request->has('address_1')) {
@@ -531,20 +535,40 @@ class PublicController extends Controller
             $rules['address_2'] = ['nullable', 'string'];
         }
 
-        if ($request->has('phone')) {
-            $rules['phone'] = ['nullable', 'string', 'max:20'];
+        if ($request->has('p_o_box')) {
+            $rules['p_o_box'] = ['nullable', 'string', 'max:45'];
+        }
+
+        if ($request->has('currency')) {
+            $rules['currency'] = ['nullable', 'string', 'max:45'];
         }
 
         if ($request->has('email') && $request->input('email') !== $user->email) {
             $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)];
         }
 
+        if ($request->has('phone')) {
+            $rules['phone'] = ['nullable', 'string', 'max:20'];
+        }
+
+        if ($request->has('email_verified_at')) {
+            $rules['email_verified_at'] = ['nullable', 'date_format:d/m/Y H:i:s'];
+        }
+
+        if ($request->has('phone_verfied_at')) {
+            $rules['phone_verfied_at'] = ['nullable', 'date_format:d/m/Y H:i:s'];
+        }
+
         if ($request->has('username') && $request->input('username') !== $user->username) {
-            $rules['username'] = ['required', 'string', 'max:45', Rule::unique('users')->ignore($user->id)];
+            $rules['username'] = ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)];
         }
 
         if ($request->filled('password')) {
             $rules['password'] = ['required', 'confirmed', Rules\Password::defaults()];
+        }
+
+        if ($request->has('status')) {
+            $rules['status'] = ['nullable', Rule::in(['created', 'activated', 'disabled'])];
         }
 
         if ($request->has('image_64')) {
