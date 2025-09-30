@@ -20,38 +20,47 @@ class Product extends JsonResource
     public function toArray(Request $request): array
     {
         $type = null;
+        $icon = null;
 
         switch ($this->type) {
             case 'equipped_house':
                 $type = 'Maison équipée';
+                $icon = 'bi bi-house';
                 break;
 
             case 'empty_house':
                 $type = 'Maison vide';
+                $icon = 'bi bi-house';
                 break;
 
             case 'unfinished_house':
                 $type = 'Maison inachevée';
+                $icon = 'bi bi-house-exclamation';
                 break;
 
             case 'equipped_apartment':
                 $type = 'Appartement équipé';
+                $icon = 'bi bi-house';
                 break;
 
             case 'empty_apartment':
                 $type = 'Appartement vide';
+                $icon = 'fa-solid fa-bed';
                 break;
 
             case 'empty_plot':
                 $type = 'Parcelle vide';
+                $icon = 'fa-regular fa-square-full';
                 break;
 
             case 'house_plot':
                 $type = 'Concession maison';
+                $icon = 'bi bi-house';
                 break;
 
             default:
                 $type = null;
+                $icon = null;
                 break;
         }
 
@@ -97,6 +106,7 @@ class Product extends JsonResource
             'is_shared' => $this->is_shared,
             'type' => $this->type,
             'readable_type' => $type,
+            'readable_icon' => $icon,
             'user' => User::make($this->user),
             'category' => Category::make($this->category),
             'photos' => File::collection($this->photos),
