@@ -38,7 +38,7 @@ class Product extends JsonResource
             'is_shared' => $this->is_shared,
             'type' => $this->type,
             'user' => User::make($this->user),
-            'converted_price' => $current_user ? $this->convertPrice($current_user->currency) : null,
+            'converted_price' => $current_user ? formatDecimalNumber($this->convertPrice($current_user->currency)) : formatDecimalNumber($this->price),
             'photos' => File::collection($this->photos),
             'videos' => File::collection($this->videos),
             'audios' => File::collection($this->audios),
