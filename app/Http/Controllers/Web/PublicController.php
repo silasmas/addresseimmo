@@ -197,7 +197,7 @@ class PublicController extends Controller
         if ($entity == 'offers') {
             $entity_title = 'Mes offres';
             $countries = showCountries();
-            $products = Product::where('user_id', $current_user->id)->where('is_shared', 1)->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $products = Product::where('user_id', $current_user->id)->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $categories = Category::orderByDesc('category_name')->get();
             $items = ResourcesProduct::collection($products)->resolve();
         }
