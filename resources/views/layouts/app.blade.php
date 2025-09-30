@@ -57,6 +57,7 @@
             .preview-thumbnail img { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; }
             .preview-thumbnail .remove-image { position: absolute; top: 0; right: 0; background-color: rgba(255, 0, 0, 0.7); color: white; border-radius: 50%; cursor: pointer; font-size: 14px; padding: 0 5.5px; }
             .preview-thumbnail .remove-image:hover { background-color: rgba(255, 0, 0, 0.3); }
+            .agent-box .text h3 { font-size: inherit!important; }
             @media screen and (min-width: 780px) {
                 #contactInfo { max-width: 90%; }
             }
