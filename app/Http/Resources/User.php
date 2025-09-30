@@ -13,6 +13,19 @@ class User extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        if (!empty($this->currency)) {
+            if ($this->currency == 'USD') {
+                $currency = '$';
+            }
+
+            if ($this->currency == 'CDF') {
+                $currency = 'FC';
+            }
+
+        } else {
+            $currency = null;
+        }
+
         return [
             'id' => $this->id,
             'firstname' => $this->firstname,
@@ -26,7 +39,7 @@ class User extends JsonResource
             'address_1' => $this->address_1,
             'address_2' => $this->address_2,
             'p_o_box' => $this->p_o_box,
-            'currency' => !empty($this->currency) ? ($this->currency == 'USD' ? '$' : ($this->currency == 'CDF' ? 'FC' : null)) : null,
+            'currency' => $currency,
             'email' => $this->email,
             'phone' => $this->phone,
             'email_verified_at' => $this->email_verified_at,

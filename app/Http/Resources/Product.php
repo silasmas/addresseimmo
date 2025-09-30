@@ -30,13 +30,26 @@ class Product extends JsonResource
             $price = $this->price;
         }
 
+        if (!empty($this->currency)) {
+            if ($this->currency == 'USD') {
+                $currency = '$';
+            }
+
+            if ($this->currency == 'CDF') {
+                $currency = 'FC';
+            }
+
+        } else {
+            $currency = null;
+        }
+
         return [
             'id' => $this->id,
             'product_name' => $this->product_name,
             'product_description' => $this->product_description,
             'quantity' => $this->quantity,
             'price' => formatDecimalNumber($this->price),
-            'currency' => !empty($this->currency) ? ($this->currency == 'USD' ? '$' : ($this->currency == 'CDF' ? 'FC' : null)) : null,
+            'currency' => $currency,
             'action' => $this->action,
             'country' => $this->country,
             'city' => $this->city,
