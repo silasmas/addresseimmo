@@ -13,7 +13,7 @@
                                 <div class="col-sm-6">
                                     <div class="property-item mb-30">
                                         <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img">
-                                            <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" style="height: 100px; object-fit: cover;" />
+                                            <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
                                         </a>
 
                                         <div class="property-content">
@@ -24,8 +24,15 @@
 
                                                 <div class="specs d-flex mb-4">
                                                     <span class="d-block d-flex align-items-center me-3">
-                                                        <span class="caption">{!! Str::limit($product['product_description'], 70) !!}</span>
+                                                        <span class="{{ $product['category']['category_name']['icon'] }} me-2"></span>
+                                                        <span class="caption">{{ $product['category']['category_name'] }}</span>
                                                     </span>
+    @if (!empty($product['type']))
+                                                    <span class="d-block d-flex align-items-center">
+                                                        <span class="bi bi-flag me-2"></span>
+                                                        <span class="caption">{{ $product['type'] }}</span>
+                                                    </span>
+    @endif
                                                 </div>
 
                                                 <a href="{{ route('product.datas', ['id' => $product['id']]) }}"

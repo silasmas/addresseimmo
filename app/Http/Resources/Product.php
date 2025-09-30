@@ -61,6 +61,7 @@ class Product extends JsonResource
             'is_shared' => $this->is_shared,
             'type' => $this->type,
             'user' => User::make($this->user),
+            'category' => Category::make($this->category),
             'photos' => File::collection($this->photos),
             'videos' => File::collection($this->videos),
             'audios' => File::collection($this->audios),
