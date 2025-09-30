@@ -327,7 +327,7 @@
                                     <li><a href="{{ route('account.entity', ['entity' => 'offers', 'action' => 'sell']) }}"><i class="bi bi-cash-coin me-2"></i>Vente</a></li>
                                     <li><a href="{{ route('product.entity', ['entity' => 'moving']) }}"><i class="bi bi-luggage me-2"></i>Déménagement</a></li>
                                     <li><a href="{{ route('product.entity', ['entity' => 'build']) }}"><i class="bi bi-bricks me-2"></i>Construction</a></li>
-                                    <li><a href="{{ route('product.entity', ['entity' => 'design']) }}"><i class="bi bi-megaphone me-2"></i>Décoration intérieure</a></li>
+                                    <li><a href="{{ route('product.entity', ['entity' => 'design']) }}"><i class="bi bi-droplet-half me-2"></i>Décoration intérieure</a></li>
                                 </ul>
                             </li>
                             <li class="{{ Route::is('about') ? 'active' : '' }}"><a href="{{ route('about') }}">A propos</a></li>
