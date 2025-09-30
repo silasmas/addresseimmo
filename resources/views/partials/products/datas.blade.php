@@ -1,4 +1,4 @@
-{{ dd($selected_product) }}
+{{ dd($selected_product->resolve()) }}
         <div class="hero page-inner overlay" style="background-image: url('../../images/hero_bg_3.jpg')">
             <div class="container">
                 <div class="row justify-content-center align-items-center">
