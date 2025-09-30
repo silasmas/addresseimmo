@@ -24,7 +24,7 @@
 
                                                 <div class="specs d-flex mb-4">
                                                     <span class="d-block d-flex align-items-center me-3">
-                                                        <span class="{{ $product['category']['category_name']['icon'] }} me-2"></span>
+                                                        <span class="{{ $product['category']['icon'] }} me-2"></span>
                                                         <span class="caption">{{ $product['category']['category_name'] }}</span>
                                                     </span>
     @if (!empty($product['type']))
