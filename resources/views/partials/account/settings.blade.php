@@ -52,7 +52,7 @@
 
                                     <div class="col-lg-4 col-sm-6">
                                         <label for="currency" class="form-label fw-bold">Devise</label>
-                                        <select name="currency" id="currency">
+                                        <select name="currency" id="currency" class="form-select">
                                             <option>USD</option>
                                             <option>CDF</option>
                                         </select>
