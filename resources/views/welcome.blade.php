@@ -107,7 +107,7 @@
                                     </a>
 
                                     <div class="property-content">
-                                        <div class="price mb-2"><span>{{ $product['converted_price'] . ' ' . $current_user['readable_currency'] }}</span></div>
+                                        <div class="price mb-2"><span>{{ $product['converted_price'] . ' ' . $product['readable_currency'] }}</span></div>
                                         <div>
                                             <span class="d-block mb-2 text-black-50">{{ $product['product_name'] }}</span>
                                             <span class="city d-block mb-3">{{ $product['city'] . ', ' . $product['country'] }}</span>
