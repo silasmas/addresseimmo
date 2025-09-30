@@ -605,7 +605,7 @@
                     e.preventDefault();
 
                     // Afficher l'animation de chargement
-                    $('#loading-icon').show();
+                    $('#loading-icon').removeClass('d-none');
 
                     // Effacer les alertes précédentes
                     $('#ajax-alert-container').empty();
@@ -627,16 +627,17 @@
                         processData: false,
                         success: function (response) {
                             // Cacher l'animation de chargement
-                            $('#loading-icon').hide();
+                            $('#loading-icon').addClass('d-none');
 
                             // Afficher une alerte de succès
-                            $('#ajax-alert-container').html(`<div style="position: fixed; z-index: 9999; width: 100%; display: flex; justify-content: center;">
-                                                                <div class="alert alert-success alert-dismissible" role="alert" style="width: 500px;">
-                                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Fermer">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                    <i class="bi bi-check-circle" style="margin-right: 8px; vertical-align: -2px;"></i>
-                                                                    ${response.message || 'Produit ajouté avec succès !'}
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> ${response.message || 'Produit ajouté avec succès !'}
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>`);
 
@@ -653,16 +654,17 @@
                         },
                         error: function (error) {
                             // Cacher l'animation de chargement
-                            $('#loading-icon').hide();
+                            $('#loading-icon').addClass('d-none');
 
                             // Afficher une alerte d'erreur
-                            $('#ajax-alert-container').html(`<div style="position: fixed; z-index: 9999; width: 100%; display: flex; justify-content: center;">
-                                                                <div class="alert alert-danger alert-dismissible" role="alert" style="width: 500px;">
-                                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Fermer">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                    <i class="bi bi-exclamation-triangle" style="margin-right: 8px; vertical-align: -2px;"></i>
-                                                                    {{ __('notifications.error_while_processing') }}
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> {{ __('notifications.error_while_processing') }}
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>`);
                         }
