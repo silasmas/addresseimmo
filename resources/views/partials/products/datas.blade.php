@@ -4,17 +4,14 @@
                 <div class="row justify-content-center align-items-center">
                     <div class="col-lg-9 text-center mt-5">
                         <h1 class="heading" data-aos="fade-up">
-                            5232 California AVE. 21BC
+                            {{ $entity_title }}
                         </h1>
 
                         <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
                             <ol class="breadcrumb text-center justify-content-center">
-                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                <li class="breadcrumb-item">
-                                    <a href="{{ route('product.entity', ['entity' => $entity]) }}">Propriétés</a>
-                                </li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Accueil</a></li>
                                 <li class="breadcrumb-item active text-white-50" aria-current="page">
-                                    5232 California AVE. 21BC
+                                    {{ $entity_title }}
                                 </li>
                             </ol>
                         </nav>
