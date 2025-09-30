@@ -47,7 +47,7 @@
                             <div class="text">
                                 <h3 class="mb-0 fw-bold">{{ $selected_product->user->firstname . ' ' . $selected_product->user->lastname }}</h3>
                                 <div class="meta mb-3">{{ $selected_product->user->selected_role->role_name }}</div>
-                                <p class="small fst-italic">Date de publication: {{ $selected_product->created_at_explicit }}</p>
+                                <p class="small fst-italic">Date de publication : {{ $selected_product->created_at_explicit }}</p>
                             </div>
                         </div>
                     </div>
