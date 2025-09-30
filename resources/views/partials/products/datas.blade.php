@@ -43,6 +43,9 @@
                         </pre>
 
                         <p class="meta mt-0"><u>Prix</u> : {{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</p>
+
+                        <p class="meta"><u>Action</u> : {{ $selected_product['readable_action'] }}</p>
+
                         <p class="mt-4 mb-0">
                             <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                         </p>
