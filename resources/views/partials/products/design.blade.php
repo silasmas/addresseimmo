@@ -89,11 +89,14 @@
                     </div>
 @endforelse
                 </div>
+
+@if ($design_products_req->total() > 0)
                 <div class="row align-items-center py-5">
                     <div class="col-lg-3">Pagination ({{ $design_products_req->lastPage() }} sur {{ $design_products_req->total() }})</div>
                     <div class="col-lg-6 text-center">
                         {{ $design_products_req->links() }}
                     </div>
                 </div>
+@endif
             </div>
         </div>

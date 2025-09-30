@@ -51,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
             $service_categories = Category::where('for_service', 1)->get();
             $recent_properties = Product::mostRecent(7);
             $popular_services = Product::popularServices(7, 'monthly');
+            $buy_products = Product::whereHas('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $sell_products = Product::doesntHave('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $rent_products = Product::doesntHave('customer_orders')->where('action', 'rent')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $build_products = Product::doesntHave('customer_orders')->where('action', 'build')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
@@ -68,6 +69,8 @@ class AppServiceProvider extends ServiceProvider
             $view->with('recent_properties', ResourcesProduct::collection($recent_properties)->resolve());
             $view->with('popular_services', ResourcesProduct::collection($popular_services)->resolve());
             // Statistics
+            $view->with('buy_products', ResourcesProduct::collection($buy_products)->resolve());
+            $view->with('buy_products_req', $buy_products);
             $view->with('sell_products', ResourcesProduct::collection($sell_products)->resolve());
             $view->with('sell_products_req', $sell_products);
             $view->with('rent_products', ResourcesProduct::collection($rent_products)->resolve());
