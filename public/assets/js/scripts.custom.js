@@ -108,10 +108,10 @@ $(function () {
     });
 
     /* jQuery DateTime picker */
-    jQuery('#outflow_date, [id^="end_date"]').datetimepicker({
-        format: 'd/m/Y H:i'
-    });
-    jQuery.datetimepicker.setLocale('fr');
+    // jQuery('#outflow_date, [id^="end_date"]').datetimepicker({
+    //     format: 'd/m/Y H:i'
+    // });
+    // jQuery.datetimepicker.setLocale('fr');
 
     // AVATAR with ajax
     $('#avatar').on('change', function (e) {

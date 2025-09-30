@@ -44,6 +44,7 @@
             textarea { resize: none; }
             #showPassword i, #showConfirmPassword i, #showNewPassword i, #showConfirmNewPassword i { font-size: 1.6rem; }
             #offerForm label { font-size: 14px; }
+            #offerForm .form-control { height: 2.3rem; }
             .menu-bg-wrap { background-color: #167c02; }
             .site-footer a { text-decoration: none!important; }
             #main-search .nav-link.active { font-weight: bold; color: black !important; border-bottom: 2px solid green !important; }
@@ -131,17 +132,32 @@
         <div class="modal fade" id="addOfferModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header py-0 border-bottom-0">
-                        <button type="button" class="btn-close mt-2" data-bs-dismiss="modal" aria-label="@lang('miscellaneous.close')"></button>
+                    <div class="modal-header adrm-bg-green text-center">
+                        <button type="button" class="btn-close btn-sm position-absolute rounded-circle" style="top: 1rem; right: 1rem; background-color: rgba(300, 300, 300, 0.5);" data-bs-dismiss="modal" aria-label="@lang('miscellaneous.close')"></button>
+
+                        <h2 class="modal-title w-100 text-white" style="font-weight: 500;">Publier une offre</h2>
                     </div>
 
-                    <div class="modal-body pt-0">
-                        <h2 class="text-center" style="font-weight: 700;">Publier une offre</h2>
-                        <hr>
-
-                        <form id="offerForm" action="{{ route('product.home') }}" method="POST">
+                    <div class="modal-body">
+                        <form id="offerForm" action="{{ route('product.home') }}" method="POST" enctype="multipart/form-data">
     @csrf
                             <div class="row g-3">
+                                <!-- Is service -->
+                                <div class="col-12 text-center">
+                                    <label class="form-label">L'offre est-elle un service ?</label>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_service" id="service_yes" value="1">
+                                            <label class="form-check-label" for="service_yes">Oui</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_service" id="service_no" value="0">
+                                            <label class="form-check-label" for="service_no">Non</label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Product name -->
                                 <div class="col-sm-6 col-12">
                                     <label for="product_name" class="form-label mb-0">Nom de l'offre</label>
@@ -165,19 +181,31 @@
                                     </select>
                                 </div>
 
-                                <!-- Price -->
-                                <div class="col-sm-6 col-6">
-                                    <label for="price" class="form-label mb-0">Prix</label>
-                                    <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                                <!-- Type -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="type" class="form-label mb-0">Type</label>
+                                    <select class="form-select" id="type" name="type">
+                                        <option class="small" disabled selected>Choisir un type</option>
+                                        <option value="equipped_house">Maison équipée</option>
+                                        <option value="empty_house">Maison vide</option>
+                                        <option value="unfinished_house">Maison inachevée</option>
+                                        <option value="equipped_apartment">Appartement équipé</option>
+                                        <option value="empty_apartment">Appartement vide</option>
+                                        <option value="empty_plot">Parcelle vide</option>
+                                        <option value="house_plot">Concession maisons</option>
+                                    </select>
                                 </div>
 
-                                <!-- Currency -->
-                                <div class="col-sm-6 col-6">
-                                    <label for="currency" class="form-label mb-0">Devise</label>
-                                    <select class="form-select" id="currency" name="currency">
-                                        <option class="small" disabled>Choisir devise</option>
-                                        <option>USD</option>
-                                        <option>CDF</option>
+                                <!-- Category -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="category_id" class="form-label mb-0">@lang('miscellaneous.admin.product.data.category')</label>
+                                    <select class="form-select" id="category_id" name="category_id">
+                                        <option class="small" disabled selected>Choisir un type</option>
+    @forelse ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+    @empty
+                                        <option disabled>@lang('miscellaneous.empty_list')</option>
+    @endforelse
                                     </select>
                                 </div>
 
@@ -196,51 +224,52 @@
                                 <!-- City -->
                                 <div class="col-sm-6 col-12">
                                     <label for="city" class="form-label mb-0">Ville</label>
-                                    <input type="text" class="form-control" id="city" name="city" required>
+                                    <input type="text" class="form-control" id="city" name="city">
                                 </div>
 
                                 <!-- Address -->
                                 <div class="col-sm-6 col-12">
-                                    <label for="address" class="form-label mb-0">Description</label>
+                                    <label for="address" class="form-label mb-0">Adresse</label>
                                     <textarea class="form-control" id="address" name="address" rows="2"></textarea>
                                 </div>
 
-                                <!-- Is service -->
-                                <div class="col-sm-6 col-12 text-center">
-                                    <label class="form-label">Est-ce un service ?</label>
-                                    <div class="d-flex justify-content-center">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_service" id="service_yes" value="1">
-                                            <label class="form-check-label" for="service_yes">Oui</label>
-                                        </div>
-
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_service" id="service_no" value="0">
-                                            <label class="form-check-label" for="service_no">Non</label>
-                                        </div>
-                                    </div>
+                                <!-- Municipality -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="municipality" class="form-label mb-0">Commune / Zone</label>
+                                    <input type="text" class="form-control" id="municipality" name="municipality">
                                 </div>
 
-                                <!-- Type -->
+                                <!-- Neighborhood -->
                                 <div class="col-sm-6 col-12">
-                                    <label for="type" class="form-label mb-0">Type</label>
-                                    <select class="form-select" id="type" name="type">
-                                        <option value="house">Maison</option>
-                                        <option value="apartment">Appartement</option>
-                                        <option value="plot">Parcelle</option>
-                                        <option value="equipment">Equipement</option>
-                                    </select>
+                                    <label for="neighborhood" class="form-label mb-0">Quartier</label>
+                                    <input type="text" class="form-control" id="neighborhood" name="neighborhood">
                                 </div>
 
-                                <!-- Category -->
+                                <!-- Street -->
                                 <div class="col-sm-6 col-12">
-                                    <label for="category_id" class="form-label mb-0">@lang('miscellaneous.admin.product.data.category')</label>
-                                    <select class="form-select" id="category_id" name="category_id">
-    @forelse ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
-    @empty
-                                        <option disabled>@lang('miscellaneous.empty_list')</option>
-    @endforelse
+                                    <label for="street" class="form-label mb-0">Avenue</label>
+                                    <input type="text" class="form-control" id="street" name="street">
+                                </div>
+
+                                <!-- Quantity -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="quantity" class="form-label mb-0">Quantité</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" step="1">
+                                </div>
+
+                                <!-- Price -->
+                                <div class="col-sm-6 col-6">
+                                    <label for="price" class="form-label mb-0">Prix</label>
+                                    <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                                </div>
+
+                                <!-- Currency -->
+                                <div class="col-sm-6 col-6">
+                                    <label for="currency" class="form-label mb-0">Devise</label>
+                                    <select class="form-select" id="currency" name="currency">
+                                        <option class="small" disabled>Choisir devise</option>
+                                        <option>USD</option>
+                                        <option>CDF</option>
                                     </select>
                                 </div>
 
@@ -256,7 +285,7 @@
                             </div>
 
                             <div style="display: flex; justify-content: flex-start;">
-                                <button type="submit" class="btn adrm-btn-green rounded-pill" style="width: 250px">
+                                <button type="submit" class="btn adrm-btn-red rounded-pill" style="width: 250px">
                                     <span style="color: #fff;">@lang('miscellaneous.register')</span>
                                 </button>
                                 <img id="loading-icon" class="ms-2 d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="" width="40" height="40">
@@ -361,6 +390,32 @@
             </div>
         </nav>
 
+        <div id="ajax-alert-container"></div>
+@if (\Session::has('success_message'))
+        <div class="position-relative">
+            <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                <div class="col-lg-4 col-sm-6 mx-auto">
+                    <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
+                        <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> {!! \Session::get('success_message') !!}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+@endif
+@if (\Session::has('error_message'))
+        <div class="position-relative">
+            <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                <div class="col-lg-4 col-sm-6 mx-auto">
+                    <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> {!! \Session::get('error_message') !!}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+@endif
+
 @yield('app-content')
 
         <div class="site-footer">
@@ -457,7 +512,7 @@
         <script type="text/javascript" src="{{ asset('assets/addons/jquery/js/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/addons/jquery/jquery-ui/jquery-ui.min.js') }}"></script>
         {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/i18n/jquery-ui-i18n.min.js"></script> --}}
-        <script type="text/javascript" src="{{ asset('assets/addons/jquery/datetimepicker/js/jquery.datetimepicker.full.min.js') }}"></script>
+        {{-- <script type="text/javascript" src="{{ asset('assets/addons/jquery/datetimepicker/js/jquery.datetimepicker.full.min.js') }}"></script> --}}
         <script type="text/javascript" src="{{ asset('assets/js/property/bootstrap.bundle.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/addons/mdb/js/mdb.umd.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/property/tiny-slider.js') }}"></script>
@@ -492,12 +547,10 @@
                             const fileName = file.name;
 
                             // Créer l'élément de la vignette avec la croix
-                            const imageThumbnail = $(`
-                            <div class="preview-thumbnail">
-                                <img src="${imageUrl}" alt="${fileName}" />
-                                <span class="remove-image">&times;</span>
-                                </div>
-                                `);
+                            const imageThumbnail = $(`<div class="preview-thumbnail">
+                                                        <img src="${imageUrl}" alt="${fileName}" />
+                                                        <span class="remove-image">&times;</span>
+                                                    </div>`);
 
                             // Ajouter la vignette au conteneur
                             imagePreviewContainer.append(imageThumbnail);
@@ -525,6 +578,90 @@
                     });
                 });
 
+                /**
+                 * Modal event
+                 */
+                var offerModal = new bootstrap.Modal(document.getElementById('addOfferModal'), { keyboard: false });
+
+                $('#addOfferModal').on('shown.bs.modal', function () {
+                    // Code to execute when the modal is fully shown
+                    console.log('The modal is now fully visible!');
+
+                    // For example, focusing an input field inside the modal:
+                    $('#product_name').focus(); // Replace 'myInput' with the ID of your input
+                });
+
+                /**
+                 * Ajax to send
+                 */
+                /* Offer form */
+                $('#offerForm').on('submit', function (e) {
+                    e.preventDefault();
+
+                    // Afficher l'animation de chargement
+                    $('#loading-icon').show();
+
+                    // Effacer les alertes précédentes
+                    $('#ajax-alert-container').empty();
+
+                    var formData = new FormData(this);
+
+                    // Ajouter les images à FormData (dans le cas où il y en a)
+                    var images = $('#files_urls')[0].files;
+
+                    for (var i = 0; i < images.length; i++) {
+                        formData.append('files_urls[' + i + ']', images[i]);
+                    }
+
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            // Cacher l'animation de chargement
+                            $('#loading-icon').hide();
+
+                            // Afficher une alerte de succès
+                            $('#ajax-alert-container').html(`<div style="position: fixed; z-index: 9999; width: 100%; display: flex; justify-content: center;">
+                                                                <div class="alert alert-success alert-dismissible" role="alert" style="width: 500px;">
+                                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Fermer">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                    <i class="bi bi-check-circle" style="margin-right: 8px; vertical-align: -2px;"></i>
+                                                                    ${response.message || 'Produit ajouté avec succès !'}
+                                                                </div>
+                                                            </div>`);
+
+                            // Optionnellement, fermer le modal après un succès
+                            offerModal.hide();
+
+                            // Réinitialiser tous les champs du formulaire
+                            $('#offerForm')[0].reset();
+
+                            // Réinitialiser le champ de fichiers (images)
+                            $('#files_urls').val(null);
+
+                            location.reload();
+                        },
+                        error: function (error) {
+                            // Cacher l'animation de chargement
+                            $('#loading-icon').hide();
+
+                            // Afficher une alerte d'erreur
+                            $('#ajax-alert-container').html(`<div style="position: fixed; z-index: 9999; width: 100%; display: flex; justify-content: center;">
+                                                                <div class="alert alert-danger alert-dismissible" role="alert" style="width: 500px;">
+                                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Fermer">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                    <i class="bi bi-exclamation-triangle" style="margin-right: 8px; vertical-align: -2px;"></i>
+                                                                    {{ __('notifications.error_while_processing') }}
+                                                                </div>
+                                                            </div>`);
+                        }
+                    });
+                });
             });
         </script>
     </body>
