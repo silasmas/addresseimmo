@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <h2 class="heading text-primary mb-4">{{ $selected_product['product_name'] }}</h2>
+                        <h2 class="heading adrm-text-green mb-4 fw-bold">{{ $selected_product['product_name'] }}</h2>
                         <p class="meta">{{ $selected_product['address'] }}</p>
                         <pre class="text-black-50">
 {{ $selected_product['product_description'] }}
