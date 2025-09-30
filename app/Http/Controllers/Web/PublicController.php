@@ -238,11 +238,11 @@ class PublicController extends Controller
         $items = [];
 
         if ($entity == 'sell') {
-            $entity_title = 'Vente propriétés ou équipements';
+            $entity_title = 'Propriétés / équipements à vendre';
         }
 
         if ($entity == 'rent') {
-            $entity_title = 'Location maisons, appartements, etc.';
+            $entity_title = 'Maisons / appartements à louer';
         }
 
         if ($entity == 'build') {
