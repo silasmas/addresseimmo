@@ -34,7 +34,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-5">
                         <h2 class="heading adrm-text-green mb-4">{{ $selected_product['product_name'] }}</h2>
                         <p class="meta">{{ $selected_product['address'] }}</p>
                         <pre class="text-black-50">
