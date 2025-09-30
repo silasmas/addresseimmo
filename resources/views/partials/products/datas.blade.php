@@ -43,7 +43,7 @@
                         </pre>
 
                         <p class="meta"><u>Prix</u> : {{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</p>
-                        <p class="mb-0">
+                        <p class="mt-3 mb-0">
                             <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                         </p>
 @if ($selected_product['user_id'] == $current_user['id'])
