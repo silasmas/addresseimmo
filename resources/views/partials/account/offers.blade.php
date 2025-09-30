@@ -12,8 +12,8 @@
 @forelse ($items as $product)
                                 <div class="col-sm-6">
                                     <div class="property-item mb-30">
-                                        <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img d-inline-block" style="max-height: 100px;">
-                                            <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
+                                        <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img">
+                                            <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" style="height: 100px!important; object-fit: cover;" />
                                         </a>
 
                                         <div class="property-content">
