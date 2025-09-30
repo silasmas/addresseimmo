@@ -19,7 +19,16 @@ class Product extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $current_user = $request->user();
+        // Vérifier si l'utilisateur est connecté
+        if ($user = auth()->user()) {
+            // Si l'utilisateur est connecté, récupérer sa devise
+            $userCurrency = $user->currency;
+            // Convertir le prix en fonction de la devise de l'utilisateur
+            $price = $this->convertPrice($userCurrency);
+        } else {
+            // Si l'utilisateur n'est pas connecté, retourner le prix d'origine
+            $price = $this->price;
+        }
 
         return [
             'id' => $this->id,
@@ -38,7 +47,7 @@ class Product extends JsonResource
             'is_shared' => $this->is_shared,
             'type' => $this->type,
             'user' => User::make($this->user),
-            'converted_price' => $current_user ? formatDecimalNumber($this->convertPrice($current_user->currency)) : formatDecimalNumber($this->price),
+            'converted_price' => formatDecimalNumber($price),
             'photos' => File::collection($this->photos),
             'videos' => File::collection($this->videos),
             'audios' => File::collection($this->audios),
