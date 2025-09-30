@@ -101,28 +101,32 @@
                         <div class="property-slider-wrap">
                             <div class="property-slider">
         @foreach ($recent_properties as $product)
-                                <div class="property-item">
-                                    <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img">
+                                <div class="property-item mb-30">
+                                    <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img d-inline-block" style="height: 300px; overflow: hidden;">
                                         <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
                                     </a>
 
                                     <div class="property-content">
-            @php
-                $priceUserConnected = $product['converted_price'] . ' ' . $current_user['currency'];
-                $priceUserNotConnected = $product['price'] . ' ' . $product['currency'];
-            @endphp
-                                        <div class="price mb-2"><span>{{ !empty($current_user) ? ($current_user['currency'] != $product['currency'] ? $priceUserConnected : $priceUserNotConnected) : $priceUserNotConnected }}</span></div>
+                                        <div class="price mb-2"><span>{{ $product['converted_price'] . ' ' . $current_user['readable_currency'] }}</span></div>
                                         <div>
-                                            <span class="d-block mb-2 text-black-50">{{ $product['address'] }}</span>
+                                            <span class="d-block mb-2 text-black-50">{{ $product['product_name'] }}</span>
                                             <span class="city d-block mb-3">{{ $product['city'] . ', ' . $product['country'] }}</span>
 
                                             <div class="specs d-flex mb-4">
                                                 <span class="d-block d-flex align-items-center me-3">
-                                                    <span class="caption">{!! Str::limit($product['product_description'], 70) !!}</span>
+                                                    <span class="{{ $product['category']['icon'] }} me-2"></span>
+                                                    <span class="caption">{{ $product['category']['category_name'] }}</span>
                                                 </span>
+            @if (!empty($product['type']))
+                                                <span class="d-block d-flex align-items-center">
+                                                    <span class="{{ $product['readable_icon'] }} me-2"></span>
+                                                    <span class="caption">{{ $product['readable_type'] }}</span>
+                                                </span>
+            @endif
                                             </div>
 
-                                            <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
+                                            <a href="{{ route('product.datas', ['id' => $product['id']]) }}"
+                                                class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
                                         </div>
                                     </div>
                                 </div>
