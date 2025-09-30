@@ -22,7 +22,7 @@
 
         <div class="section">
             <div class="container">
-                <div class="row g-4">
+                <div class="row g-5">
                     <div class="col-lg-7">
                         <div class="img-property-slide-wrap">
                             <div class="img-property-slide">
