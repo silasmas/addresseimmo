@@ -42,9 +42,28 @@
 {{ $selected_product['product_description'] }}
                         </pre>
 
-                        <p class="m-0"><u>Prix</u> : {{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</p>
-                        <p class="m-0"><u>Action</u> : <strong>{{ $selected_product['readable_action'] }}</strong></p>
-
+                        <p class="meta m-0"><u>Catégorie</u> : <strong>{{ $selected_product['category']['category_name'] }}</strong></p>
+                        <p class="meta m-0"><u>Type</u> : <strong>{{ $selected_product['readable_type'] }}</strong></p>
+                        <p class="meta m-0"><u>Action</u> : <strong>{{ $selected_product['readable_action'] }}</strong></p>
+                        <p class="meta m-0"><u>Prix</u> : <strong>{{ $selected_product['converted_price'] . ' ' . $selected_product['readable_currency'] }}</strong></p>
+@if (!empty($selected_product['country']))
+                        <p class="meta m-0"><u>Pays</u> : <strong>{{ $selected_product['country'] }}</strong></p>
+@endif
+@if (!empty($selected_product['city']))
+                        <p class="meta m-0"><u>Ville</u> : <strong>{{ $selected_product['city'] }}</strong></p>
+@endif
+@if (!empty($selected_product['address']))
+                        <p class="meta m-0"><u>Adresse</u> : <strong>{{ $selected_product['address'] }}</strong></p>
+@endif
+@if (!empty($selected_product['municipality']))
+                        <p class="meta m-0"><u>Commune / Zone</u> : <strong>{{ $selected_product['municipality'] }}</strong></p>
+@endif
+@if (!empty($selected_product['neighborhood']))
+                        <p class="meta m-0"><u>Quartier</u> : <strong>{{ $selected_product['neighborhood'] }}</strong></p>
+@endif
+@if (!empty($selected_product['street']))
+                        <p class="meta m-0"><u>Avenue</u> : <strong>{{ $selected_product['street'] }}</strong></p>
+@endif
                         <p class="mt-4 mb-0">
                             <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                         </p>
