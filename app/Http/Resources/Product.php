@@ -21,6 +21,7 @@ class Product extends JsonResource
     {
         $type = null;
         $icon = null;
+        $action = null;
 
         switch ($this->type) {
             case 'equipped_house':
@@ -64,6 +65,32 @@ class Product extends JsonResource
                 break;
         }
 
+        switch ($this->action) {
+            case 'sell':
+                $action = 'A vendre';
+                break;
+
+            case 'rent':
+                $action = 'A louer';
+                break;
+
+            case 'build':
+                $action = 'Service de construction';
+                break;
+
+            case 'design':
+                $action = 'Décoration intérieure';
+                break;
+
+            case 'moving':
+                $action = 'Service de déménagement';
+                break;
+
+            default:
+                $action = null;
+                break;
+        }
+
         // Vérifier si l'utilisateur est connecté
         if ($user = auth()->user()) {
             // Si l'utilisateur est connecté, récupérer sa devise
@@ -97,6 +124,7 @@ class Product extends JsonResource
             'converted_price' => formatIntegerNumber($price),
             'readable_currency' => $currency,
             'action' => $this->action,
+            'readable_action' => $action,
             'country' => $this->country,
             'city' => $this->city,
             'address' => $this->address,
