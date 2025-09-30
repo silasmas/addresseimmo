@@ -25,7 +25,7 @@ class Product extends JsonResource
         switch ($this->type) {
             case 'equipped_house':
                 $type = 'Maison équipée';
-                $icon = 'bi bi-house';
+                $icon = 'bi bi-house-heart';
                 break;
 
             case 'empty_house':
