@@ -34,7 +34,7 @@
                                                         <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); updateProductQuantity('increment', {{ $item['id'] }});">
                                                             <i class="fa fa-angle-up"></i>
                                                         </a>
-		@if ($item['quantity'] > 0)
+		@if ($item['quantity'] > 1)
                                                         <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); updateProductQuantity('decrement', {{ $item['id'] }});">
                                                             <i class="fa fa-angle-down"></i>
                                                         </a>
