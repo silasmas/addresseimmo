@@ -30,9 +30,9 @@
                                             <td>{{ $item['quantity'] }}</td>
                                             <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>
-                                                <button class="btn btn-secondary px-2 py-1 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
+                                                <a role="button" class="btn btn-secondary px-2 py-1 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
                                                     <i class="bi bi-x-lg"></i>
-                                                </button>
+                                                </a>
                                             </td>
                                         </tr>
     @endforeach
