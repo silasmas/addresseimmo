@@ -52,11 +52,47 @@ class AppServiceProvider extends ServiceProvider
             $recent_properties = Product::mostRecent(7);
             $popular_services = Product::popularServices(7, 'monthly');
             $buy_products = Product::whereHas('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
-            $sell_products = Product::doesntHave('customer_orders')->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
-            $rent_products = Product::doesntHave('customer_orders')->where('action', 'rent')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
-            $build_products = Product::doesntHave('customer_orders')->where('action', 'build')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
-            $design_products = Product::doesntHave('customer_orders')->where('action', 'design')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
-            $moving_products = Product::doesntHave('customer_orders')->where('action', 'moving')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $sell_products = Product::where(function ($query) {
+                                            // Condition 1 : Le produit a été commandé mais la quantité est > 0
+                                            $query->whereHas('customer_orders')->where('quantity', '>', 0);
+                                        })->orWhere(function ($query) {
+                                            // Condition 2 : Le produit n'a jamais été commandé
+                                            $query->doesntHave('customer_orders');
+                                        })->where('action', 'sell')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $rent_products = Product::where(function ($query) {
+                                            // Condition 1 : Le produit a été commandé mais la quantité est > 0
+                                            $query->whereHas('customer_orders')->where('quantity', '>', 0);
+                                        })
+                                        ->orWhere(function ($query) {
+                                            // Condition 2 : Le produit n'a jamais été commandé
+                                            $query->doesntHave('customer_orders');
+                                        })->where('action', 'rent')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $build_products = Product::where(function ($query) {
+                                            // Condition 1 : Le produit a été commandé mais la quantité est > 0
+                                            $query->whereHas('customer_orders')->where('quantity', '>', 0);
+                                        })
+                                        ->orWhere(function ($query) {
+                                            // Condition 2 : Le produit n'a jamais été commandé
+                                            $query->doesntHave('customer_orders');
+                                        })->where('action', 'build')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $design_products = Product::where(function ($query) {
+                                            // Condition 1 : Le produit a été commandé mais la quantité est > 0
+                                            $query->whereHas('customer_orders')
+                                            ->where('quantity', '>', 0);
+                                        })
+                                        ->orWhere(function ($query) {
+                                            // Condition 2 : Le produit n'a jamais été commandé
+                                            $query->doesntHave('customer_orders');
+                                        })->where('action', 'design')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $moving_products = Product::where(function ($query) {
+                                            // Condition 1 : Le produit a été commandé mais la quantité est > 0
+                                            $query->whereHas('customer_orders')
+                                            ->where('quantity', '>', 0);
+                                        })
+                                        ->orWhere(function ($query) {
+                                            // Condition 2 : Le produit n'a jamais été commandé
+                                            $query->doesntHave('customer_orders');
+                                        })->where('action', 'moving')->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $agents = User::whereHas('roles', function ($query) { $query->where('role_name', 'Agent'); })->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $customer_feedbacks = CustomerFeedback::orderByDesc('created_at')->paginate(7)->appends(request()->query());
 
