@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Xanders
  * @see https://team.xsamtech.com/xanderssamoth
@@ -20,6 +21,14 @@ Route::get('/products', [PublicController::class, 'products'])->name('product.ho
 Route::get('/products/{id}', [PublicController::class, 'productDatas'])->whereNumber('id')->name('product.datas');
 Route::get('/products/{entity}', [PublicController::class, 'productEntity'])->name('product.entity');
 Route::post('/products/{entity}', [PublicController::class, 'addProductEntity']);
+// Payment
+Route::get('/pay', [PublicController::class, 'pay'])->name('pay');
+Route::post('/pay', [PublicController::class, 'runPay']);
+Route::get('/transaction_waiting', [PublicController::class, 'transactionWaiting'])->name('transaction.waiting');
+Route::get('/transaction_message/{orderNumber}', [PublicController::class, 'transactionMessage'])->name('transaction.message');
+Route::get('/paid/{amount}/{currency}/{code}/{entity}/{entity_id}', [PublicController::class, 'paid'])->whereNumber(['amount', 'code', 'cart_id'])->name('paid');
+// Delete something
+Route::delete('/delete/{entity}/{id}', [PublicController::class, 'removeData'])->whereNumber('id')->name('data.delete');
 
 Route::middleware('auth')->group(function () {
     Route::get('/change-currency/{currency}', [PublicController::class, 'changeCurrency'])->name('change_currency');
@@ -58,8 +67,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/{entity}', [PublicController::class, 'accountEntity'])->name('account.entity');
     Route::get('/account/{entity}/{id}', [PublicController::class, 'accountDatas'])->whereNumber('id')->name('account.entity.datas');
     Route::post('/account/{entity}/{id}', [PublicController::class, 'updateAccountEntity'])->whereNumber('id');
-    // Delete something
-    Route::delete('/delete/{entity}/{id}', [PublicController::class, 'removeData'])->whereNumber('id')->name('data.delete');
 });
 
 require __DIR__ . '/auth.php';
