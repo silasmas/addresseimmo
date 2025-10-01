@@ -26,11 +26,13 @@
                                                     {{ $item['product']['product_name'] }}
                                                 </a>
                                             </td>
-                                            <td>{{ $item['converted_price_at_that_time'] . ' ' . $current_user['readable_currency'] }}</td>
+                                            <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>{{ $item['quantity'] }}</td>
-                                            <td>{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
+                                            <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>
-                                                <button class="btn btn-secondary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')"></button>
+                                                <button class="btn btn-secondary p-2 rounded-circle" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
                                             </td>
                                         </tr>
     @endforeach
