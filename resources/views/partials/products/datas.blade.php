@@ -51,13 +51,13 @@
 @if (!empty($current_user))
     @if ($current_user->hasProductInUnpaidCart($selected_product['id']))
                         <p class="mt-4 mb-0">
-                            <button class="btn btn-lg btn-dark"><i class="bi bi-cart3 me-2"></i>Déjà dans votre panier</button>
+                            <button class="btn btn-lg adrm-bg-green-transparent"><i class="bi bi-check me-2"></i>Déjà dans votre panier</button>
                         </p>
     @else
         @if (empty($selected_product['quantity']) || $selected_product['quantity'] > 0)
                         <div id="addToCart-{{ $selected_product['id'] }}" class="mt-4 mb-0 d-flex flex-row align-items-center">
-                            <button class="btn btn-lg adrm-btn-red me-2" data-id="{{ $selected_product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
-                            <img id="ajax-loading-{{ $selected_product['id'] }}" class="d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
+                            <button class="btn btn-lg adrm-bg-green-transparent me-2" data-id="{{ $selected_product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                            <img id="ajax-loading-{{ $selected_product['id'] }}" class="d-non" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
                         </div>
         @else
                         <p class="mt-4 mb-0">
