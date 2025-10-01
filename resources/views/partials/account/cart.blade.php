@@ -8,19 +8,19 @@
                             <div id="dataList" class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
-                                        <th>
-                                            <td>Offre</td>
-                                            <td>Prix unitaire</td>
-                                            <td>Quantité</td>
-                                            <td>Prix total</td>
-                                        </th>
+                                        <tr>
+                                            <th>Offre</th>
+                                            <th>Prix unitaire</th>
+                                            <th>Quantité</th>
+                                            <th>Prix total</th>
+                                        </tr>
                                     </thead>
 
                                     <tbody>
     @foreach ($items as $item)
                                         <tr>
                                             <td>
-                                                <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left;">
+                                                <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
                                                 <a href="{{ route('product.datas', ['id' => $item['product']['id']]) }}">
                                                     {{ $item['product']['product_name'] }}
                                                 </a>
