@@ -199,9 +199,9 @@ class User extends Authenticatable
             $totalQuantity = $quantity + ($existingOrder?->quantity ?? 0);
 
             // 5. Stock verification
-            if ($product->quantity < $totalQuantity) {
-                throw new \Exception("Stock insuffisant pour « {$product->product_name} ». (Disponible : {$product->quantity})");
-            }
+            // if ($product->quantity < $totalQuantity) {
+            //     throw new \Exception("Stock insuffisant pour « {$product->product_name} ». (Disponible : {$product->quantity})");
+            // }
 
             // 6. If the line already exists, we update its quantity
             if ($existingOrder) {
