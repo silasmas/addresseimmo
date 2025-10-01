@@ -9,7 +9,6 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <th>
-                                            <td></td>
                                             <td>Offre</td>
                                             <td>Prix unitaire</td>
                                             <td>Quantité</td>
@@ -21,9 +20,7 @@
     @foreach ($items as $item)
                                         <tr>
                                             <td>
-                                                <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50">
-                                            </td>
-                                            <td>
+                                                <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left;">
                                                 <a href="{{ route('product.datas', ['id' => $item['product']['id']]) }}">
                                                     {{ $item['product']['product_name'] }}
                                                 </a>

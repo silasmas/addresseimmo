@@ -751,7 +751,7 @@
                         url: `${currentHost}/products/add-to-cart/${productId}`,
                         method: 'POST',
                         data: {
-                            quantity: 500,
+                            quantity: 1,
                             _token: $('meta[name="csrf-token"]').attr('content')
                         },
                         success(response) {
