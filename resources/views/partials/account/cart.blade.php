@@ -30,7 +30,7 @@
                                             <td>{{ $item['quantity'] }}</td>
                                             <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>
-                                                <button class="btn btn-secondary p-2 rounded-circle" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier">
+                                                <button class="btn btn-secondary px-2 pt-1 pb-0 rounded-circle" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </td>
