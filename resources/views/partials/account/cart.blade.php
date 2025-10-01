@@ -19,7 +19,7 @@
                                     <tbody>
     @foreach ($items as $item)
                                         <tr>
-                                            <td>
+                                            <td style="max-width: 20rem;">
                                                 <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
                                                 <a href="{{ route('product.datas', ['id' => $item['product']['id']]) }}">
                                                     {{ $item['product']['product_name'] }}
