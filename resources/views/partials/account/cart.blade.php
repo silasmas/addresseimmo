@@ -71,7 +71,7 @@
 								</table>
 
 								<div class="mt-4 text-end">
-                                    <button class="btn btn-lg adrm-btn-red rounded-pill" data-toggle="modal" data-target="#payModal">Effectuer le paiement</button>
+                                    <button class="btn btn-lg adrm-btn-red rounded-pill" data-bs-toggle="modal" data-bs-target="#payModal">Effectuer le paiement</button>
                                 </div>
                             </div>
 @else
