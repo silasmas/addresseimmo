@@ -749,58 +749,6 @@ class PublicController extends Controller
             return redirect('/')->with('error_message', 'Offre non trouvée');
         }
 
-        if ($entity == 'add-to-cart') {
-            $request->validate([
-                'quantity' => 'required|integer|min:1',
-            ]);
-
-            try {
-                if (Auth::check()) {
-                    // If user is connected, we add to its normal cart
-                    $user = User::find(Auth::id());
-
-                    $user->addProductToCart($id, $request->quantity);
-
-                    $inCart = $user->hasProductInUnpaidCart($id);  // Check if product is in the cart
-                    $inStock = $product->quantity > 0;  // Check if prouct is in stock
-                    $isLoggedIn = true;
-
-                } else {
-                    // If user is connected, we store product in the session
-                    $cart = session()->get('cart', []);
-                    // Product photos
-                    $photos = $product->photos()->pluck('file_url');
-                    // Add product in the session cart
-                    $cart[$id] = [
-                        'id' => $product->id,
-                        'product_name' => $product->product_name,
-                        'product_description' => $product->product_description,
-                        'quantity' => $request->quantity,
-                        'price' => $product->price,
-                        'currency' => $product->currency,
-                        'type' => $product->type,
-                        'action' => $product->action,
-                        'photos' => $photos,
-                    ];
-
-                    session()->put('cart', $cart);
-
-                    $inCart = true;  // Le produit est dans la session "panier"
-                    $inStock = $product->quantity > 0;
-                    $isLoggedIn = false;  // L'utilisateur n'est pas connecté
-                }
-
-                return response()->json([
-                    'message' => 'Ajout réussi',
-                    'inCart' => $inCart,
-                    'inStock' => $inStock,
-                    'isLoggedIn' => $isLoggedIn,
-                ]);
-            } catch (\Exception $e) {
-                return response()->json(['message' => $e->getMessage()], 422);
-            }
-        }
-
         if ($entity == 'product') {
             $inputs = [
                 'product_name' => $request->product_name,
@@ -1006,6 +954,58 @@ class PublicController extends Controller
             return response()->json(['status' => 'success', 'message' => 'Données mises à jour']);
         }
 
+        if ($entity == 'add-to-cart') {
+            $request->validate([
+                'quantity' => 'required|integer|min:1',
+            ]);
+
+            try {
+                if (Auth::check()) {
+                    // If user is connected, we add to its normal cart
+                    $user = User::find(Auth::id());
+
+                    $user->addProductToCart($id, $request->quantity);
+
+                    $inCart = $user->hasProductInUnpaidCart($id);  // Check if product is in the cart
+                    $inStock = $product->quantity > 0;  // Check if prouct is in stock
+                    $isLoggedIn = true;
+
+                } else {
+                    // If user is connected, we store product in the session
+                    $cart = session()->get('cart', []);
+                    // Product photos
+                    $photos = $product->photos()->pluck('file_url');
+                    // Add product in the session cart
+                    $cart[$id] = [
+                        'id' => $product->id,
+                        'product_name' => $product->product_name,
+                        'product_description' => $product->product_description,
+                        'quantity' => $request->quantity,
+                        'price' => $product->price,
+                        'currency' => $product->currency,
+                        'type' => $product->type,
+                        'action' => $product->action,
+                        'photos' => $photos,
+                    ];
+
+                    session()->put('cart', $cart);
+
+                    $inCart = true;  // Le produit est dans la session "panier"
+                    $inStock = $product->quantity > 0;
+                    $isLoggedIn = false;  // L'utilisateur n'est pas connecté
+                }
+
+                return response()->json([
+                    'message' => 'Ajout réussi',
+                    'inCart' => $inCart,
+                    'inStock' => $inStock,
+                    'isLoggedIn' => $isLoggedIn,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['message' => $e->getMessage()], 422);
+            }
+        }
+
         if ($entity == 'update-order-quantity') {
             try {
                 // Checking if the user is authenticated
@@ -1084,7 +1084,7 @@ class PublicController extends Controller
                             // Check if stock is sufficient for increment
                             if ($product->quantity <= 0) {
                                 return response()->json([
-                                    'message' => "Stock insuffisant pour l’offre « {$product->product_name} ». (Disponible : {$product->quantity})",
+                                    'message' => "Stock insuffisant pour « {$product->product_name} ». (Disponible : {$product->quantity})",
                                     'newQuantity' => $cart[$id]['quantity'],
                                     'inStock' => false,
                                 ], 422);

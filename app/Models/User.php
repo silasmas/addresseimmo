@@ -200,7 +200,7 @@ class User extends Authenticatable
 
             // 5. Stock verification
             if ($product->quantity < $totalQuantity) {
-                throw new \Exception(__('notifications.insufficient_stock', ['product_name' => $product->product_name, 'quantity' => $product->quantity]));
+                throw new \Exception("Stock insuffisant pour « {$product->product_name} ». (Disponible : {$product->quantity})");
             }
 
             // 6. If the line already exists, we update its quantity
