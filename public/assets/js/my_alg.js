@@ -96,6 +96,31 @@ $(function () {
         $("html, body").animate({ scrollTop: "0" });
     });
 
+    /* On check, show/hide some blocs */
+    // OFFER TYPE
+    $('#donationType .form-check-input').each(function () {
+        $(this).on('click', function () {
+            if ($('#anonyme').is(':checked')) {
+                $('#donorIdentity, #otherDonation').addClass('d-none');
+
+            } else {
+                $('#donorIdentity, #otherDonation').removeClass('d-none');
+            }
+        });
+    });
+
+    // TRANSACTION TYPE
+    $('#paymentMethod .radio-inline').each(function () {
+        $(this).on('click', function () {
+            if ($('#bank_card').is(':checked')) {
+                $('#phoneNumberForMoney').addClass('d-none');
+
+            } else {
+                $('#phoneNumberForMoney').removeClass('d-none');
+            }
+        });
+    });
+
     /* Auto-resize textarea */
     autosize($('textarea'));
 

@@ -320,16 +320,16 @@
                             <input type="hidden" name="cart_id" value="{{ !empty($cart) ? $cart->id : null }}">
 
                             <div class="card border border-default text-center" style="width: 300px; margin: 0 auto 10px auto;">
-                                <div class="card-header">
-                                    <h5 style="margin-bottom: 0;">Montant à payer</p>
+                                <div class="card-header bg-secondary">
+                                    <h5 class="card-title m-0">Montant à payer</p>
                                 </div>
                                 <div class="card-body">
-                                    <h3 style="margin-bottom: 0;"><strong>{{ $logged_in_user['readable_unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong></h3>
+                                    <h3 class="m-0"><strong>{{ $logged_in_user['readable_unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong></h3>
                                 </div>
                             </div>
 
                             <hr>
-                            <div id="paymentMethod">
+                            <div id="paymentMethod" class="text-center">
                                 <p class="lead" style="margin-bottom: 5px;">Mode de paiement</p>
 
                                 <label class="radio-inline" for="mobile_money">
@@ -344,10 +344,10 @@
 
                             <div id="phoneNumberForMoney">
                                 <hr>
-                                <div class="row">
+                                <div class="row g-2">
                                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-0"></div>
                                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-4" style="padding-right: 0!important;">
-                                        <select class="form-control" id="selectCountry" name="other_phone_code">
+                                        <select class="form-select" id="selectCountry" name="other_phone_code">
                                             <option class="small" selected disabled>Code tél.</option>
     @forelse ($countries as $country)
             								<option value="{{ ltrim($country['phone'], '+') }}">{{ $country['label'] }}</option>
@@ -363,7 +363,7 @@
 
                             <hr>
 
-                            <button class="btn btn-block strt-btn-green rounded-pill" type="submit">Envoyer</button>
+                            <button class="btn btn-block adrm-btn-red my-3 rounded-pill" type="submit">Envoyer</button>
                         </form>
                     </div>
                 </div>
