@@ -18,15 +18,7 @@
                                     </thead>
 
                                     <tbody>
-	@php
-		foreach ($user_orders as $item) {
-			$item->converted_price = formatDecimalNumber($item->convertPriceAtThatTime($current_user['currency']), 2);
-		}
-
-		$itemsArray = $items->toArray();
-	@endphp
-
-    @foreach ($itemsArray as $item)
+    @foreach ($items as $item)
                                         <tr>
                                             <td>
                                                 <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}">
