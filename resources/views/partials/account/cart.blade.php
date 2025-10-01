@@ -1,4 +1,4 @@
-{{ dd($logged_in_user) }}
+
                         <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4">
                             <div class="mt-sm-0 my-4 text-center">
                                 <h1 class="card-title fw-bolder"><span class="adrm-text-green d-inline">Mon panier</span></h1>
@@ -26,7 +26,7 @@
                                                     {{ $item['product']['product_name'] }}
                                                 </a>
                                             </td>
-                                            <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $current_user['readable_currency'] }}</td>
+                                            <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $logged_in_user['readable_currency'] }}</td>
                                             <td>
 												<div class="d-flex flex-row">
 													<input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control text-center{{ $item['product']['quantity'] == 0 ? ' disabled' : '' }}" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
@@ -44,7 +44,7 @@
                                                     </div>
 												</div>
                                             </td>
-                                            <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
+                                            <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $logged_in_user['readable_currency'] }}</td>
                                             <td>
                                                 <a role="button" class="btn btn-secondary px-2 pt-1 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
                                                     <i class="bi bi-x-lg"></i>
@@ -59,7 +59,7 @@
 									<tbody>
 										<tr>
 											<td colspan="4" class="text-end">
-                                                <strong>{{ 'TOTAL : ' . formatDecimalNumber($current_user['unpaid_cart_total']) . ' ' . $current_user['readable_currency'] }}</strong>
+                                                <strong>{{ 'TOTAL : ' . formatDecimalNumber($logged_in_user['unpaid_cart_total']) . ' ' . $logged_in_user['readable_currency'] }}</strong>
                                             </td>
 										</tr>
 									</tbody>
