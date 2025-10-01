@@ -47,7 +47,7 @@
                         {{-- <p class="mt-4 mb-0">
                             <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                         </p> --}}
-                        <div id="addToCart-{{ $selected_product['id'] }}" class="mt-4 mb-0 flex-row align-items-start">
+                        <div id="addToCart-{{ $selected_product['id'] }}" class="mt-4 mb-0 flex-row align-items-center">
                             <button class="btn btn-lg adrm-btn-red data-id="{{ $selected_product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                             <img id="ajax-loading-{{ $selected_product['id'] }}" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
                         </div>
