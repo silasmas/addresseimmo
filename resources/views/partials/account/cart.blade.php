@@ -7,7 +7,7 @@
 @if (!empty($user_orders))
                             <div id="dataList" class="table-responsive">
                                 <table class="table table-bordered">
-                                    <thead>
+                                    <thead class="bg-light">
                                         <tr class="text-center">
                                             <th class="fw-bold">Offre</th>
                                             <th class="fw-bold">Prix unitaire</th>
