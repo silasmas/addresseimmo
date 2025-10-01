@@ -206,6 +206,7 @@ class PublicController extends Controller
         }
 
         return view('account', [
+            'logged_in_user' => (new ResourcesUser($current_user))->resolve(),
             'entity' => $entity,
             'entity_title' => $entity_title,
             'cart' => $cart,
