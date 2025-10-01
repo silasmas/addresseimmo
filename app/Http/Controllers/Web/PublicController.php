@@ -325,6 +325,95 @@ class PublicController extends Controller
             return redirect('/products/' . $product->type)->with('success_message', __('notifications.deleted_data'));
         }
 
+        if ($entity == 'order') {
+            try {
+                // We start by retrieving the order associated with this ID (for connected users)
+                if (Auth::check()) {
+                    // If the user is logged in
+                    $user = User::find(Auth::id());
+
+                    // Get user's unpaid cart
+                    $cart = $user->unpaidCart()->first();
+
+                    if (!$cart) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Panier non trouvé'
+                        ], 404);
+                    }
+
+                    // Find the order to delete from the order ID in the cart
+                    $existingOrder = $cart->customer_orders()->find($id);
+
+                    if (!$existingOrder) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Commande non trouvée'
+                        ], 404);
+                    }
+
+                    // Delete order (cart line)
+                    $existingOrder->delete();
+
+                    // Retrieve the associated product to restore stock
+                    $product = $existingOrder->product;
+
+                    // Restore product stock
+                    $product->increment('quantity', $existingOrder->quantity);
+
+                    // Check if the product is still in the user's cart
+                    $inCart = !$cart->customer_orders()->find($id);
+
+                    // If the cart is empty, it is deleted from the database
+                    if ($cart->customer_orders->isEmpty()) {
+                        $cart->delete();
+                    }
+
+                    $isLoggedIn = true;
+
+                } else {
+                    // If the user is not logged in, we work with the cart in the session
+                    $cart = session()->get('cart', []);
+
+                    // Check if order exists in session (by order ID)
+                    if (isset($cart[$id])) {
+                        // Remove product from session
+                        unset($cart[$id]);
+                        session()->put('cart', $cart);
+
+                        // Check if the cart is empty
+                        if (empty($cart)) {
+                            // If the cart is empty, delete the session
+                            session()->forget('cart');
+                        }
+
+                        $inCart = false;  // The product has been removed from the cart
+
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Offre non trouvée'
+                        ], 404);
+                    }
+
+                    $isLoggedIn = false;
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Commande supprimée du panier',
+                    'inCart' => $inCart,
+                    'isLoggedIn' => $isLoggedIn,
+                ]);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 422);
+            }
+        }
+
         if ($entity == 'cart') {
             $cart = Cart::find($id);
 
