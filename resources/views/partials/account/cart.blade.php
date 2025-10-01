@@ -1,6 +1,6 @@
 
                         <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4 position-relative">
-                            <div class="spinner-border text-secondary position-absolute" role="status" style="top: 1rem; right: 1rem;">
+                            <div id="ajaxLoader" class="spinner-border text-secondary position-absolute d-none" role="status" style="top: 1rem; right: 1rem;">
                                 <span class="visually-hidden">Chargement...</span>
                             </div>
 
@@ -37,12 +37,12 @@
 													<input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control text-center" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
                                                     <div class="d-flex flex-column">
         @if ($item['product']['quantity'] > 0)
-                                                        <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); updateProductQuantity('increment', {{ $item['id'] }});">
+                                                        <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); document.getElementById('ajaxLoader').classList.remove('ajaxLoader'); updateProductQuantity('increment', {{ $item['id'] }});">
                                                             <i class="fa fa-plus"></i>
                                                         </a>
         @endif
 		@if ($item['quantity'] > 1)
-                                                        <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); updateProductQuantity('decrement', {{ $item['id'] }});">
+                                                        <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); document.getElementById('ajaxLoader').classList.remove('ajaxLoader'); updateProductQuantity('decrement', {{ $item['id'] }});">
                                                             <i class="fa fa-minus"></i>
                                                         </a>
 		@endif
