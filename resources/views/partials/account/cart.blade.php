@@ -7,12 +7,13 @@
 @if (!empty($user_orders))
                             <div id="dataList" class="table-responsive">
                                 <table class="table table-bordered">
-                                    <thead class="bg-light">
+                                    <thead class="bg-secondary">
                                         <tr class="text-center">
                                             <th class="fw-bold">Offre</th>
                                             <th class="fw-bold">Prix unitaire</th>
                                             <th class="fw-bold">Quantité</th>
                                             <th class="fw-bold">Prix total</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
 
@@ -28,6 +29,9 @@
                                             <td>{{ $item['converted_price_at_that_time'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>{{ $item['quantity'] }}</td>
                                             <td>{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
+                                            <td>
+                                                <button class="btn btn-secondary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')"></button>
+                                            </td>
                                         </tr>
     @endforeach
                                     </tbody>
@@ -44,7 +48,7 @@
 								</table>
 
 								<div class="mt-4 text-end">
-                                    <button class="btn btn-lg adrm-btn-red" data-toggle="modal" data-target="#payModal">Effectuer le paiement</button>
+                                    <button class="btn btn-lg adrm-btn-red rounded-pill" data-toggle="modal" data-target="#payModal">Effectuer le paiement</button>
                                 </div>
                             </div>
 @else
