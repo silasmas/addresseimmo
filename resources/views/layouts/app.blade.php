@@ -299,6 +299,76 @@
                 </div>
             </div>
         </div>
+
+        <!-- ### Run payment ### -->
+        <div class="modal fade" id="payModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header adrm-bg-green text-center">
+                        <button type="button" class="btn-close btn-sm position-absolute rounded-circle" style="top: 1rem; right: 1rem; background-color: rgba(300, 300, 300, 0.5);" data-bs-dismiss="modal" aria-label="@lang('miscellaneous.close')"></button>
+
+                        <h2 class="modal-title w-100 text-white" style="font-weight: 500;">Effectuer le paiement</h2>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="offerForm" action="{{ route('pay') }}" method="POST">
+    @csrf
+                            <input type="hidden" name="app_url" value="{{ getWebURL() }}">
+                            <input type="hidden" name="user_id" value="{{ !empty($logged_in_user) ? $logged_in_user['id'] : null }}">
+                            <input type="hidden" name="amount" value="{{ $logged_in_user['unpaid_cart_total'] }}">
+                            <input type="hidden" name="currency" value="{{ $logged_in_user['currency'] }}">
+                            <input type="hidden" name="cart_id" value="{{ !empty($cart) ? $cart->id : null }}">
+
+                            <div class="card border border-default text-center" style="width: 300px; margin: 0 auto 10px auto;">
+                                <div class="card-header">
+                                    <h5 style="margin-bottom: 0;">Montant à payer</p>
+                                </div>
+                                <div class="card-body">
+                                    <h3 style="margin-bottom: 0;"><strong>{{ $logged_in_user['readable_unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong></h3>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <div id="paymentMethod">
+                                <p class="lead" style="margin-bottom: 5px;">Mode de paiement</p>
+
+                                <label class="radio-inline" for="mobile_money">
+                                    <img src="{{ asset('assets/img/payment-mobile-money.png') }}" alt="Mobile money" width="40" style="vertical-align: middle; margin-right: 20px;">
+                                    <input type="radio" name="transaction_type_id" id="mobile_money" value="1" style="position: relative; top: 1px;" checked /><span class="text-muted" style="display: inline-block; margin-left: 8px;">Mobile money</span>
+                                </label>
+                                <label class="radio-inline" for="bank_card" style="margin: 0;">
+                                    <img src="{{ asset('assets/img/payment-credit-card.png') }}" alt="Carte bancaire" width="40" style="vertical-align: middle; margin-right: 20px;">
+                                    <input type="radio" name="transaction_type_id" id="bank_card" value="2" style="position: relative; top: 1px;" /><span class="text-muted" style="display: inline-block; margin-left: 8px;">Carte bancaire</span>
+                                </label>
+                            </div>
+
+                            <div id="phoneNumberForMoney">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-0"></div>
+                                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-4" style="padding-right: 0!important;">
+                                        <select class="form-control" id="selectCountry" name="other_phone_code">
+                                            <option class="small" selected disabled>Code tél.</option>
+    @forelse ($countries as $country)
+            								<option value="{{ ltrim($country['phone'], '+') }}">{{ $country['label'] }}</option>
+    @empty
+    @endforelse
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-7 col-md-6 col-sm-6 col-xs-8">
+                                        <input type="text" class="form-control" id="phone_number" name="other_phone_number" placeholder="N° de téléphone">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <button class="btn btn-block strt-btn-green rounded-pill" type="submit">Envoyer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 @endif
 
         <div class="site-mobile-menu site-navbar-target">

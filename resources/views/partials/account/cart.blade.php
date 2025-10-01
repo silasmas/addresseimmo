@@ -64,7 +64,7 @@
 									<tbody>
 										<tr>
 											<td colspan="4" class="text-end">
-                                                <strong>{{ 'TOTAL : ' . $logged_in_user['unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong>
+                                                <strong>{{ 'TOTAL : ' . $logged_in_user['readable_unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong>
                                             </td>
 										</tr>
 									</tbody>

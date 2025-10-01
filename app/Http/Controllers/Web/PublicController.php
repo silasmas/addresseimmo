@@ -190,6 +190,7 @@ class PublicController extends Controller
 
         if ($entity == 'cart') {
             $entity_title = 'Mon panier';
+            $countries = showCountries();
             // Get user unpaid cart
             $cart = $current_user->unpaidCart()->first();
             // Get user unpaid orders
