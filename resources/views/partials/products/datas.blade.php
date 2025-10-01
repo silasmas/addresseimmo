@@ -88,7 +88,7 @@
 @endif
                     </div>
 
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 mt-lg-0 mt-4">
                         <p class="meta"><u>Catégorie</u> : <strong>{{ $selected_product['category']['category_name'] }}</strong></p>
                         <p class="meta"><u>Type</u> : <strong>{{ $selected_product['readable_type'] }}</strong></p>
                         <p class="meta"><u>Action</u> : <strong>{{ $selected_product['readable_action'] }}</strong></p>
