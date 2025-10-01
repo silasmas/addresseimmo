@@ -30,12 +30,12 @@
                                             <td>
 												<div class="d-flex flex-row">
 													<input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
-                                                    <div>
-                                                        <a role="button" class="btn btn-secondary p-2 pb-0" onclick="event.preventDefault(); updateProductQuantity('increment', {{ $item['id'] }});">
+                                                    <div class="flex-column">
+                                                        <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); updateProductQuantity('increment', {{ $item['id'] }});">
                                                             <i class="fa fa-angle-up"></i>
                                                         </a>
 		@if ($item['quantity'] > 0)
-                                                        <a role="button" class="btn btn-secondary p-2 pb-0" onclick="event.preventDefault(); updateProductQuantity('decrement', {{ $item['id'] }});">
+                                                        <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); updateProductQuantity('decrement', {{ $item['id'] }});">
                                                             <i class="fa fa-angle-down"></i>
                                                         </a>
 		@endif
@@ -44,7 +44,7 @@
                                             </td>
                                             <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>
-                                                <a role="button" class="btn btn-secondary p-2 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
+                                                <a role="button" class="btn btn-secondary px-2 pt-1 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
                                                     <i class="bi bi-x-lg"></i>
                                                 </a>
                                             </td>
