@@ -27,7 +27,21 @@
                                                 </a>
                                             </td>
                                             <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $current_user['readable_currency'] }}</td>
-                                            <td>{{ $item['quantity'] }}</td>
+                                            <td>
+												<div class="d-flex flex-row">
+													<input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 100px;">
+                                                    <div>
+                                                        <a role="button" class="btn btn-secondary p-2 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); updateProductQuantity('increment', {{ $item['id'] }});">
+                                                            <i class="fa fa-angle-up"></i>
+                                                        </a>
+		@if ($item['quantity'] > 500)
+                                                        <a role="button" class="btn btn-secondary p-2 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); updateProductQuantity('decrement', {{ $item['id'] }});">
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </a>
+		@endif
+                                                    </div>
+												</div>
+                                            </td>
                                             <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>
                                                 <a role="button" class="btn btn-secondary p-2 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
