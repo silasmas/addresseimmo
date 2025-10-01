@@ -36,6 +36,7 @@
 
         <!-- Custom style -->
         <link rel="stylesheet" href="{{ asset('assets/addons/cropper/css/cropper.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/addons/sweetalert2/dist/sweetalert2.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/addons/jquery/jquery-ui/jquery-ui.min.css') }}" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="{{ asset('assets/addons/mdb/css/mdb.min.css') }}" />
@@ -525,6 +526,7 @@
         <script type="text/javascript" src="{{ asset('assets/js/property/custom.js') }}"></script>
         <!-- Pretype="text/javascript" loader -->
         <script type="text/javascript" src="{{ asset('assets/addons/autosize/js/autosize.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/addons/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/addons/cropper/js/cropper.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/my_alg.js') }}"></script>
         <script type="text/javascript">
@@ -536,37 +538,37 @@
                     var entityId = parseInt(entity_id.split('-')[1]);
 
                     Swal.fire({
-                        title: "<?= __('miscellaneous.alert.attention.delete') ?>",
-                        text: "<?= __('miscellaneous.alert.confirm.delete') ?>",
-                        icon: "warning",
+                        title: 'Attention suppression',
+                        text: 'Voulez-vous vraiment supprimer ?',
+                        icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: "#04471a",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "<?= __('miscellaneous.alert.yes.delete') ?>",
-                        cancelButtonText: "<?= __('miscellaneous.cancel') ?>"
+                        confirmButtonColor: '#199300',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Oui, supprimer',
+                        cancelButtonText: 'Annuler'
 
                     }).then(function (result) {
                         if (result.isConfirmed) {
                             $.ajax({
                                 headers: headers,
-                                type: "DELETE",
+                                type: 'DELETE',
                                 url: `${currentHost}/delete/${entity}/${entityId}`,
                                 contentType: false,
                                 processData: false,
-                                data: JSON.stringify({ "entity" : entity, "id" : entityId }),
+                                data: JSON.stringify({ 'entity' : entity, 'id' : entityId }),
                                 success: function (result) {
                                     if (!result.success) {
                                         Swal.fire({
-                                            title: "<?= __('miscellaneous.alert.oups') ?>",
+                                            title: 'Oups !',
                                             text: result.message,
-                                            icon: "error"
+                                            icon: 'error'
                                         });
 
                                     } else {
                                         Swal.fire({
-                                            title: "<?= __('miscellaneous.alert.perfect') ?>",
+                                            title: 'Parfait !',
                                             text: result.message,
-                                            icon: "success"
+                                            icon: 'success'
                                         });
                                         location.reload();
                                     }
@@ -581,9 +583,9 @@
 
                         } else {
                             Swal.fire({
-                                title: "<?= __('miscellaneous.cancel') ?>",
-                                text: "<?= __('miscellaneous.alert.canceled.delete') ?>",
-                                icon: "error"
+                                title: 'Annuler',
+                                text: 'Suppression annulée',
+                                icon: 'error'
                             });
                         }
                     });
