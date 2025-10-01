@@ -726,11 +726,6 @@
                     });
                 });
 
-                /**
-                 * Modal event
-                 */
-                var offerModal = new bootstrap.Modal(document.getElementById('addOfferModal'), { keyboard: false });
-
                 $('#addOfferModal').on('shown.bs.modal', function () {
                     // Code to execute when the modal is fully shown
                     console.log('The modal is now fully visible!');
@@ -740,9 +735,66 @@
                 });
 
                 /**
-                 * Ajax to send data
+                 * Add to cart button
                  */
-                /* Offer form */
+                $('.item-add-btn').on('click', function () {
+                    const productId = $(this).data('id');
+                    const productContainer = $(`#product-${productId}`); // Le conteneur du produit à mettre à jour
+
+                    // Cacher le texte et afficher l'icône de chargement pour ce produit spécifique
+                    $(`#addToCart-${productId} .btn`).addClass('disabled');
+                    $(`#ajax-loading-${productId}`).removeClass('d-none');
+
+                    $.ajax({
+                        url: `${currentHost}/products/add-to-cart/${productId}`,
+                        method: 'POST',
+                        data: {
+                            quantity: 500,
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success(response) {
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> ${response.message || 'Offre ajoutée au panier !'}
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                            location.reload();
+                        },
+                        error(xhr) {
+                            // Afficher une alerte d'erreur
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> ${xhr.responseJSON.message} || L’ajout a échoué
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                            $(`#addToCart-${productId} .btn`).removeClass('disabled');
+                            $(`#ajax-loading-${productId}`).addClass('d-none');
+                        }
+                    });
+                });
+            });
+        </script>
+@if (Route::is('account.entity'))
+        <script type="text/javascript">
+            $(function () {
+                /**
+                 * Modal event
+                 */
+                var offerModal = new bootstrap.Modal(document.getElementById('addOfferModal'), { keyboard: false });
+
+                /**
+                 * Ajax to send offer
+                 */
                 $('#offerForm').on('submit', function (e) {
                     e.preventDefault();
 
@@ -812,56 +864,8 @@
                         }
                     });
                 });
-
-                /**
-                 * Add to cart button
-                 */
-                $('.item-add-btn').on('click', function () {
-                    const productId = $(this).data('id');
-                    const productContainer = $(`#product-${productId}`); // Le conteneur du produit à mettre à jour
-
-                    // Cacher le texte et afficher l'icône de chargement pour ce produit spécifique
-                    $(`#addToCart-${productId} .btn`).addClass('disabled');
-                    $(`#ajax-loading-${productId}`).removeClass('d-none');
-
-                    $.ajax({
-                        url: `${currentHost}/products/add-to-cart/${productId}`,
-                        method: 'POST',
-                        data: {
-                            quantity: 500,
-                            _token: $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success(response) {
-                            $('#ajax-alert-container').html(`<div class="position-relative">
-                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
-                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
-                                                                        <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
-                                                                            <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> ${response.message || 'Offre ajoutée au panier !'}
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>`);
-                            location.reload();
-                        },
-                        error(xhr) {
-                            // Afficher une alerte d'erreur
-                            $('#ajax-alert-container').html(`<div class="position-relative">
-                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
-                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
-                                                                        <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
-                                                                            <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> ${xhr.responseJSON.message} || L’ajout a échoué
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>`);
-                            $(`#addToCart-${productId} .btn`).removeClass('disabled');
-                            $(`#ajax-loading-${productId}`).addClass('d-none');
-                        }
-                    });
-                });
             });
         </script>
+@endif
     </body>
 </html>
