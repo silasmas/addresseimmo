@@ -526,7 +526,7 @@
         <!-- Pretype="text/javascript" loader -->
         <script type="text/javascript" src="{{ asset('assets/addons/autosize/js/autosize.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/addons/cropper/js/cropper.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/scripts.custom.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/my_alg.js') }}"></script>
         <script type="text/javascript">
             /**
              * Perform action on element
