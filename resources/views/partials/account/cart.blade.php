@@ -19,7 +19,7 @@
                                     <tbody>
     @foreach ($items as $item)
                                         <tr>
-                                            <td style="max-width: 20rem;">
+                                            <td style="max-width: 10rem;">
                                                 <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
                                                 <a href="{{ route('product.datas', ['id' => $item['product']['id']]) }}">
                                                     {{ $item['product']['product_name'] }}
@@ -36,7 +36,9 @@
 								<table class="table table-bordered"> --}}
 									<tfoot>
 										<tr>
-											<td>{{ 'TOTAL : ' . formatDecimalNumber($current_user['unpaid_cart_total']) . ' ' . $current_user['currency'] }}</td>
+											<td colspan="4" class="text-end">
+                                                <strong>{{ 'TOTAL : ' . formatDecimalNumber($current_user['unpaid_cart_total']) . ' ' . $current_user['currency'] }}</strong>
+                                            </td>
 										</tr>
 									</tfoot>
 								</table>
