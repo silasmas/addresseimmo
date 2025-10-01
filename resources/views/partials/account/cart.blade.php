@@ -1,4 +1,4 @@
-
+{{ dd($current_user) }}
                         <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4">
                             <div class="mt-sm-0 my-4 text-center">
                                 <h1 class="card-title fw-bolder"><span class="adrm-text-green d-inline">Mon panier</span></h1>
