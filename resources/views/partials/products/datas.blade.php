@@ -47,10 +47,10 @@
                         {{-- <p class="mt-4 mb-0">
                             <button class="btn btn-lg adrm-btn-red"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                         </p> --}}
-                        <p id="addToCart-{{ $selected_product['id'] }}" class="mt-4 mb-0 position-relative">
-                            <button class="btn btn-lg adrm-btn-red" data-id="{{ $selected_product['id'] }}">Ajouter au panier</button>
+                        <div id="addToCart-{{ $selected_product['id'] }}" class="mt-4 mb-0 flex-row align-items-start">
+                            <button class="btn btn-lg adrm-btn-red data-id="{{ $selected_product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                             <img id="ajax-loading-{{ $selected_product['id'] }}" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30" style="position: absolute; top: 5px; left: 40%;">
-                        </p>
+                        </div>
 {{-- @if (!empty($current_user))
     @if ($current_user->hasProductInUnpaidCart($selected_product['id']))
                         <p class="mt-4 mb-0">
