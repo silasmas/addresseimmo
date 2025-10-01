@@ -555,7 +555,7 @@
                                 url: `${currentHost}/delete/${entity}/${entityId}`,
                                 contentType: false,
                                 processData: false,
-                                data: JSON.stringify({ 'entity' : entity, 'id' : entityId }),
+                                data: JSON.stringify({ _token: $('meta[name="csrf-token"]').attr('content'), 'entity' : entity, 'id' : entityId }),
                                 success: function (result) {
                                     if (!result.success) {
                                         Swal.fire({
