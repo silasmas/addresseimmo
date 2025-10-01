@@ -1,5 +1,10 @@
 
-                        <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4">
+                        <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4 position-relative">
+                            <div class="spinner-border text-danger position-absolute top-0 end-0" role="status">
+                                <span class="visually-hidden">Chargement...</span>
+                            </div>
+
+
                             <div class="mt-sm-0 my-4 text-center">
                                 <h1 class="card-title fw-bolder"><span class="adrm-text-green d-inline">Mon panier</span></h1>
                             </div>
