@@ -29,7 +29,7 @@
                                             <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>
 												<div class="d-flex flex-row">
-													<input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
+													<input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control text-center" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
                                                     <div class="d-flex flex-column">
                                                         <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); updateProductQuantity('increment', {{ $item['id'] }});">
                                                             <i class="fa fa-angle-up"></i>
