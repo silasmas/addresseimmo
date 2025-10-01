@@ -1,6 +1,6 @@
 
                         <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4 position-relative">
-                            <div class="spinner-border text-danger position-absolute top-0 end-0" role="status">
+                            <div class="spinner-border text-secondary position-absolute" role="status" style="top: 1rem; right: 1rem;">
                                 <span class="visually-hidden">Chargement...</span>
                             </div>
 
