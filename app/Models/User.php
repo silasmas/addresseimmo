@@ -248,4 +248,129 @@ class User extends Authenticatable
         // Vider le panier en session après l'ajout
         session()->forget('cart');
     }
+
+    /**
+     * Update product quantity from the cart
+     * 
+     * @param  int $customerOrderId
+     * @param  int $quantityChange
+     * @param  string $action
+     * @return bool
+     */
+    public function updateProductQuantityInCart($customerOrderId, $quantityChange, $action): bool
+    {
+        return DB::transaction(function () use ($customerOrderId, $quantityChange, $action) {
+            // 1. Get the unpaid cart
+            $cart = $this->carts()->where('is_paid', 0)->latest()->first();
+
+            if (!$cart) {
+                throw new \Exception('Panier non trouvé');
+            }
+
+            // 2. Find the order line by its ID
+            $existingOrder = $cart->customer_orders()->where('id', $customerOrderId)->first();
+
+            if (!$existingOrder) {
+                throw new \Exception('Commande non trouvée');
+            }
+
+            // 3. Get the product related to the order line
+            $product = $existingOrder->product;
+
+            switch ($action) {
+                case 'increment':
+                    // Check if stock is sufficient for increment
+                    if ($product->quantity <= 0) {
+                        throw new \Exception("Stock insuffisant pour « {$product->product_name} ». (Disponible : {$product->quantity})");
+                    }
+
+                    // Increment quantity in cart
+                    $existingOrder->increment('quantity', 1);
+
+                    // Decrease stock
+                    $product->decrement('quantity', 1);
+                    break;
+
+                case 'decrement':
+                    // Check that the quantity in the cart is > 2
+                    if ($existingOrder->quantity <= 1) {
+                        throw new \Exception('La quantité doit être au moins 1 offre commandée');
+                    }
+
+                    // Decrease quantity in cart
+                    $existingOrder->decrement('quantity', 1);
+
+                    // Increment the stock
+                    $product->increment('quantity', 1);
+                    break;
+
+                case 'update':
+                    // Check the new quantity
+                    if ($quantityChange < 1) {
+                        throw new \Exception('La quantité doit être au moins 1 offre commandée');
+                    }
+
+                    // Update quantity in cart
+                    $existingOrder->update(['quantity' => $quantityChange]);
+
+                    // Adjust stock according to the new quantity
+                    $stockDifference = $quantityChange - $existingOrder->quantity;
+
+                    if ($stockDifference > 0) {
+                        // If we increase the order quantity, check that there is enough product stock
+                        if ($product->quantity < $stockDifference) {
+                            throw new \Exception("Stock insuffisant pour « {$product->product_name} ». (Disponible : {$product->quantity})");
+                        }
+
+                        // Decrease product stock based on increase
+                        $product->decrement('quantity', $stockDifference);
+
+                    } else {
+                        // If we decrease the order quantity, increase the product stock
+                        $product->increment('quantity', abs($stockDifference));
+                    }
+                    break;
+                default:
+                    throw new \Exception('Quelle action voulez-vous faire ?');
+            }
+
+            return true; // Indicate that the operation was successful
+        });
+    }
+
+    /**
+     * Remove product from cart
+     * 
+     * @param  int $customerOrderId
+     * @return bool
+     */
+    public function removeProductFromCart($customerOrderId): bool
+    {
+        return DB::transaction(function () use ($customerOrderId) {
+            // 1. Get the unpaid cart
+            $cart = $this->carts()->where('is_paid', 0)->latest()->first();
+
+            if (!$cart) {
+                throw new \Exception('Panier non trouvé');
+            }
+
+            // 2. Find the order line by its ID
+            $existingOrder = $cart->customer_orders()->where('id', $customerOrderId)->first();
+
+            if (!$existingOrder) {
+                throw new \Exception('Commande non trouvée');
+            }
+
+            // 3. Get the product related to the order line
+            $product = $existingOrder->product;
+
+            // 4. Delete the order line from the cart
+            $existingOrder->delete();
+
+            // 5. Increment the stock of the product
+            $product->increment('quantity', $existingOrder->quantity);
+
+            return true; // Indicate success
+        });
+    }
 }

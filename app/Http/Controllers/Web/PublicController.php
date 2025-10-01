@@ -645,6 +645,8 @@ class PublicController extends Controller
      */
     public function addProduct(Request $request)
     {
+        $current_user = User::find(Auth::user()->id);
+        $role_seller = Role::where('role_name', 'Vendeur')->first();
         $product = Product::create([
             'product_name' => $request->product_name,
             'product_description' => $request->product_description,
@@ -731,6 +733,12 @@ class PublicController extends Controller
                     'product_id' => $product->id
                 ]);
             }
+        }
+
+        // If user is not yet seller, update its role
+        if ($current_user->selected_role->id != $role_seller->id) {
+            $current_user->roles()->updateExistingPivot($current_user->roles->pluck('id')->toArray(), ['is_selected' => 0]);
+            $current_user->roles()->attach($role_seller->id, ['is_selected' => 1]);
         }
 
         return response()->json(['status' => 'success', 'message' => 'Offre enregistrée']);
