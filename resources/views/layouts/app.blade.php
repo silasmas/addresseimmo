@@ -320,8 +320,8 @@
                             <input type="hidden" name="cart_id" value="{{ !empty($cart) ? $cart->id : null }}">
 
                             <div class="card border border-default text-center" style="width: 300px; margin: 0 auto 10px auto;">
-                                <div class="card-header bg-secondary">
-                                    <h5 class="card-title m-0">Montant à payer</p>
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title m-0">Montant à payer</h5>
                                 </div>
                                 <div class="card-body">
                                     <h3 class="m-0"><strong>{{ $logged_in_user['readable_unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong></h3>
