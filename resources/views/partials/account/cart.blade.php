@@ -8,18 +8,18 @@
                             <div id="dataList" class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
-                                        <tr>
-                                            <th>Offre</th>
-                                            <th>Prix unitaire</th>
-                                            <th>Quantité</th>
-                                            <th>Prix total</th>
+                                        <tr class="text-center">
+                                            <th class="fw-bold">Offre</th>
+                                            <th class="fw-bold">Prix unitaire</th>
+                                            <th class="fw-bold">Quantité</th>
+                                            <th class="fw-bold">Prix total</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
     @foreach ($items as $item)
                                         <tr>
-                                            <td style="max-width: 10rem;">
+                                            <td style="max-width: 16rem;">
                                                 <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
                                                 <a href="{{ route('product.datas', ['id' => $item['product']['id']]) }}">
                                                     {{ $item['product']['product_name'] }}
@@ -31,17 +31,21 @@
                                         </tr>
     @endforeach
                                     </tbody>
-                                {{-- </table>
+                                </table>
 
-								<table class="table table-bordered"> --}}
-									<tfoot>
+								<table class="table table-bordered mt-3">
+									<tbody>
 										<tr>
 											<td colspan="4" class="text-end">
                                                 <strong>{{ 'TOTAL : ' . formatDecimalNumber($current_user['unpaid_cart_total']) . ' ' . $current_user['currency'] }}</strong>
                                             </td>
 										</tr>
-									</tfoot>
+									</tbody>
 								</table>
+
+								<div class="mt-4 text-end">
+                                    <button class="btn btn-lg adrm-btn-red" data-toggle="modal" data-target="#payModal">Effectuer le paiement</button>
+                                </div>
                             </div>
 @else
                         <div class="d-flex justify-content-center align-items-center flex-column">
