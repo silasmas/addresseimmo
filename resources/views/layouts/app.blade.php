@@ -771,7 +771,7 @@
                                                                 <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
                                                                     <div class="col-lg-4 col-sm-6 mx-auto">
                                                                         <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
-                                                                            <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> ${xhr.responseJSON.message} || L’ajout a échoué
+                                                                            <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> ${xhr.responseJSON.message || 'L’ajout a échoué'}
                                                                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                                                                         </div>
                                                                     </div>
