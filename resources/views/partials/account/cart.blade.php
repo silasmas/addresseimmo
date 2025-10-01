@@ -7,8 +7,8 @@
 @if (!empty($user_orders))
                             <div id="dataList" class="table-responsive">
                                 <table class="table table-bordered">
-                                    <thead class="bg-secondary">
-                                        <tr class="text-center">
+                                    <thead>
+                                        <tr class="text-center bg-secondary">
                                             <th class="fw-bold">Offre</th>
                                             <th class="fw-bold">Prix unitaire</th>
                                             <th class="fw-bold">Quantité</th>
@@ -30,7 +30,7 @@
                                             <td>{{ $item['quantity'] }}</td>
                                             <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $current_user['readable_currency'] }}</td>
                                             <td>
-                                                <button class="btn btn-secondary px-2 pt-1 pb-0 rounded-circle" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier">
+                                                <button class="btn btn-secondary px-2 py-1 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </td>
