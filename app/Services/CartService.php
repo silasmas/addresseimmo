@@ -21,7 +21,7 @@ class CartService
 
         $conversionRate = getExchangeRate($productCurrency, $userCurrency);
 
-        return round($price * $conversionRate, 2);  // Return the converted price
+        return round($price * $conversionRate, 3);  // Return the converted price
     }
 
     /**
@@ -44,7 +44,7 @@ class CartService
     public function getCartTotalFromSession(): float
     {
         // Get session currency
-        $currency = Session::get('currency', 'CDF');  // 'CDF' by default
+        $currency = Session::get('currency', 'USD');  // 'USD' by default
 
         // Get cart from the session
         $cart = Session::get('cart', []);

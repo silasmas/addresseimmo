@@ -8,6 +8,7 @@ use App\Http\Resources\Product as ResourcesProduct;
 use App\Http\Resources\User as ResourcesUser;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\CustomerOrder;
 use App\Models\File;
 use App\Models\Post;
 use App\Models\Product;
@@ -278,7 +279,7 @@ class PublicController extends Controller
         $selected_product = Product::find($id);
 
         if (is_null($selected_product)) {
-            return redirect('/')->with('error_message', 'Produit non trouvé');
+            return redirect('/')->with('error_message', 'Offre non trouvée');
         }
 
         return view('products', [
@@ -745,7 +746,7 @@ class PublicController extends Controller
         $product = Product::find($id);
 
         if (is_null($product)) {
-            return redirect('/')->with('error_message', 'Produit non trouvé');
+            return redirect('/')->with('error_message', 'Offre non trouvée');
         }
 
         if ($entity == 'add-to-cart') {
@@ -790,7 +791,7 @@ class PublicController extends Controller
                 }
 
                 return response()->json([
-                    'message' => __('notifications.added_data'),
+                    'message' => 'Ajout réussi',
                     'inCart' => $inCart,
                     'inStock' => $inStock,
                     'isLoggedIn' => $isLoggedIn,
@@ -801,7 +802,350 @@ class PublicController extends Controller
         }
 
         if ($entity == 'product') {
-            # code...
+            $inputs = [
+                'product_name' => $request->product_name,
+                'product_description' => $request->product_description,
+                'quantity' => $request->quantity,
+                'price' => $request->price,
+                'currency' => $request->currency,
+                'is_service' => $request->is_service,
+                'action' => $request->filled('action') ? $request->action : 'sell',
+                'country' => $request->country,
+                'city' => $request->city,
+                'address' => $request->address,
+                'municipality' => $request->municipality,
+                'neighborhood' => $request->neighborhood,
+                'street' => $request->street,
+                'type' => $request->type,
+                'is_shared' => 0,
+                'category_id' => $request->category_id,
+            ];
+
+            $current_product = Product::find($id);
+
+            if ($inputs['product_name'] != null) {
+                $current_product->update([
+                    'product_name' => $inputs['product_name'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['product_description'] != null) {
+                $current_product->update([
+                    'product_description' => $inputs['product_description'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['quantity'] != null) {
+                $current_product->update([
+                    'quantity' => $inputs['quantity'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['price'] != null) {
+                $current_product->update([
+                    'price' => $inputs['price'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['currency'] != null) {
+                $current_product->update([
+                    'currency' => $inputs['currency'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['is_service'] != $current_product->is_service) {
+                $current_product->update([
+                    'is_service' => $inputs['is_service'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['action'] != $current_product->action) {
+                $current_product->update([
+                    'action' => $inputs['action'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['country'] != null) {
+                $current_product->update([
+                    'country' => $inputs['country'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['city'] != null) {
+                $current_product->update([
+                    'city' => $inputs['city'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['address'] != null) {
+                $current_product->update([
+                    'address' => $inputs['address'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['municipality'] != null) {
+                $current_product->update([
+                    'municipality' => $inputs['municipality'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['neighborhood'] != null) {
+                $current_product->update([
+                    'neighborhood' => $inputs['neighborhood'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['street'] != null) {
+                $current_product->update([
+                    'street' => $inputs['street'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['is_shared'] != 0) {
+                $current_product->update([
+                    'is_shared' => $inputs['is_shared'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['type'] != null) {
+                $current_product->update([
+                    'type' => $inputs['type'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            if ($inputs['category_id'] != null) {
+                $current_product->update([
+                    'category_id' => $inputs['category_id'],
+                    'updated_by' => Auth::check() ? Auth::id() : null,
+                ]);
+            }
+
+            // If image files exist
+            if ($request->hasFile('files_urls')) {
+                $files = $request->file('files_urls', []);
+                $fileNames = $request->input('files_names', []);
+
+                // Types of extensions for different file types
+                $video_extensions = ['mp4', 'avi', 'mov', 'mkv', 'webm'];
+                $photo_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $document_extensions = ['pdf', 'doc', 'docx', 'txt'];
+                $audio_extensions = ['mp3', 'wav', 'flac'];
+
+                foreach ($files as $key => $singleFile) {
+                    // Checking the file extension
+                    $file_extension = $singleFile->getClientOriginalExtension();
+
+                    // File type check
+                    $custom_uri = '';
+                    $is_valid_type = false;
+                    $file_type = null;
+
+                    if (in_array($file_extension, $video_extensions)) { // File is a video
+                        $custom_uri = 'videos/products';
+                        $file_type = 'video';
+                        $is_valid_type = true;
+
+                    } elseif (in_array($file_extension, $photo_extensions)) { // File is a photo
+                        $custom_uri = 'photos/products';
+                        $file_type = 'photo';
+                        $is_valid_type = true;
+
+                    } elseif (in_array($file_extension, $audio_extensions)) { // File is an audio
+                        $custom_uri = 'audios/products';
+                        $file_type = 'audio';
+                        $is_valid_type = true;
+
+                    } elseif (in_array($file_extension, $document_extensions)) { // File is a document
+                        $custom_uri = 'documents/products';
+                        $file_type = 'video';
+                        $is_valid_type = true;
+                    }
+
+                    // If the extension does not match any valid type
+                    if (!$is_valid_type) {
+                        return response()->json(['status' => 'error', 'message' => 'Le type que vous avez choisi n’est pas un fichier']);
+                    }
+
+                    // Generate a unique path for the file
+                    $filename = $singleFile->getClientOriginalName();
+                    $file_url =  $custom_uri . '/' . $current_product->id . '/' . $filename;
+
+                    // Upload file
+                    try {
+                        $singleFile->storeAs($custom_uri . '/' . $current_product->id, $filename, 'public');
+
+                    } catch (\Throwable $th) {
+                        return response()->json(['status' => 'error', 'message' => 'Le fichier n’a pas pu être créé']);
+                    }
+
+                    // Creating the database record for the file
+                    File::create([
+                        'file_name' => trim($fileNames[$key] ?? $filename),
+                        'file_url' => getWebURL() . '/storage/' . $file_url,
+                        'file_type' => $file_type,
+                        'product_id' => $current_product->id
+                    ]);
+                }
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'Données mises à jour']);
+        }
+
+        if ($entity == 'update-order-quantity') {
+            try {
+                // Checking if the user is authenticated
+                if (Auth::check()) {
+                    $order = CustomerOrder::find($id); // Get the order with the ID passed in the URL
+
+                    if (!$order) {
+                        return response()->json([
+                            'message' => 'Commande non trouvée'
+                        ], 404);
+                    }
+
+                    // Get the product associated with the order
+                    $product = $order->product;
+
+                    if (!$product) {
+                        return response()->json(['message' => 'Offre non trouvée'], 404);
+                    }
+
+                    $user = User::find(Auth::id());
+
+                    switch ($request->action) {
+                        case 'increment':
+                            $user->updateProductQuantityInCart($order->id, 1, 'increment');
+                            break;
+
+                        case 'decrement':
+                            $user->updateProductQuantityInCart($order->id, 1, 'decrement');
+                            break;
+
+                        case 'update':
+                            if ($request->quantity < 1) {
+                                return response()->json([
+                                    'message' => 'La quantité doit être au moins 1 offre commandée',
+                                    'newQuantity' => $order->quantity,
+                                    'inStock' => false,
+                                ], 400);
+
+                            } else {
+                                $user->updateProductQuantityInCart($order->id, $request->quantity, 'update');
+                            }
+                            break;
+
+                        default:
+                            return response()->json([
+                                'message' => 'Quelle action voulez-vous faire ?',
+                                'newQuantity' => $order->quantity,
+                                'inStock' => false,
+                            ], 400);
+                    }
+
+                    return response()->json([
+                        'message' => 'Commande mise à jour',
+                        'newQuantity' => $order->quantity,
+                        'inCart' => true,
+                        'inStock' => $product->quantity > 0,
+                    ]);
+
+                } else {
+                    $product = Product::find($id);
+
+                    if (!$product) {
+                        return response()->json(['message' => 'Offre non trouvée'], 404);
+                    }
+
+                    // If user is not connected, operation is done in the session
+                    $cart = session()->get('cart', []);
+
+                    if (!isset($cart[$id])) {
+                        return response()->json(['message' => 'Panier non trouvé'], 404);
+                    }
+
+                    // Vérification de la quantité
+                    switch ($request->action) {
+                        case 'increment':
+                            // Check if stock is sufficient for increment
+                            if ($product->quantity <= 0) {
+                                return response()->json([
+                                    'message' => "Stock insuffisant pour l’offre « {$product->product_name} ». (Disponible : {$product->quantity})",
+                                    'newQuantity' => $cart[$id]['quantity'],
+                                    'inStock' => false,
+                                ], 422);
+
+                            } else {
+                                // Increment quantity in cart
+                                $cart[$id]['quantity']++;
+                            }
+                            break;
+
+                        case 'decrement':
+                            // Check that the quantity in the cart is > 500
+                            if ($cart[$id]['quantity'] <= 1) {
+                                return response()->json([
+                                    'message' => 'La quantité doit être au moins 1 offre commandée',
+                                    'newQuantity' => $cart[$id]['quantity'],
+                                    'inStock' => false,
+                                ], 422);
+
+                            } else {
+                                // Decrease quantity in cart
+                                $cart[$id]['quantity']--;
+                            }
+                            break;
+
+                        case 'update':
+                            // Mise à jour de la quantité
+                            if ($request->quantity < 1) {
+                                return response()->json([
+                                    'message' => 'La quantité doit être au moins 1 offre commandée',
+                                    'newQuantity' => $cart[$id]['quantity'],
+                                    'inStock' => false,
+                                ], 400);
+
+                            } else {
+                                $cart[$id]['quantity'] = $request->quantity;
+                            }
+                            break;
+
+                        default:
+                            return response()->json([
+                                'message' => 'Quelle action voulez-vous faire ?',
+                                'newQuantity' => $cart[$id]['quantity'],
+                                'inStock' => false,
+                            ], 400);
+                    }
+
+                    // Save session with new quantity
+                    session()->put('cart', $cart);
+
+                    return response()->json([
+                        'message' => 'Commande mise à jour',
+                        'newQuantity' => $cart[$id]['quantity'],
+                        'inCart' => true,
+                        'inStock' => true,
+                    ]);
+                }
+
+            } catch (\Exception $e) {
+                return response()->json(['message' => $e->getMessage()], 422);
+            }
         }
     }
 }

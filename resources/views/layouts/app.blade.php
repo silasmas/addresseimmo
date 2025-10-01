@@ -43,6 +43,7 @@
 
         <style>
             textarea { resize: none; }
+            .alert { z-index: 9999; }
             #showPassword i, #showConfirmPassword i, #showNewPassword i, #showConfirmNewPassword i { font-size: 1.6rem; }
             #offerForm label { font-size: 14px; }
             #offerForm .form-control { height: 2.3rem; }
@@ -527,6 +528,146 @@
         <script type="text/javascript" src="{{ asset('assets/addons/cropper/js/cropper.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/scripts.custom.js') }}"></script>
         <script type="text/javascript">
+            /**
+             * Perform action on element
+             */
+            function performAction(action, entity, entity_id) {
+                if (action === 'delete') {
+                    var entityId = parseInt(entity_id.split('-')[1]);
+
+                    Swal.fire({
+                        title: "<?= __('miscellaneous.alert.attention.delete') ?>",
+                        text: "<?= __('miscellaneous.alert.confirm.delete') ?>",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#04471a",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "<?= __('miscellaneous.alert.yes.delete') ?>",
+                        cancelButtonText: "<?= __('miscellaneous.cancel') ?>"
+
+                    }).then(function (result) {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                headers: headers,
+                                type: "DELETE",
+                                url: `${currentHost}/delete/${entity}/${entityId}`,
+                                contentType: false,
+                                processData: false,
+                                data: JSON.stringify({ "entity" : entity, "id" : entityId }),
+                                success: function (result) {
+                                    if (!result.success) {
+                                        Swal.fire({
+                                            title: "<?= __('miscellaneous.alert.oups') ?>",
+                                            text: result.message,
+                                            icon: "error"
+                                        });
+
+                                    } else {
+                                        Swal.fire({
+                                            title: "<?= __('miscellaneous.alert.perfect') ?>",
+                                            text: result.message,
+                                            icon: "success"
+                                        });
+                                        location.reload();
+                                    }
+                                },
+                                error: function (xhr, error, status_description) {
+                                    console.log(xhr.responseJSON);
+                                    console.log(xhr.status);
+                                    console.log(error);
+                                    console.log(status_description);
+                                }
+                            });
+
+                        } else {
+                            Swal.fire({
+                                title: "<?= __('miscellaneous.cancel') ?>",
+                                text: "<?= __('miscellaneous.alert.canceled.delete') ?>",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            }
+
+            /**
+             * Update order quantity
+             */
+            function updateProductQuantity(action, orderId, quantity = null) {
+                let url = `${currentHost}/products/update-order-quantity/${orderId}`;
+                let data = {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    action: action
+                };
+
+                // If the action is "update", we add the specific quantity
+                if (action === 'update') {
+                    data.quantity = quantity;
+
+                } else {
+                    // For "increment" or "decrement", the quantity is always 1
+                    data.quantity = 1;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        // Update the UI if everything is fine
+                        if (response.inCart) {
+                            // Update the quantity in the input
+                            $(`#order-quantity-${orderId}`).val(response.newQuantity);
+                            // Display success message
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> ${response.message || 'Commande mise à jour !'}
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                        }
+
+                        if (!response.inStock) {
+                            // Update the quantity in the input
+                            $(`#order-quantity-${orderId}`).val(response.newQuantity);
+                            // Display error message if the stock is insufficient
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> Stock insuffisant
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                        }
+
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        // Update the quantity in the input
+                        $(`#order-quantity-${orderId}`).val(xhr.responseJSON.newQuantity);
+                        // Display error alert
+                        $('#ajax-alert-container').html(`<div class="position-relative">
+                                                            <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                    <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
+                                                                        <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> ${xhr.responseJSON.message}
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>`);
+                        location.reload();
+                    }
+                });
+            }
+
             $(function () {
                 /**
                  * Image preview to upload
@@ -599,7 +740,7 @@
                 });
 
                 /**
-                 * Ajax to send
+                 * Ajax to send data
                  */
                 /* Offer form */
                 $('#offerForm').on('submit', function (e) {
@@ -635,7 +776,7 @@
                                                                 <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
                                                                     <div class="col-lg-4 col-sm-6 mx-auto">
                                                                         <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
-                                                                            <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> ${response.message || 'Produit ajouté avec succès !'}
+                                                                            <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> ${response.message || 'Offre ajoutée avec succès !'}
                                                                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                                                                         </div>
                                                                     </div>
@@ -668,6 +809,55 @@
                                                                     </div>
                                                                 </div>
                                                             </div>`);
+                        }
+                    });
+                });
+
+                /**
+                 * Add to cart button
+                 */
+                $('.item-add-btn').on('click', function () {
+                    const productId = $(this).data('id');
+                    const productContainer = $(`#product-${productId}`); // Le conteneur du produit à mettre à jour
+
+                    // Cacher le texte et afficher l'icône de chargement pour ce produit spécifique
+                    $(`#addToCart-${productId} .btn`).addClass('disabled');
+                    $(`#ajax-loading-${productId}`).removeClass('d-none');
+
+                    $.ajax({
+                        url: `${currentHost}/products/add-to-cart/${productId}`,
+                        method: 'POST',
+                        data: {
+                            quantity: 500,
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success(response) {
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-success alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-info-circle me-2 fs-4" style="vertical-align: -3px;"></i> ${response.message || 'Offre ajoutée au panier !'}
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                            location.reload();
+                        },
+                        error(xhr) {
+                            // Afficher une alerte d'erreur
+                            $('#ajax-alert-container').html(`<div class="position-relative">
+                                                                <div class="row position-fixed w-100" style="opacity: 0.9; z-index: 999;">
+                                                                    <div class="col-lg-4 col-sm-6 mx-auto">
+                                                                        <div class="alert alert-danger alert-dismissible fade show rounded-0" role="alert">
+                                                                            <i class="bi bi-exclamation-triangle me-2 fs-4" style="vertical-align: -3px;"></i> ${xhr.responseJSON.message} || L’ajout a échoué
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`);
+                            $(`#addToCart-${productId} .btn`).removeClass('disabled');
+                            $(`#ajax-loading-${productId}`).addClass('d-none');
                         }
                     });
                 });
