@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\ApiClientManager;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomerOrder as ResourcesCustomerOrder;
 use App\Http\Resources\Product as ResourcesProduct;
 use App\Http\Resources\User as ResourcesUser;
 use App\Models\Cart;
@@ -192,7 +193,8 @@ class PublicController extends Controller
             // Get user unpaid cart
             $cart = $current_user->unpaidCart()->first();
             // Get user unpaid orders
-            $items = $current_user->unpaidOrders();
+            $orders = $current_user->unpaidOrders();
+            $items = ResourcesCustomerOrder::collection($orders)->resolve();
         }
 
         if ($entity == 'offers') {
