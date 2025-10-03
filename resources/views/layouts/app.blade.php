@@ -439,7 +439,7 @@
                                     <li><a href="{{ route('account.home') }}"><i class="bi bi-person me-2"></i>Mon compte</a></li>
                                     <li><a href="{{ route('account.entity', ['entity' => 'cart']) }}"><i class="bi bi-cart3 me-2"></i>Mon panier</a></li>
                                     <li><a href="{{ route('account.entity', ['entity' => 'offers']) }}"><i class="bi bi-house-door me-2"></i>Mes offres</a></li>
-                                    {{-- <li><a href="{{ route('account.entity', ['entity' => 'customers']) }}"><i class="bi bi-people me-2"></i>Mes clients</a></li> --}}
+                                    <li><a href="{{ route('account.entity', ['entity' => 'payments']) }}"><i class="bi bi-coin me-2"></i>Mes paiements</a></li>
                                     <hr>
                                     <li>
                                         <form action="{{ route('logout') }}" method="POST">
