@@ -31,4 +31,8 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+        protected $casts = [
+        'for_service' => 'boolean',
+    ];
+
 }
