@@ -18,7 +18,7 @@ class Payment extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $userCurrency = auth()->user()->currency;
+        $userCurrency = auth()->check() ? auth()->user()->currency : 'USD';
         $amount = $this->convertAmount($userCurrency);
 
         if (!empty($this->currency)) {
