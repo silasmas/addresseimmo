@@ -13,6 +13,8 @@ class Payment extends Model
 {
     use HasFactory;
 
+    protected $table = 'payments';
+
     /**
      * The attributes that are mass assignable.
      *
