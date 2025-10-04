@@ -113,84 +113,85 @@ class ProductController extends BaseController
 
         // If the transaction is via mobile money
         if ($request->transaction_type_id == 1) {
-            $reference_code = 'REF-' . ((string) random_int(10000000, 99999999)) . '-' . $cart->user_id;
+            return $request->currency;
+            // $reference_code = 'REF-' . ((string) random_int(10000000, 99999999)) . '-' . $cart->user_id;
 
-            // Create response by sending request to FlexPay
-            $data = array(
-                'merchant' => config('services.flexpay.merchant'),
-                'type' => 1,
-                'phone' => $request->other_phone,
-                'reference' => $reference_code,
-                'amount' => $request->amount,
-                'currency' => $request->currency,
-                'callbackUrl' => getApiURL() . '/payment/store'
-            );
-            $data = json_encode($data);
-            $ch = curl_init();
+            // // Create response by sending request to FlexPay
+            // $data = array(
+            //     'merchant' => config('services.flexpay.merchant'),
+            //     'type' => 1,
+            //     'phone' => $request->other_phone,
+            //     'reference' => $reference_code,
+            //     'amount' => $request->amount,
+            //     'currency' => $request->currency,
+            //     'callbackUrl' => getApiURL() . '/payment/store'
+            // );
+            // $data = json_encode($data);
+            // $ch = curl_init();
 
-            curl_setopt($ch, CURLOPT_URL, $gateway_mobile);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, Array(
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . config('services.flexpay.api_token')
-            ));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
+            // curl_setopt($ch, CURLOPT_URL, $gateway_mobile);
+            // curl_setopt($ch, CURLOPT_POST, true);
+            // curl_setopt($ch, CURLOPT_HTTPHEADER, Array(
+            //     'Content-Type: application/json',
+            //     'Authorization: Bearer ' . config('services.flexpay.api_token')
+            // ));
+            // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            // curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            // curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
 
-            $response = curl_exec($ch);
+            // $response = curl_exec($ch);
 
-            if (curl_errno($ch)) {
-                return $this->handleError(curl_errno($ch), __('notifications.transaction_request_failed'), 400);
+            // if (curl_errno($ch)) {
+            //     return $this->handleError(curl_errno($ch), __('notifications.transaction_request_failed'), 400);
 
-            } else {
-                curl_close($ch); 
+            // } else {
+            //     curl_close($ch); 
 
-                $jsonRes = json_decode($response, true);
-                $code = $jsonRes['code']; // Push sending status
+            //     $jsonRes = json_decode($response, true);
+            //     $code = $jsonRes['code']; // Push sending status
 
-                if ($code != '0') {
-                    return $this->handleError(__('miscellaneous.error_label'), __('notifications.transaction_push_failed'), 400);
+            //     if ($code != '0') {
+            //         return $this->handleError(__('miscellaneous.error_label'), __('notifications.transaction_push_failed'), 400);
 
-                } else {
-                    // Register payment, even if FlexPay will
-                    $payment = Payment::where('order_number', $jsonRes['orderNumber'])->first();
+            //     } else {
+            //         // Register payment, even if FlexPay will
+            //         $payment = Payment::where('order_number', $jsonRes['orderNumber'])->first();
 
-                    if (is_null($payment)) {
-                        $payment = Payment::create([
-                            'reference' => $reference_code,
-                            'order_number' => $jsonRes['orderNumber'],
-                            'amount' => $request->amount,
-                            'phone' => $request->other_phone,
-                            'currency' => $request->currency,
-                            'channel' => $request->channel,
-                            'type' => $request->transaction_type_id,
-                            'status' => 1,
-                            'cart_id' => $cart->id
-                        ]);
-                    }
+            //         if (is_null($payment)) {
+            //             $payment = Payment::create([
+            //                 'reference' => $reference_code,
+            //                 'order_number' => $jsonRes['orderNumber'],
+            //                 'amount' => $request->amount,
+            //                 'phone' => $request->other_phone,
+            //                 'currency' => $request->currency,
+            //                 'channel' => $request->channel,
+            //                 'type' => $request->transaction_type_id,
+            //                 'status' => 1,
+            //                 'cart_id' => $cart->id
+            //             ]);
+            //         }
 
-                    // The cart is updated only if the processing succeed
-                    $random_string = (string) random_int(1000000, 9999999);
-                    $generated_number = 'STRT-' . $random_string . '-' . date('Y.m.d');
+            //         // The cart is updated only if the processing succeed
+            //         $random_string = (string) random_int(1000000, 9999999);
+            //         $generated_number = 'STRT-' . $random_string . '-' . date('Y.m.d');
 
-                    $cart->update([
-                        'payment_code' => $generated_number,
-                        'is_paid' => 1,
-                    ]);
+            //         $cart->update([
+            //             'payment_code' => $generated_number,
+            //             'is_paid' => 1,
+            //         ]);
 
-                    $object = new stdClass();
+            //         $object = new stdClass();
 
-                    $object->result_response = [
-                        'message' => $jsonRes['message'],
-                        'order_number' => $jsonRes['orderNumber']
-                    ];
-                    $object->cart = new ResourcesCart($cart);
+            //         $object->result_response = [
+            //             'message' => $jsonRes['message'],
+            //             'order_number' => $jsonRes['orderNumber']
+            //         ];
+            //         $object->cart = new ResourcesCart($cart);
 
-                    return $this->handleResponse($object, __('notifications.payment_done'));
-                }
-            }
+            //         return $this->handleResponse($object, __('notifications.payment_done'));
+            //     }
+            // }
         }
 
         // If the transaction is via bank card
