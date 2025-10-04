@@ -63,7 +63,7 @@
                             <a href="{{ route('account.entity', ['entity' => 'offers']) }}" class="list-group-item list-group-item-action{{ !empty($entity) && $entity == 'offers' ? ' active' : '' }}">
                                 <i class="bi bi-box2 me-3 fs-5 align-middle"></i>Offres
                             </a>
-                            <a href="{{ route('account.entity', ['entity' => 'payments']) }}" class="list-group-item list-group-item-action{{ !empty($entity) && $entity == 'offers' ? ' active' : '' }}">
+                            <a href="{{ route('account.entity', ['entity' => 'payments']) }}" class="list-group-item list-group-item-action{{ !empty($entity) && $entity == 'payments' ? ' active' : '' }}">
                                 <i class="bi bi-coin me-3 fs-5 align-middle"></i>Paiements
                             </a>
                         </div>
