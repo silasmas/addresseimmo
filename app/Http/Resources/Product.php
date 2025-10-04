@@ -97,6 +97,7 @@ class Product extends JsonResource
             $userCurrency = $user->currency;
             // Convertir le prix en fonction de la devise de l'utilisateur
             $price = $this->convertPrice($userCurrency);
+
         } else {
             // Si l'utilisateur n'est pas connecté, retourner le prix d'origine
             $price = $this->price;

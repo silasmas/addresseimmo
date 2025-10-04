@@ -39,22 +39,22 @@
                             <!-- Tabs content -->
                             <div class="tab-content" id="ex2-content">
                                 <div class="tab-pane fade show active" id="ex2-tabs-1" role="tabpanel" aria-labelledby="ex2-tab-1">
-                                    <form action="#" class="form-search d-flex align-items-stretch my-2 border border-success rounded-pill" data-aos="fade-up" data-aos-delay="200">
+                                    <form class="form-search d-flex align-items-stretch my-2 border border-success rounded-pill" data-aos="fade-up" data-aos-delay="200">
                                         <div class="input-group">
                                             <div class="input-group-text border-0 me-0 pe-1 py-4">
                                                 <i class="bi bi-geo-alt"></i>
                                             </div>
-                                            <input type="text" class="form-control px-3 py-4" placeholder="Saisir adresse entière, commune ou quartier" />
+                                            <input type="text" id="searchSell" class="form-control px-3 py-4" placeholder="Saisir adresse entière, commune ou quartier" onkeyup="this.value != '' ? document.getElementById('searchResult').classList.remove('d-none') : document.getElementById('searchResult').classList.add('d-none')" />
                                         </div>
                                     </form>
                                 </div>
                                 <div class="tab-pane fade" id="ex2-tabs-2" role="tabpanel" aria-labelledby="ex2-tab-2">
-                                    <form action="#" class="form-search d-flex align-items-stretch my-2 border border-success rounded-pill" data-aos="fade-up" data-aos-delay="200">
+                                    <form class="form-search d-flex align-items-stretch my-2 border border-success rounded-pill" data-aos="fade-up" data-aos-delay="200">
                                         <div class="input-group">
                                             <div class="input-group-text border-0 me-0 pe-1 py-4">
                                                 <i class="bi bi-geo-alt"></i>
                                             </div>
-                                            <input type="text" class="form-control px-3 py-4" placeholder="Saisir adresse entière, commune ou quartier" />
+                                            <input type="text" id="searchRent" class="form-control px-3 py-4" placeholder="Saisir adresse entière, commune ou quartier" onkeyup="this.value != '' ? document.getElementById('searchResult').classList.remove('d-none') : document.getElementById('searchResult').classList.add('d-none')" />
                                         </div>
                                     </form>
                                 </div>
@@ -74,6 +74,8 @@
                             </div>
                             <!-- Tabs content -->
                         </div>
+
+                        <div id="searchResult" class="list-group d-none bg-white"></div>
                     </div>
                 </div>
             </div>
@@ -102,7 +104,7 @@
                             <div class="property-slider">
         @foreach ($recent_properties as $product)
                                 <div class="property-item mb-30">
-                                    <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img d-inline-block" style="max-height: 350px; overflow: hidden;">
+                                    <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img d-inline-block" style="height: 350px; overflow: hidden;">
                                         <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
                                     </a>
 

@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\ApiClientManager;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomerOrder as ResourcesCustomerOrder;
+use App\Http\Resources\Payment as ResourcesPayment;
 use App\Http\Resources\Product as ResourcesProduct;
 use App\Http\Resources\User as ResourcesUser;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\CustomerOrder;
 use App\Models\File;
+use App\Models\Payment;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\Role;
@@ -119,13 +121,26 @@ class PublicController extends Controller
      */
     public function search(Request $request)
     {
+        // Retrieve query parameters
         $query = $request->get('query');
-        $per_page = $request->get('per_page', 15);
-        $filters = $request->only(['category_id', 'user_id', 'type', 'action']);
-        // Request
-        $products = Product::searchWithFilters($query, $filters, $per_page);
+        $action = $request->get('action');
 
-        return view('search', ['products' => $products]);
+        // Perform the Eloquent query
+        $products = Product::where(function($q) use ($query) {
+                                $q->where('product_name', 'LIKE', '%' . $query . '%')
+                                ->orWhere('product_description', 'LIKE', '%' . $query . '%')
+                                ->orWhere('municipality', 'LIKE', '%' . $query . '%')
+                                ->orWhere('neighborhood', 'LIKE', '%' . $query . '%');
+                            })
+                            ->where('action', $action) // Filter by action
+                            ->whereNotIn('id', function($query) {
+                                $query->select('product_id')
+                                    ->from('customer_orders');
+                            })
+                            ->paginate(10);
+
+        // Return paginated results
+        return ResourcesProduct::collection($products);
     }
 
     /**
@@ -180,6 +195,7 @@ class PublicController extends Controller
         $cart = null;
         $category = null;
         $categories = [];
+        $items_req = null;
         $items = [];
         $countries = [];
 
@@ -201,9 +217,15 @@ class PublicController extends Controller
         if ($entity == 'offers') {
             $entity_title = 'Mes offres';
             $countries = showCountries();
-            $products = Product::where('user_id', $current_user->id)->orderByDesc('created_at')->paginate(7)->appends(request()->query());
             $categories = Category::orderByDesc('category_name')->get();
-            $items = ResourcesProduct::collection($products)->resolve();
+            $items_req = Product::where('user_id', $current_user->id)->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $items = ResourcesProduct::collection($items_req)->resolve();
+        }
+
+        if ($entity == 'payments') {
+            $entity_title = 'Mes paiements';
+            $items_req = Payment::whereHas('cart', function ($query) use ($current_user) { $query->where('user_id', $current_user->id); })->orderByDesc('created_at')->paginate(7)->appends(request()->query());
+            $items = ResourcesPayment::collection($items_req)->resolve();
         }
 
         return view('account', [
@@ -214,6 +236,7 @@ class PublicController extends Controller
             'category' => $category,
             'categories' => $categories,
             'items' => $items,
+            'items_req' => $items_req,
             'countries' => $countries
         ]);
     }
@@ -302,30 +325,6 @@ class PublicController extends Controller
      */
     public function removeData($entity, $id)
     {
-        if ($entity == 'product') {
-            $product = Product::find($id);
-
-            if (!$product) {
-                return redirect(RouteServiceProvider::HOME)->with('error_message', __('notifications.find_error'));
-            }
-
-            $filesToDelete = File::where('product_id', $product->id)->get();
-
-            foreach ($filesToDelete as $file) {
-                // Delete the file from the file system
-                $relativeStoragePath = str_replace(getWebURL() . '/storage/', '', $file->file_url);
-
-                Storage::disk('public')->delete($relativeStoragePath);
-
-                // Deletes the row at the database
-                $file->delete();
-            }
-
-            $product->delete();
-
-            return redirect('/products/' . $product->type)->with('success_message', __('notifications.deleted_data'));
-        }
-
         if ($entity == 'order') {
             try {
                 // We start by retrieving the order associated with this ID (for connected users)
@@ -343,32 +342,11 @@ class PublicController extends Controller
                         ], 404);
                     }
 
-                    // Find the order to delete from the order ID in the cart
-                    $existingOrder = $cart->customer_orders()->find($id);
-
-                    if (!$existingOrder) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Commande non trouvée'
-                        ], 404);
-                    }
-
-                    // Delete order (cart line)
-                    $existingOrder->delete();
-
-                    // Retrieve the associated product to restore stock
-                    $product = $existingOrder->product;
-
-                    // Restore product stock
-                    $product->increment('quantity', $existingOrder->quantity);
-
                     // Check if the product is still in the user's cart
                     $inCart = !$cart->customer_orders()->find($id);
 
-                    // If the cart is empty, it is deleted from the database
-                    if ($cart->customer_orders->isEmpty()) {
-                        $cart->delete();
-                    }
+                    // Get user's unpaid cart
+                    $user->removeProductFromCart($id);
 
                     $isLoggedIn = true;
 
@@ -413,18 +391,6 @@ class PublicController extends Controller
                     'message' => $e->getMessage()
                 ], 422);
             }
-        }
-
-        if ($entity == 'cart') {
-            $cart = Cart::find($id);
-
-            if (!$cart) {
-                return redirect(RouteServiceProvider::HOME)->with('error_message', __('notifications.find_error'));
-            }
-
-            $cart->delete();
-
-            return redirect('/account')->with('success_message', __('notifications.deleted_data'));
         }
     }
 
@@ -529,6 +495,8 @@ class PublicController extends Controller
         $inputs = [
             'transaction_type_id' => $request->transaction_type_id,
             'other_phone' => $request->other_phone_code . $request->other_phone_number,
+            'amount' => $request->amount,
+            'currency' => $request->currency,
             'user_id' => $request->user_id,
             'cart_id' => $request->cart_id,
             'app_url' => $request->app_url

@@ -18,6 +18,22 @@ class Payment extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $userCurrency = auth()->user();
+        $amount = $this->convertAmount($userCurrency);
+
+        if (!empty($this->currency)) {
+            if ($this->currency == 'USD') {
+                $currency = '$';
+            }
+
+            if ($this->currency == 'CDF') {
+                $currency = 'FC';
+            }
+
+        } else {
+            $currency = $this->currency;
+        }
+
         return [
             'id' => $this->id,
             'reference' => $this->reference,
@@ -25,8 +41,10 @@ class Payment extends JsonResource
             'order_number' => $this->order_number,
             'amount' => $this->amount,
             'amount_customer' => $this->amount_customer,
+            'converted_amount' => formatIntegerNumber($amount),
             'phone' => $this->phone,
             'currency' => $this->currency,
+            'readable_currency' => $currency,
             'channel' => $this->channel,
             'type' => $this->type,
             'status' => $this->status,

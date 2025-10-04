@@ -185,6 +185,19 @@
                                     </select>
                                 </div>
 
+                                <!-- Category -->
+                                <div class="col-sm-6 col-12">
+                                    <label for="category_id" class="form-label mb-0">@lang('miscellaneous.admin.product.data.category')</label>
+                                    <select class="form-select" id="category_id" name="category_id">
+                                        <option class="small" disabled selected>Choisir une catégorie</option>
+    @forelse ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+    @empty
+                                        <option disabled>@lang('miscellaneous.empty_list')</option>
+    @endforelse
+                                    </select>
+                                </div>
+
                                 <!-- Type -->
                                 <div class="col-sm-6 col-12">
                                     <label for="type" class="form-label mb-0">Type</label>
@@ -197,19 +210,6 @@
                                         <option value="empty_apartment">Appartement vide</option>
                                         <option value="empty_plot">Parcelle vide</option>
                                         <option value="house_plot">Concession maisons</option>
-                                    </select>
-                                </div>
-
-                                <!-- Category -->
-                                <div class="col-sm-6 col-12">
-                                    <label for="category_id" class="form-label mb-0">@lang('miscellaneous.admin.product.data.category')</label>
-                                    <select class="form-select" id="category_id" name="category_id">
-                                        <option class="small" disabled selected>Choisir une catégorie</option>
-    @forelse ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
-    @empty
-                                        <option disabled>@lang('miscellaneous.empty_list')</option>
-    @endforelse
                                     </select>
                                 </div>
 
@@ -288,7 +288,7 @@
                                 </div>
                             </div>
 
-                            <div style="display: flex; justify-content: flex-start;">
+                            <div class="mt-4" style="display: flex; justify-content: flex-start;">
                                 <button type="submit" class="btn adrm-btn-red rounded-pill" style="width: 250px">
                                     <span style="color: #fff;">@lang('miscellaneous.register')</span>
                                 </button>
@@ -399,7 +399,7 @@
                                     <li><a href="{{ route('account.entity', ['entity' => 'offers', 'action' => 'sell']) }}"><i class="bi bi-cash-coin me-2"></i>Vente</a></li>
                                     <li><a href="{{ route('product.entity', ['entity' => 'moving']) }}"><i class="bi bi-luggage me-2"></i>Déménagement</a></li>
                                     <li><a href="{{ route('product.entity', ['entity' => 'build']) }}"><i class="bi bi-bricks me-2"></i>Construction</a></li>
-                                    <li><a href="{{ route('product.entity', ['entity' => 'design']) }}"><i class="bi bi-droplet-half me-2"></i>Décoration intérieure</a></li>
+                                    <li style="min-width: 200px;"><a href="{{ route('product.entity', ['entity' => 'design']) }}"><i class="bi bi-droplet-half me-2"></i>Décoration intérieure</a></li>
                                 </ul>
                             </li>
                             <li class="{{ Route::is('about') ? 'active' : '' }}"><a href="{{ route('about') }}">A propos</a></li>
@@ -439,7 +439,7 @@
                                     <li><a href="{{ route('account.home') }}"><i class="bi bi-person me-2"></i>Mon compte</a></li>
                                     <li><a href="{{ route('account.entity', ['entity' => 'cart']) }}"><i class="bi bi-cart3 me-2"></i>Mon panier</a></li>
                                     <li><a href="{{ route('account.entity', ['entity' => 'offers']) }}"><i class="bi bi-house-door me-2"></i>Mes offres</a></li>
-                                    {{-- <li><a href="{{ route('account.entity', ['entity' => 'customers']) }}"><i class="bi bi-people me-2"></i>Mes clients</a></li> --}}
+                                    <li><a href="{{ route('account.entity', ['entity' => 'payments']) }}"><i class="bi bi-coin me-2"></i>Mes paiements</a></li>
                                     <hr>
                                     <li>
                                         <form action="{{ route('logout') }}" method="POST">
@@ -515,9 +515,8 @@
                             <h3>Liens utiles</h3>
                             <ul class="list-unstyled float-start links">
                                 <li><a href="{{ route('about') }}">A propos</a></li>
-                                <li><a href="{{ route('product.home') }}">Services</a></li>
-                                <li><a href="{{ route('product.entity', ['entity' => 'sell']) }}">Vendre</a></li>
-                                <li><a href="{{ route('product.entity', ['entity' => 'buy']) }}">Acheter</a></li>
+                                <li><a href="{{ route('account.entity', ['entity' => 'offers', 'action' => 'sell']) }}">Vendre</a></li>
+                                <li><a href="{{ route('product.entity', ['entity' => 'sell']) }}">Acheter</a></li>
                                 <li><a href="{{ route('product.entity', ['entity' => 'rent']) }}">Louer</a></li>
                             </ul>
                             <ul class="list-unstyled float-start links">
@@ -620,12 +619,14 @@
                     }).then(function (result) {
                         if (result.isConfirmed) {
                             $.ajax({
-                                headers: headers,
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
                                 type: 'DELETE',
                                 url: `${currentHost}/delete/${entity}/${entityId}`,
-                                contentType: false,
+                                contentType: 'application/json',
                                 processData: false,
-                                data: JSON.stringify({ _token: $('meta[name="csrf-token"]').attr('content'), 'entity' : entity, 'id' : entityId }),
+                                data: JSON.stringify({ 'entity' : entity, 'id' : entityId }),
                                 success: function (result) {
                                     if (!result.success) {
                                         Swal.fire({
@@ -853,6 +854,60 @@
                             $(`#ajax-loading-${productId}`).addClass('d-none');
                         }
                     });
+                });
+
+                /**
+                 * Search products
+                */
+                // On écoute la saisie de l'utilisateur dans les inputs de recherche
+                $('#searchSell, #searchRent').on('keyup', function() {
+                    var query = $(this).val(); // Récupérer la valeur saisie
+                    var action = $(this).closest('.tab-pane').attr('id').includes('tabs-1') ? 'sell' :
+                                    $(this).closest('.tab-pane').attr('id').includes('tabs-2') ? 'rent' : 'build';
+
+                    // Si la requête est vide, on cache les résultats
+                    if (query.length > 2) {
+                        $.ajax({
+                            url: `${currentHost}/search`, // Votre route de recherche
+                            method: 'GET',
+                            data: { query: query, action: action },
+                            success: function(response) {
+                                // Effacer les anciens résultats
+                                $('#searchResult').empty().removeClass('d-none');
+
+                                // Vérifier si des produits ont été trouvés
+                                if (response.data.length > 0) {
+                                    // Pour chaque produit dans la réponse
+                                    $.each(response.data, function(index, product) {
+                                        console.log(product.photos[0].file_url);
+                                        // Ajouter un élément à la liste
+                                        $('#searchResult').append(`<a href="${currentHost}/products/${product.id}" class="list-group-item list-group-item-action text-start">
+                                                                        <img src="${product.photos.length > 0 ? product.photos[0].file_url : currentHost + 'assets/img/undefined.png'}" style="width: 40px; height: 40px; object-fit: cover; float: left;" class="me-2">
+                                                                        <h5 class="m-0">${product.product_name}</h5>
+                                                                        <p class="small m-0 text-muted">${product.municipality}, ${product.neighborhood} (${product.city}, ${product.country})</p>
+                                                                    </a>`);
+                                    });
+
+                                } else {
+                                    // Si aucun produit n'a été trouvé
+                                    $('#searchResult').append(`<a class="list-group-item list-group-item-action">
+                                                                    Aucun résultat trouvé.
+                                                                </a>`);
+                                }
+                            }
+                        });
+
+                    } else {
+                        // Si la recherche est vide ou trop courte, cacher les résultats
+                        $('#searchResult').addClass('d-none');
+                    }
+                });
+
+                // Pour fermer la liste de résultats lorsqu'on clique en dehors
+                $(document).on('click', function(event) {
+                    if (!$(event.target).closest('#searchResult, #searchSell, #searchRent').length) {
+                        $('#searchResult').addClass('d-none');
+                    }
                 });
             });
         </script>

@@ -52,7 +52,7 @@
 @forelse ($sell_products as $product)
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="property-item mb-30">
-                            <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img d-inline-block" style="max-height: 350px; overflow: hidden;">
+                            <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img d-inline-block" style="height: 350px; overflow: hidden;">
                                 <img src="{{ count($product['photos']) > 0 ? $product['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="Image" class="img-fluid" />
                             </a>
 
@@ -92,7 +92,7 @@
 
 @if ($sell_products_req->total() > 0)
                 <div class="row align-items-center py-5">
-                    <div class="col-lg-3">Pagination ({{ $sell_products_req->lastPage() }} sur {{ $sell_products_req->total() }})</div>
+                    <div class="col-lg-3">Pagination ({{ $sell_products_req->currentPage() }} sur {{ $sell_products_req->lastPage() }})</div>
                     <div class="col-lg-6 text-center">
                         {{ $sell_products_req->links() }}
                     </div>

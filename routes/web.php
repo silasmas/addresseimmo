@@ -13,7 +13,7 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::get('/symlink', [PublicController::class, 'symlink'])->name('symlink');
-Route::post('/search', [PublicController::class, 'search'])->name('search');
+Route::get('/search', [PublicController::class, 'search'])->name('search');
 Route::get('/cart', [PublicController::class, 'cart'])->name('cart');
 Route::get('/change-lang/{locale}', [PublicController::class, 'changeLanguage'])->name('change_language');
 // Products

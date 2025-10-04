@@ -166,10 +166,10 @@ class User extends Authenticatable
     public function hasProductInUnpaidCart($productId): bool
     {
         return Cart::where('user_id', $this->id)
-                        ->where('is_paid', 0)
-                        ->whereHas('customer_orders', function ($query) use ($productId) {
-                            $query->where('product_id', $productId);
-                        })->exists();
+            ->where('is_paid', 0)
+            ->whereHas('customer_orders', function ($query) use ($productId) {
+                $query->where('product_id', $productId);
+            })->exists();
     }
 
     /**
@@ -189,8 +189,8 @@ class User extends Authenticatable
 
             // 2. Get existing line (or NULL)
             $existingOrder = CustomerOrder::whereHas('cart', function ($q) {
-                                                $q->where('user_id', $this->id)->where('is_paid', 0);
-                                            })->where('product_id', $productId)->first();
+                $q->where('user_id', $this->id)->where('is_paid', 0);
+            })->where('product_id', $productId)->first();
 
             // 3. Get the product
             $product = Product::findOrFail($productId);
@@ -207,7 +207,6 @@ class User extends Authenticatable
             if ($existingOrder) {
                 $existingOrder->quantity = $totalQuantity;
                 $existingOrder->save();
-
             } else {
                 // 7. Create a new order line
                 $cart = $this->carts()->where('is_paid', 0)->latest()->first();
@@ -324,7 +323,6 @@ class User extends Authenticatable
 
                         // Decrease product stock based on increase
                         $product->decrement('quantity', $stockDifference);
-
                     } else {
                         // If we decrease the order quantity, increase the product stock
                         $product->increment('quantity', abs($stockDifference));
@@ -369,6 +367,11 @@ class User extends Authenticatable
 
             // 5. Increment the stock of the product
             $product->increment('quantity', $existingOrder->quantity);
+
+            // 6. Check if the cart is empty and delete the cart if no orders left
+            if ($cart->customer_orders()->count() === 0) {
+                $cart->delete(); // Delete the cart if no orders are left
+            }
 
             return true; // Indicate success
         });

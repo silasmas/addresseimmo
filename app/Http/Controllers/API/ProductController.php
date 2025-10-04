@@ -106,9 +106,6 @@ class ProductController extends BaseController
             return $this->handleError(__('notifications.find_cart_404'));
         }
 
-        // Get total prices in the cart
-        // $total_to_pay = $cart->totalConvertedAmount($current_user->currency);
-
         // Validations
         if ($request->transaction_type_id == null OR !is_numeric($request->transaction_type_id)) {
             return $this->handleError($request->transaction_type_id, __('validation.required') . ' TRANSACTION FIELD', 400);
@@ -125,7 +122,7 @@ class ProductController extends BaseController
                 'phone' => $request->other_phone,
                 'reference' => $reference_code,
                 'amount' => $request->amount,
-                'currency' => $current_user->currency,
+                'currency' => $request->currency,
                 'callbackUrl' => getApiURL() . '/payment/store'
             );
             $data = json_encode($data);
@@ -166,7 +163,7 @@ class ProductController extends BaseController
                             'order_number' => $jsonRes['orderNumber'],
                             'amount' => $request->amount,
                             'phone' => $request->other_phone,
-                            'currency' => $current_user->currency,
+                            'currency' => $request->currency,
                             'channel' => $request->channel,
                             'type' => $request->transaction_type_id,
                             'status' => 1,
@@ -206,12 +203,12 @@ class ProductController extends BaseController
                 'merchant' => config('services.flexpay.merchant'),
                 'reference' => $reference_code,
                 'amount' => $request->amount,
-                'currency' => $current_user->currency,
+                'currency' => $request->currency,
                 'description' => __('miscellaneous.bank_transaction_description'),
                 'callback_url' => getApiURL() . '/payment/store',
-                'approve_url' => $request->app_url . '/paid/' . $request->amount . '/' . $current_user->currency . '/0/cart/' . $cart->id,
-                'cancel_url' => $request->app_url . '/paid/' . $request->amount . '/' . $current_user->currency . '/1/cart/' . $cart->id,
-                'decline_url' => $request->app_url . '/paid/' . $request->amount . '/' . $current_user->currency . '/2/cart/' . $cart->id,
+                'approve_url' => $request->app_url . '/paid/' . $request->amount . '/' . $request->currency . '/0/cart/' . $cart->id,
+                'cancel_url' => $request->app_url . '/paid/' . $request->amount . '/' . $request->currency . '/1/cart/' . $cart->id,
+                'decline_url' => $request->app_url . '/paid/' . $request->amount . '/' . $request->currency . '/2/cart/' . $cart->id,
                 'home_url' => $request->app_url . '/account/cart?paid=done',
             ));
 
@@ -245,7 +242,7 @@ class ProductController extends BaseController
                             'order_number' => $orderNumber,
                             'amount' => $request->amount,
                             'phone' => $request->other_phone,
-                            'currency' => $current_user->currency,
+                            'currency' => $request->currency,
                             'channel' => $request->channel,
                             'type' => $request->transaction_type_id,
                             'status' => 1,

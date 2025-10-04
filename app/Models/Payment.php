@@ -28,4 +28,24 @@ class Payment extends Model
     {
         return $this->belongsTo(Cart::class);
     }
+
+    /**
+     * Convert payment amount to user currency
+     * 
+     * @param  int  $userCurrency
+     * @return float|int
+     */
+    public function convertAmount($userCurrency): float|int
+    {
+        // If the product currency and the user currency are the same, no conversion is required.
+        if ($this->currency === $userCurrency) {
+            return $this->amount;
+        }
+
+        // Retrieve the conversion rate between the product currency and the user currency
+        $conversionRate = getExchangeRate($this->currency, $userCurrency);
+
+        // Calculate the converted amount
+        return round($this->amount * $conversionRate, 2);
+    }
 }
