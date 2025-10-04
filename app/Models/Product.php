@@ -20,7 +20,16 @@ class Product extends Model
     use HasFactory;
 
     protected $table = 'products';
+// Enums (comme chaînes, car MySQL enum)
+    public const ACTION_SELL   = 'sell';
+    public const ACTION_RENT   = 'rent';
+    public const ACTION_BUILD  = 'build';
+    public const ACTION_MOVING = 'moving';
 
+    public const TYPE_HOUSE     = 'house';
+    public const TYPE_APARTMENT = 'apartment';
+    public const TYPE_PLOT      = 'plot';
+    public const TYPE_EQUIPMENT = 'equipment';
     /**
      * The attributes that are mass assignable.
      *
@@ -84,7 +93,7 @@ class Product extends Model
 
     /**
      * Get photo files
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function photos(): HasMany
@@ -99,7 +108,7 @@ class Product extends Model
 
     /**
      * Get video files
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function videos(): HasMany
@@ -114,7 +123,7 @@ class Product extends Model
 
     /**
      * Get audio files
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function audios(): HasMany
@@ -129,7 +138,7 @@ class Product extends Model
 
     /**
      * Get document files
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function documents(): HasMany
@@ -144,7 +153,7 @@ class Product extends Model
 
     /**
      * Convert product price to user currency
-     * 
+     *
      * @param  int  $userCurrency
      * @return float|int
      */
@@ -164,7 +173,7 @@ class Product extends Model
 
     /**
      * Most recent products
-     * 
+     *
      * @param  int  $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -175,7 +184,7 @@ class Product extends Model
 
     /**
      * Most ordered products
-     * 
+     *
      * @param  int  $limit
      * @param  string  $period
      * @return \Illuminate\Database\Eloquent\Collection
@@ -218,7 +227,7 @@ class Product extends Model
 
     /**
      * Search products with filter
-     * 
+     *
      * USAGE :
      * ======
      * $filters = [
@@ -227,9 +236,9 @@ class Product extends Model
      *     'type' => 'product',
      *     'action' => 'sell',
      * ];
-     * 
+     *
      * $results = Product::searchWithFilters($filters);
-     * 
+     *
      * @param  string  $data
      * @param  array  $filters
      * @param  int  $perPage
@@ -262,5 +271,26 @@ class Product extends Model
     public function averageRating()
     {
         return $this->receivedFeedbacks()->avg('rating');
+    }
+
+    protected $casts = [
+        'is_service' => 'boolean',
+        'is_shared'  => 'boolean',
+        'price'      => 'decimal:2',
+    ];
+
+    /** Enums DB (adapter si besoin) */
+    public const ACTIONS = ['sell','rent','build','moving'];
+    public const TYPES   = ['house','apartment','plot','equipment'];
+
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(CustomerOrder::class);
+    }
+
+    public function feedbacks(): HasMany
+    {
+        return $this->hasMany(CustomerFeedback::class, 'for_product_id');
     }
 }

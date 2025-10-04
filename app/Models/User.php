@@ -45,7 +45,8 @@ class User extends Authenticatable
     protected $casts = [
         'last_connection' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s'
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'birthdate'  => 'date',
     ];
 
     /**
@@ -64,15 +65,50 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class)->withTimestamps()->withPivot('is_selected');
     }
+/** Produits créés/propriétés principales */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 
+    /** Paniers */
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    /** Produits liés via pivot (co-proprio / équipe / favoris) */
+    public function linkedProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_user')
+            ->withTimestamps();
+    }
+
+    /** Avis écrits par cet utilisateur */
+    public function writtenFeedbacks(): HasMany
+    {
+        return $this->hasMany(CustomerFeedback::class, 'user_id');
+    }
+
+    /** Avis reçus par cet utilisateur */
+    public function receivedFeedbacks(): HasMany
+    {
+        return $this->hasMany(CustomerFeedback::class, 'for_user_id');
+    }
+
+    /** Helpers */
+    public function getFullnameAttribute(): string
+    {
+        return trim(($this->firstname.' '.$this->lastname) ?: ($this->username ?? ''));
+    }
     /**
      * MANY-TO-ONE
      * Several carts for a user
      */
-    public function carts(): HasMany
-    {
-        return $this->hasMany(Cart::class, 'user_id');
-    }
+    // public function carts(): HasMany
+    // {
+    //     return $this->hasMany(Cart::class, 'user_id');
+    // }
 
     /**
      * Selected role
@@ -110,7 +146,7 @@ class User extends Authenticatable
 
     /**
      * Unpaid cart total
-     * 
+     *
      * @return float
      */
     public function unpaidCartTotal(): float
@@ -132,14 +168,14 @@ class User extends Authenticatable
     /**
      * Received feedbacks
      */
-    public function receivedFeedbacks()
-    {
-        return $this->hasMany(CustomerFeedback::class, 'for_user_id');
-    }
+    // public function receivedFeedbacks()
+    // {
+    //     return $this->hasMany(CustomerFeedback::class, 'for_user_id');
+    // }
 
     /**
      * Get readable currency
-     * 
+     *
      * @return float|null
      */
     public function getReadableCurrencyAttribute(): string|null
@@ -149,7 +185,7 @@ class User extends Authenticatable
 
     /**
      * Average feedbacks rating
-     * 
+     *
      * @return float|null
      */
     public function averageRating(): float|null
@@ -159,7 +195,7 @@ class User extends Authenticatable
 
     /**
      * Check if given product is in the user unpaid cart
-     * 
+     *
      * @param  int  $productId
      * @return bool
      */
@@ -250,7 +286,7 @@ class User extends Authenticatable
 
     /**
      * Update product quantity from the cart
-     * 
+     *
      * @param  int $customerOrderId
      * @param  int $quantityChange
      * @param  string $action
@@ -338,7 +374,7 @@ class User extends Authenticatable
 
     /**
      * Remove product from cart
-     * 
+     *
      * @param  int $customerOrderId
      * @return bool
      */
@@ -376,4 +412,5 @@ class User extends Authenticatable
             return true; // Indicate success
         });
     }
+
 }
