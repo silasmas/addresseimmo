@@ -62,7 +62,7 @@
                                 <h4 class="text-{{ $payment->status == 0 ? 'success' : ($payment->status == 1 ? 'warning' : 'danger') }}" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700;">
                                     {{ $payment->amount . ' ' . $payment->currency }}
                                 </h4>
-                                <p style="margin: 0"><small>{{ ucfirst(explicitDate($payment->created_at->format('Y-m-d H:i:s'))) }}</small></p>
+                                <p style="margin: 0"><small>{{ ucfirst(explicitDate(\Carbon\Carbon::parse($payment->created_at)->format('Y-m-d H:i:s'))) }}</small></p>
                             </div>
                             <div class="pull-right" style="padding-top: 1.5rem;">
                                 <p class="text-black text-uppercase" style="font-weight: 500">{{ $payment->channel }}</p>
