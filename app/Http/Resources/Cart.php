@@ -19,7 +19,7 @@ class Cart extends JsonResource
      */
     public function toArray(Request $request)
     {
-        $userCurrency = auth()->user() ? auth()->user()->currency : null;
+        $userCurrency = auth()->check() ? auth()->user()->currency : null;
         $generalTotal = $this->totalConvertedAmount($userCurrency);
 
         return [
