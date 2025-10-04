@@ -180,7 +180,7 @@ class PaymentController extends BaseController
 
         // update "status_id" column
         $payment->update([
-            'status_id' => $status_id,
+            'status' => $status_id,
             'updated_at' => now()
         ]);
 

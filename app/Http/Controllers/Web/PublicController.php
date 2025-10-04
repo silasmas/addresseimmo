@@ -450,7 +450,7 @@ class PublicController extends Controller
 
             if ($payment->success) {
                 // Update payment status API
-                $this::$api_client_manager::call('PUT', getApiURL() . '/payment/switch_status/' . $payment->data->id . '/2');
+                $this::$api_client_manager::call('PUT', getApiURL() . '/payment/switch_status/' . $payment->data->id . '/1');
             }
 
             return view('transaction_message', [
