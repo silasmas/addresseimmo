@@ -23,7 +23,7 @@
             <div class="container">
                 <!-- row -->
                 <div class="row">
-                    <div class="col-12 center-block text-center" style="max-width: 40rem; min-height: 30rem;">
+                    <div class="col-lg-6 col-sm-8 col-12 mx-auto text-center">
 @if (Route::is('transaction.waiting'))
                         <div style="margin: 3rem 0;">
                             <p class="lead text-center">
