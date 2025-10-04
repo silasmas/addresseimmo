@@ -19,17 +19,8 @@ class Cart extends JsonResource
      */
     public function toArray(Request $request)
     {
-        // Vérifier si l'utilisateur est connecté
-        if ($user = auth()->user()) {
-            // Si l'utilisateur est connecté, récupérer sa devise
-            $userCurrency = $user->currency;
-            // Convertir le prix en fonction de la devise de l'utilisateur
-            $generalTotal = $this->totalConvertedAmount($userCurrency);
-
-        } else {
-            // Si l'utilisateur n'est pas connecté, retourner le prix d'origine
-            $generalTotal = $this->totalConvertedAmount();
-        }
+        $userCurrency = auth()->user() ? auth()->user()->currency : null;
+        $generalTotal = $this->totalConvertedAmount($userCurrency);
 
         return [
             'id' => $this->id,
