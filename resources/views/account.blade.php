@@ -28,7 +28,6 @@
             <div class="container-fluid container-lg">
                 <div class="row g-3">
                     <div class="col-lg-3 col-sm-4 mx-auto mb-3">
-                        <div class="sticky-column">
                             <div class="card border mb-3 rounded-4">
                                 <div class="card-body text-center px-2">
                                     <div class="bg-image mb-3 position-relative">
@@ -87,7 +86,6 @@
                                 </a>
                             </div>
 >>>>>>> Stashed changes
-                        </div>
                     </div>
 
                     <div class="col-lg-9 col-sm-8 col-12 mb-3">
