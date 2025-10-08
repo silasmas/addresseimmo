@@ -1024,9 +1024,9 @@ class PublicController extends Controller
         }
 
         if ($entity == 'add-to-cart') {
-            $request->validate([
-                'quantity' => 'required|integer|min:1',
-            ]);
+            // $request->validate([
+            //     'quantity' => 'required|integer|min:1',
+            // ]);
 
             try {
                 if (Auth::check()) {
