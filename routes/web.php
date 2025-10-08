@@ -21,6 +21,7 @@ Route::get('/products', [PublicController::class, 'products'])->name('product.ho
 Route::get('/products/{id}', [PublicController::class, 'productDatas'])->whereNumber('id')->name('product.datas');
 Route::get('/products/{entity}', [PublicController::class, 'productEntity'])->name('product.entity');
 Route::post('/products/{entity}', [PublicController::class, 'addProductEntity']);
+Route::post('/products/{entity}/{id}', [PublicController::class, 'updateProductEntity'])->whereNumber('id');
 // Payment
 Route::get('/pay', [PublicController::class, 'pay'])->name('pay');
 Route::post('/pay', [PublicController::class, 'runPay']);
@@ -35,7 +36,6 @@ Route::middleware('auth')->group(function () {
 
     // Products
     Route::post('/products', [PublicController::class, 'addProduct']);
-    Route::post('/products/{entity}/{id}', [PublicController::class, 'updateProductEntity'])->whereNumber('id');
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard.home');
     // Role
