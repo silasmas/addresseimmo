@@ -31,9 +31,9 @@
                                                 <td>
                                                     <h5>
         @if ($item['cart']['is_delivered'] == 1)
-                                                        <span class="badge text-bg-danger">OUI</span>
+                                                        <span class="badge text-bg-sucess">OUI</span>
         @else
-                                                        <span class="badge text-bg-success">NON</span>
+                                                        <span class="badge text-bg-danger">NON</span>
         @endif
                                                     </h5>
                                                 </td>
