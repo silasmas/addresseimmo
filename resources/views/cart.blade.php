@@ -1,116 +1,115 @@
-@extends('layouts.app', ['page_title' => __('miscellaneous.menu.account.cart')])
+@extends('layouts.app', ['page_title' => 'Mon panier'])
 
 @section('app-content')
 
-			<section id="content">
-				<div id="breadcrumb-container">
-					<div class="container">
-						<ul class="breadcrumb">
-							<li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
-							<li class="active">{{ __('miscellaneous.menu.account.cart') }}</li>
-						</ul>
-					</div>
-				</div>
-				<div class="container">
-					<div class="row">
-						<div class="col-md-12">
-							<header class="content-title">
-								<h1 class="title" style="margin-bottom: 5px;">@lang('miscellaneous.menu.account.cart')</h1>
-							</header>
+        <div class="hero page-inner overlay" style="background-image: url('../images/hero_bg_1.jpg')">
+            <div class="container">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-lg-9 text-center mt-5">
+                        <h1 class="heading" data-aos="fade-up">Mon panier</h1>
 
-@if (count($items) > 0)
-							<div class="row">
-								<div class="col-md-12 table-responsive">
-									<table class="table cart-table">
-										<thead>
-											<tr>
-												<th class="table-title">@lang('miscellaneous.admin.product.data.product_name', ['entity' => __('miscellaneous.admin.product.entity.product.singular')])</th>
-												<th class="table-title">@lang('miscellaneous.admin.product.data.price')</th>
-												<th class="table-title">@lang('miscellaneous.admin.product.data.quantity')</th>
-												<th class="table-title">@lang('miscellaneous.public.subtotal')</th>
-											</tr>
-										</thead>
+                        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+                            <ol class="breadcrumb text-center justify-content-center">
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Accueil</a></li>
+                                <li class="breadcrumb-item active text-white-50" aria-current="page">Mon panier</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-										<tbody>
-	@foreach ($items as $item)
-											<tr>
-												<td class="item-name-col">
-													<figure>
-														<a href="{{ route('product.entity.datas', ['entity' => $item['type'], 'id' => $item['id']]) }}">
-															<img src="{{ count($item['photos']) > 0 ? $item['photos'][0] : getWebURL() . '/template/public/images/products/compare1.jpg' }}" alt="{{ $item['product_name'] }}">
-														</a>
-													</figure>
-													<header class="item-name">
-														<a href="{{ route('product.entity.datas', ['entity' => $item['type'], 'id' => $item['id']]) }}">
-															{{ $item['product_name'] }}
-														</a>
-													</header>
-													<ul>
-														<li>
-															<u>Description</u><br>
-															{{ $item['product_description'] }}
-														</li>
-													</ul>
-												</td>
-												<td class="item-price-col">
-													<span class="item-price-special">{{ formatDecimalNumber($item['price']) . ' FC' }}</span>
-												</td>
-												<td>
-													<div class="custom-quantity-input">
-														<input type="text" name="quantity" value="{{ $item['quantity'] }}" min="500">
-														<a href="#" onclick="return false;" class="quantity-btn quantity-input-up">
-															<i class="fa fa-angle-up"></i>
-														</a>
-														<a href="#" onclick="return false;" class="quantity-btn quantity-input-down">
-															<i class="fa fa-angle-down"></i>
-														</a>
-													</div>
-												</td>
-												<td class="item-total-col">
-													<span class="item-price-special">{{ $cartService->subtotalPrice($item, 'CDF') . ' FC' }}</span>
-													<a href="#" class="close-button"></a>
-												</td>
-											</tr>
-	@endforeach
-										</tbody>
-									</table>
-								</div><!-- End .col-md-12 -->
-							</div><!-- End .row -->
-							<div class="lg-margin"></div><!-- End .space -->
+        <div class="section">
+            <div class="container-fluid container-lg">
+                <div class="row g-3">
+                    <div class="col-lg-10 col-sm-11 col-12 mx-auto">
 
-							<div class="row">
-								<div class="col-md-8 col-sm-12 col-xs-12 lg-margin"></div><!-- End .col-md-8 -->
-								<div class="col-md-4 col-sm-12 col-xs-12">
-									<table class="table total-table">
-										<tfoot>
-											<tr>
-												<td>{{ 'TOTAL' . __('miscellaneous.colon_after_word') }}</td>
-												<td>{{ formatDecimalNumber($session_cart_total) . ' FC' }}</td>
-											</tr>
-										</tfoot>
-									</table>
-									<div class="md-margin"></div><!-- End .space -->
-									<a href="{{ route('login', ['cart' => '1']) }}" class="btn btn-danger text-uppercase" style="width: 300px">@lang('miscellaneous.public.login_to_checkout')</a>
-								</div><!-- End .col-md-4 -->
+                            <div class="card card-body border pt-sm-4 pt-0 px-4 rounded-4 position-relative">
+                                <div id="ajaxLoader" class="spinner-border text-secondary position-absolute d-none" role="status" style="top: 1rem; right: 1rem;">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
 
-                            </div><!-- End.row -->
-	
+
+                                <div class="mt-sm-0 my-4 text-center">
+                                    <h1 class="card-title fw-bolder"><span class="adrm-text-green d-inline">Mon panier</span></h1>
+                                </div>
+
+@if (!empty($items))
+                                <div id="dataList" class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr class="text-center bg-secondary">
+                                                <th class="fw-bold">Offre</th>
+                                                <th class="fw-bold">Prix unitaire</th>
+                                                <th class="fw-bold">Quantité</th>
+                                                <th class="fw-bold">Prix total</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+    @foreach ($items as $item)
+                                            <tr>
+                                                <td style="max-width: 16rem;">
+                                                    <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
+                                                    <a href="{{ route('product.datas', ['id' => $item['product']['id']]) }}">
+                                                        {{ $item['product']['product_name'] }}
+                                                    </a>
+                                                </td>
+                                                <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $logged_in_user['readable_currency'] }}</td>
+                                                <td>
+                                                    <div class="d-flex flex-row">
+                                                        <input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control text-center" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
+                                                        <div class="d-flex flex-column">
+        @if ($item['product']['quantity'] > 0)
+                                                            <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); document.getElementById('ajaxLoader').classList.remove('d-none'); updateProductQuantity('increment', {{ $item['id'] }});">
+                                                                <i class="fa fa-plus"></i>
+                                                            </a>
+        @endif
+		@if ($item['quantity'] > 1)
+                                                            <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); document.getElementById('ajaxLoader').classList.remove('d-none'); updateProductQuantity('decrement', {{ $item['id'] }});">
+                                                                <i class="fa fa-minus"></i>
+                                                            </a>
+		@endif
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $logged_in_user['readable_currency'] }}</td>
+                                                <td>
+                                                    <a role="button" class="btn btn-secondary px-2 pt-1 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+    @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table table-bordered mt-3">
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="4" class="text-end">
+                                                    <strong>{{ 'TOTAL : ' . $logged_in_user['readable_unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="mt-4 text-end">
+                                        <button class="btn btn-lg adrm-btn-red rounded-pill" data-bs-toggle="modal" data-bs-target="#payModal">Effectuer le paiement</button>
+                                    </div>
+                                </div>
 @else
-							<div class="row">
-								<div class="col-md-12 table-responsive">
-									<div style="display: flex; justify-content: center; align-items: flex-end; height: 200px;">
-										<i class="bi bi-cart3" style="font-size: 10rem"></i>
-									</div>
-									<h3 class="text-center">@lang('miscellaneous.empty_list')</h3>
-								</div><!-- End .col-md-12 -->
-							</div><!-- End .row -->
-	
+                                <div class="d-flex justify-content-center align-items-center flex-column">
+                                    <p class="mb-0"><i class="bi bi-cart3 fs-1"></i></p>
+                                    <p class="mb-0">La liste est vide</p>
+                                </div>
 @endif
+                            </div>
 
-						</div><!-- End .col-md-12 -->
-					</div><!-- End .row -->
-				</div><!-- End .container -->
-
-			</section><!-- End #content -->
+					</div>
+                </div>
+            </div>
+        </div>
 
 @endsection
