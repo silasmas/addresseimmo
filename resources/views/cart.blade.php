@@ -51,12 +51,12 @@
     @foreach ($items as $item)
                                             <tr>
                                                 <td style="max-width: 16rem;">
-                                                    <img src="{{ count($item['photos']) > 0 ? $item['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
+                                                    <img src="{{ count($item['photos']) > 0 ? $item['photos'][0] : asset('assets/img/undefined.png') }}" alt="{{ $item['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
                                                     <a href="{{ route('product.datas', ['id' => $item['id']]) }}">
                                                         {{ $item['product_name'] }}
                                                     </a>
                                                 </td>
-                                                <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $logged_in_user['readable_currency'] }}</td>
+                                                <td class="text-center">{{ formatDecimalNumber($item['price'], 3) . ' $' }}</td>
                                                 <td>
                                                     <div class="d-flex flex-row">
                                                         <input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control text-center" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
