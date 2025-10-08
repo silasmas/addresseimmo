@@ -51,9 +51,9 @@
     @foreach ($items as $item)
                                             <tr>
                                                 <td style="max-width: 16rem;">
-                                                    <img src="{{ count($item['product']['photos']) > 0 ? $item['product']['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product']['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
-                                                    <a href="{{ route('product.datas', ['id' => $item['product']['id']]) }}">
-                                                        {{ $item['product']['product_name'] }}
+                                                    <img src="{{ count($item['photos']) > 0 ? $item['photos'][0]['file_url'] : asset('assets/img/undefined.png') }}" alt="{{ $item['product_name'] }}" width="50" style="float: left; margin-right: 1rem;">
+                                                    <a href="{{ route('product.datas', ['id' => $item['id']]) }}">
+                                                        {{ $item['product_name'] }}
                                                     </a>
                                                 </td>
                                                 <td class="text-center">{{ $item['converted_price_at_that_time'] . ' ' . $logged_in_user['readable_currency'] }}</td>
@@ -61,7 +61,7 @@
                                                     <div class="d-flex flex-row">
                                                         <input type="text" name="quantity" id="order-quantity-{{ $item['id'] }}" class="form-control text-center" value="{{ $item['quantity'] }}" onchange="updateProductQuantity('update', {{ $item['id'] }}, this.value)" style="width: 80px;">
                                                         <div class="d-flex flex-column">
-        @if ($item['product']['quantity'] > 0)
+        @if ($item['quantity'] > 0)
                                                             <a role="button" class="btn btn-secondary px-2 pt-1 pb-0" onclick="event.preventDefault(); document.getElementById('ajaxLoader').classList.remove('d-none'); updateProductQuantity('increment', {{ $item['id'] }});">
                                                                 <i class="fa fa-plus"></i>
                                                             </a>
