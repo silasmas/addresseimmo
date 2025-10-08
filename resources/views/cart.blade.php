@@ -74,7 +74,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="text-center">{{ $item['readable_sub_total'] . ' ' . $logged_in_user['readable_currency'] }}</td>
+                                                <td class="text-center">{{ formatDecimalNumber($cartService->subtotalPrice($item, 'USD')) . ' $' }}</td>
                                                 <td>
                                                     <a role="button" class="btn btn-secondary px-2 pt-1 pb-0 rounded-circle text-primary" onclick="event.preventDefault(); performAction('delete', 'order', 'item-{{ $item['id'] }}')" title="Retirer du panier" style="width: 30px; height: 30px;">
                                                         <i class="bi bi-x-lg"></i>
@@ -89,14 +89,14 @@
                                         <tbody>
                                             <tr>
                                                 <td colspan="4" class="text-end">
-                                                    <strong>{{ 'TOTAL : ' . $logged_in_user['readable_unpaid_cart_total'] . ' ' . $logged_in_user['readable_currency'] }}</strong>
+                                                    <strong>{{ 'TOTAL : ' . formatDecimalNumber($session_cart_total) . ' $' }}</strong>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
                                     <div class="mt-4 text-end">
-                                        <button class="btn btn-lg adrm-btn-red rounded-pill" data-bs-toggle="modal" data-bs-target="#payModal">Effectuer le paiement</button>
+                                        <a href="{{ route('login', ['cart' => '1']) }}" class="btn btn-lg adrm-btn-red rounded-pill" data-bs-toggle="modal" data-bs-target="#payModal">Effectuer le paiement</a>
                                     </div>
                                 </div>
 @else
