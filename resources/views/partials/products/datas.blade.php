@@ -72,7 +72,7 @@
                         </p>
     @else
                         <div id="addToCart-{{ $selected_product['id'] }}" class="mt-4 mb-0 d-flex flex-row align-items-center">
-                            <button class="btn btn-lg adrm-btn-red me-2" data-id="{{ $selected_product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                            <button class="btn btn-lg adrm-btn-red me-2 item-add-btn" data-id="{{ $selected_product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                             <img id="ajax-loading-{{ $selected_product['id'] }}" class="d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
                         </div>
     @endif
