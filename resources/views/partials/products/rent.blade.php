@@ -50,6 +50,10 @@
             <div class="container">
                 <div class="row">
 @forelse ($rent_products as $product)
+    @php
+        $cart = session()->get('cart', []);
+        $isInCart = isset($cart[$product['id']]);
+    @endphp
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                         <div class="property-item mb-30">
                             <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="img d-inline-block" style="height: 350px; overflow: hidden;">
@@ -75,8 +79,30 @@
     @endif
                                     </div>
 
-                                    <a href="{{ route('product.datas', ['id' => $product['id']]) }}"
-                                        class="btn adrm-btn-red py-2 px-3 rounded-pill">Voir détails</a>
+                                    <div id="addToCart-{{ $product['id'] }}" class="d-flex flex-row align-items-center mb-0">
+                                        <a href="{{ route('product.datas', ['id' => $product['id']]) }}" class="btn adrm-btn-red me-2 py-2 px-3 rounded-pill">
+                                            Voir détails
+                                        </a>
+    @if (!empty($current_user))
+        @if ($current_user->hasProductInUnpaidCart($product['id']))
+                                        <button class="btn btn-sm btn-light border border-success rounded-pill disabled">Déjà dans le panier</button>
+        @else
+            @if ($product['quantity'] > 0)
+                                        <button class="btn btn-sm adrm-btn-green me-2 item-add-btn rounded-pill" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                                        <img id="ajax-loading-{{ $product['id'] }}" class="d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
+            @else
+                                        <button class="btn btn-sm btn-dark"><i class="bi bi-exclamation-circle"></i>Stock insuffisant</button>
+            @endif
+        @endif
+    @else
+        @if ($isInCart)  <!-- Vérifie si le produit est dans la session -->
+                                        <button class="btn btn-sm btn-light border border-success rounded-pill disabled">Déjà dans le panier</button>
+        @else
+                                        <button class="btn btn-sm adrm-btn-green me-2 item-add-btn rounded-pill" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                                        <img id="ajax-loading-{{ $product['id'] }}" class="d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
+        @endif
+    @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
