@@ -150,7 +150,7 @@
                 @if ($isInCart)  <!-- Vérifie si le produit est dans la session -->
                                                 <button class="btn btn-sm btn-dark rounded-pill"><i class="bi bi-cart3"></i>Déjà dans votre panier</button>
                 @else
-                                                <button class="btn btn-sm adrm-btn-green me-2 rounded-pill" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                                                <button class="btn btn-sm adrm-btn-green me-2 item-add-btn rounded-pill" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                                                 <img id="ajax-loading-{{ $product['id'] }}" class="d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
                 @endif
             @endif
