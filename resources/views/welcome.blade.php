@@ -137,20 +137,20 @@
                                                 </a>
             @if (!empty($current_user))
                 @if ($current_user->hasProductInUnpaidCart($product['id']))
-                                                <button class="btn btn-lg adrm-bg-green-transparent"><i class="bi bi-check me-2"></i>Déjà dans votre panier</button>
+                                                <button class="btn btn-sm adrm-bg-green-transparent rounded-pill"><i class="bi bi-check me-2"></i>Déjà dans votre panier</button>
                 @else
                     @if ($product['quantity'] > 0)
-                                                <button class="btn btn-lg adrm-btn-red me-2 item-add-btn" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                                                <button class="btn btn-sm adrm-btn-green me-2 item-add-btn rounded-pill" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                                                 <img id="ajax-loading-{{ $product['id'] }}" class="d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
                     @else
-                                                <button class="btn btn-lg btn-dark"><i class="bi bi-cart3"></i>Stock insuffisant</button>
+                                                <button class="btn btn-sm btn-dark"><i class="bi bi-cart3"></i>Stock insuffisant</button>
                     @endif
                 @endif
             @else
                 @if ($isInCart)  <!-- Vérifie si le produit est dans la session -->
-                                                <button class="btn btn-lg btn-dark"><i class="bi bi-cart3"></i>Déjà dans votre panier</button>
+                                                <button class="btn btn-sm btn-dark rounded-pill"><i class="bi bi-cart3"></i>Déjà dans votre panier</button>
                 @else
-                                                <button class="btn btn-lg adrm-btn-red me-2" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
+                                                <button class="btn btn-sm adrm-btn-green me-2 rounded-pill" data-id="{{ $product['id'] }}"><i class="bi bi-cart3 me-2"></i>Ajouter au panier</button>
                                                 <img id="ajax-loading-{{ $product['id'] }}" class="d-none" src="{{ asset('assets/img/ajax-loading.gif') }}" alt="@lang('miscellaneous.loading')" width="30" height="30">
                 @endif
             @endif
