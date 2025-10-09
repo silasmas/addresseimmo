@@ -51,7 +51,7 @@
 @if (!empty($current_user))
     @if ($current_user->hasProductInUnpaidCart($selected_product['id']))
                         <p class="mt-4 mb-0">
-                            <button class="btn btn-lg adrm-bg-green-transparent"><i class="bi bi-check me-2"></i>Déjà dans votre panier</button>
+                            <button class="btn btn-lg btn-light border border-success disabled"><i class="bi bi-check me-2"></i>Déjà dans votre panier</button>
                         </p>
     @else
         @if ($selected_product['quantity'] > 0)
@@ -68,7 +68,7 @@
 @else
     @if ($isInCart)  <!-- Vérifie si le produit est dans la session -->
                         <p class="mt-4 mb-0">
-                            <button class="btn btn-lg btn-dark"><i class="bi bi-cart3 me-2"></i>Déjà dans votre panier</button>
+                            <button class="btn btn-lg btn-light border border-success disabled"><i class="bi bi-check me-2"></i>Déjà dans votre panier</button>
                         </p>
     @else
                         <div id="addToCart-{{ $selected_product['id'] }}" class="mt-4 mb-0 d-flex flex-row align-items-center">
