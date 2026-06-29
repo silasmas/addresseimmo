@@ -17,6 +17,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/frontend/node_modules
-/frontend/.next
-/frontend/.env.local
+# Frontend versionné sur la branche `frontend` (présent localement pour dev parallèle)
+/frontend/
