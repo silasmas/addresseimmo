@@ -43,6 +43,26 @@ class Cart extends Model
     }
 
     /**
+     * Alias Filament pour les lignes de panier.
+     *
+     * @return HasMany
+     */
+    public function orders(): HasMany
+    {
+        return $this->customer_orders();
+    }
+
+    /**
+     * Retourne le total calculé du panier pour l'admin Filament.
+     *
+     * @return float
+     */
+    public function getComputedTotalAttribute(): float
+    {
+        return $this->totalAmount();
+    }
+
+    /**
      * MANY-TO-ONE
      * Several payments for a cart
      */

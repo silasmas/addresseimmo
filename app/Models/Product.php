@@ -65,6 +65,26 @@ class Product extends Model
     }
 
     /**
+     * Alias Filament pour le propriétaire de l'annonce.
+     *
+     * @return BelongsTo
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->user();
+    }
+
+    /**
+     * Alias Filament pour les co-propriétaires / partage.
+     *
+     * @return BelongsToMany
+     */
+    public function sharedWith(): BelongsToMany
+    {
+        return $this->users();
+    }
+
+    /**
      * ONE-TO-MANY
      * One category for several products
      */

@@ -31,4 +31,34 @@ class CustomerFeedback extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Alias Filament pour l'auteur de l'avis.
+     *
+     * @return BelongsTo
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Alias Filament pour l'utilisateur cible de l'avis.
+     *
+     * @return BelongsTo
+     */
+    public function targetUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'for_user_id');
+    }
+
+    /**
+     * Alias Filament pour le produit concerné par l'avis.
+     *
+     * @return BelongsTo
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'for_product_id');
+    }
 }

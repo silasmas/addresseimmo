@@ -36,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
+        \Illuminate\Support\Facades\RateLimiter::for('api', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
         view()->composer('*', function ($view) use ($cartService) {
             $sessionCartTotal = session()->has('cart') ? $cartService->getCartTotalFromSession() : 0;
             $current_user = null;

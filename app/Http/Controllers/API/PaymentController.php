@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Cart;
 use App\Models\Payment;
+use App\Services\CartPaymentService;
 use Illuminate\Http\Request;
 use App\Http\Resources\Payment as ResourcesPayment;
 
@@ -27,9 +29,10 @@ class PaymentController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, CartPaymentService $cartPaymentService)
     {
         $cart_id = is_numeric(explode('-', $request->reference)[2]) ? (int) explode('-', $request->reference)[2] : null;
+        $status = (int) $request->code;
         // Check if payment already exists
         $payment = Payment::where('order_number', $request->orderNumber)->first();
 
@@ -44,10 +47,12 @@ class PaymentController extends BaseController
                 'phone' => $request->phone,
                 'currency' => $request->currency,
                 'channel' => $request->channel,
-                'type_id' => $request->type,
-                'status_id' => $request->code,
-                'cart_id' => $cart_id
+                'type' => $request->type,
+                'status' => $status,
+                'cart_id' => $cart_id ?? $payment->cart_id,
             ]);
+
+            $this->confirmCartPaymentIfSuccessful($cartPaymentService, $payment, $status);
 
             return $this->handleResponse(new ResourcesPayment($payment), __('notifications.update_payment_success'));
 
@@ -64,11 +69,34 @@ class PaymentController extends BaseController
                 'channel' => $request->channel,
                 'created_at' => $request->createdAt,
                 'type' => $request->type,
-                'status' => $request->code,
-                'cart_id' => $cart_id
+                'status' => $status,
+                'cart_id' => $cart_id,
             ]);
 
+            $this->confirmCartPaymentIfSuccessful($cartPaymentService, $payment, $status);
+
             return $this->handleResponse(new ResourcesPayment($payment), __('notifications.create_payment_success'));
+        }
+    }
+
+    /**
+     * Marque le panier payé lorsque FlexPay confirme le succès.
+     *
+     * @param CartPaymentService $cartPaymentService Service de paiement panier
+     * @param Payment $payment Paiement FlexPay
+     * @param int $status Code statut FlexPay
+     * @return void
+     */
+    private function confirmCartPaymentIfSuccessful(CartPaymentService $cartPaymentService, Payment $payment, int $status): void
+    {
+        if ($status !== CartPaymentService::STATUS_SUCCESS || $payment->cart_id === null) {
+            return;
+        }
+
+        $cart = Cart::find($payment->cart_id);
+
+        if ($cart !== null) {
+            $cartPaymentService->markCartAsPaid($cart, $payment);
         }
     }
 
@@ -109,8 +137,8 @@ class PaymentController extends BaseController
             'phone' => $request->phone,
             'currency' => $request->currency,
             'channel' => $request->channel,
-            'type_id' => $request->type_id,
-            'status_id' => $request->status_id,
+            'type' => $request->type_id,
+            'status' => $request->status_id,
             'user_id' => $request->user_id,
             'updated_at' => now()
         ];

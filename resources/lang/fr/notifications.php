@@ -170,6 +170,7 @@ return [
     'create_cart_success' => 'Panier créé',
     'update_cart_success' => 'Panier modifié',
     'delete_cart_success' => 'Panier supprimé',
+    'find_order_404' => 'Commande non trouvée',
     // Product
     'find_all_products_success' => 'Produits trouvé',
     'find_product_success' => 'Produit trouvé',
@@ -202,6 +203,8 @@ return [
     'create_user_success' => 'Utilisateur créé',
     'create_investor_success' => 'Vous êtes maintenant un investisseur',
     'login_user_success' => 'Vous êtes connecté(e)',
+    'logout_user_success' => 'Déconnexion réussie',
+    'account_disabled' => 'Ce compte est désactivé',
     'blocked_user' => 'Ce compte est encore bloqué',
     'create_user_SMS_failed' => 'Il y a un problème avec le service des SMS',
     'update_user_success' => 'Utilisateur modifié',

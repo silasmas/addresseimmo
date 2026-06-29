@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @author Xanders
  * @see https://team.xsamtech.com/xanderssamoth
  */
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -55,6 +57,39 @@ class User extends Authenticatable
     public function age(): int
     {
         return Carbon::parse($this->attributes['birthdate'])->age;
+    }
+
+    /**
+     * Détermine si l'utilisateur peut accéder au panel Filament.
+     *
+     * @param Panel $panel Panel Filament cible
+     * @return bool
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasAnyRole(['Administrateur', 'Agent']);
+    }
+
+    /**
+     * Vérifie si l'utilisateur possède un rôle donné.
+     *
+     * @param string $roleName Nom du rôle
+     * @return bool
+     */
+    public function hasRole(string $roleName): bool
+    {
+        return $this->roles()->where('role_name', $roleName)->exists();
+    }
+
+    /**
+     * Vérifie si l'utilisateur possède au moins un des rôles donnés.
+     *
+     * @param array<int, string> $roleNames Noms des rôles
+     * @return bool
+     */
+    public function hasAnyRole(array $roleNames): bool
+    {
+        return $this->roles()->whereIn('role_name', $roleNames)->exists();
     }
 
     /**

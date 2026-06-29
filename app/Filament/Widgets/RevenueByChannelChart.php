@@ -7,7 +7,7 @@ use Filament\Widgets\BarChartWidget;
 
 class RevenueByChannelChart extends BarChartWidget
 {
-    protected static ?string $heading = 'Revenue by channel (paid)';
+    protected ?string $heading = 'Revenue by channel (paid)';
 
     protected function getData(): array
     {

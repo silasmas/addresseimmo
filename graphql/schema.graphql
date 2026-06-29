@@ -1,0 +1,50 @@
+"A catalogue immobilier AddressImmo (lecture seule)."
+
+type Query {
+  "Liste des annonces disponibles avec filtres optionnels."
+  products(
+    search: String
+    action: String
+    type: String
+    category_id: ID
+    city: String
+    first: Int = 12
+    page: Int
+  ): [Product!]! @field(resolver: "App\\GraphQL\\Queries\\ProductsQuery")
+
+  "Détail d'une annonce par identifiant."
+  product(id: ID! @eq): Product @find
+}
+
+type Product {
+  id: ID!
+  product_name: String!
+  product_description: String
+  quantity: Int
+  price: Float
+  currency: String
+  action: String
+  type: String
+  country: String
+  city: String
+  municipality: String
+  neighborhood: String
+  street: String
+  created_at: DateTime
+  category: Category @belongsTo
+  photos: [File!]! @hasMany
+}
+
+type Category {
+  id: ID!
+  category_name: String!
+  category_description: String
+  icon: String
+}
+
+type File {
+  id: ID!
+  file_name: String
+  file_url: String
+  file_type: String
+}

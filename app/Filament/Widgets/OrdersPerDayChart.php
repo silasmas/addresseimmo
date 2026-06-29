@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrdersPerDayChart extends LineChartWidget
 {
-    protected static ?string $heading = 'Orders per day (30d)';
+    protected ?string $heading = 'Orders per day (30d)';
 
     protected function getData(): array
     {

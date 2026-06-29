@@ -17,6 +17,7 @@ use App\Models\Post;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\CartPaymentService;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -156,6 +157,20 @@ class PublicController extends Controller
     }
 
     /**
+     * GET: Page de paiement (redirige vers le panier du compte).
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function pay()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        return redirect()->route('account.entity', ['entity' => 'cart']);
+    }
+
+    /**
      * GET: Account page
      *
      * @return \Illuminate\View\View
@@ -239,6 +254,39 @@ class PublicController extends Controller
             'items_req' => $items_req,
             'countries' => $countries
         ]);
+    }
+
+    /**
+     * GET: Détail d'une entité du compte utilisateur.
+     *
+     * @param string $entity Type d'entité (offers, payments, etc.)
+     * @param int $id Identifiant de l'entité
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function accountDatas($entity, $id)
+    {
+        if ($entity === 'offers') {
+            return redirect()->route('product.datas', $id);
+        }
+
+        return redirect()->route('account.entity', ['entity' => $entity]);
+    }
+
+    /**
+     * POST: Mise à jour d'une entité du compte utilisateur.
+     *
+     * @param Request $request Requête HTTP
+     * @param string $entity Type d'entité
+     * @param int $id Identifiant de l'entité
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function updateAccountEntity(Request $request, $entity, $id)
+    {
+        if ($entity === 'offers') {
+            return $this->updateProductEntity($request, 'product', $id);
+        }
+
+        return redirect()->route('account.entity', ['entity' => $entity]);
     }
 
     /**
@@ -422,25 +470,31 @@ class PublicController extends Controller
     }
 
     /**
-     * GET: Current user account
+     * GET: Retour FlexPay après paiement carte.
      *
-     * @param $amount
-     * @param $currency
-     * @param $code
-     * @param $cart_id
+     * @param string|null $amount Montant payé
+     * @param string|null $currency Devise
+     * @param string $code Code statut FlexPay (0=succès, 1=annulé, 2=échoué)
+     * @param string $entity Type d'entité (cart)
+     * @param int $entityId Identifiant de l'entité
      * @return \Illuminate\View\View
      */
-    public function paid($amount = null, $currency = null, $code, $cart_id)
+    public function paid($amount = null, $currency = null, $code, $entity, $entityId)
     {
-        $cart = Cart::find($cart_id);
+        $cart = ($entity === 'cart') ? Cart::find($entityId) : null;
 
         if ($code == '0') {
+            if ($cart !== null) {
+                app(CartPaymentService::class)->markCartAsPaid($cart);
+                $cart = $cart->fresh();
+            }
+
             return view('transaction_message', [
                 'amount' => $amount,
                 'currency' => $currency,
                 'status_code' => $code,
                 'cart' => $cart,
-                'message_content' => __('notifications.processing_succeed')
+                'message_content' => __('notifications.processing_succeed'),
             ]);
         }
 
@@ -458,8 +512,7 @@ class PublicController extends Controller
                 'currency' => $currency,
                 'status_code' => $code,
                 'cart' => $cart,
-                'status_code' => $code,
-                'message_content' => __('notifications.process_canceled')
+                'message_content' => __('notifications.process_canceled'),
             ]);
         }
 
@@ -477,8 +530,7 @@ class PublicController extends Controller
                 'currency' => $currency,
                 'status_code' => $code,
                 'cart' => $cart,
-                'status_code' => $code,
-                'message_content' => __('notifications.process_failed')
+                'message_content' => __('notifications.process_failed'),
             ]);
         }
     }
@@ -800,6 +852,22 @@ class PublicController extends Controller
         }
 
         return response()->json(['status' => 'success', 'message' => 'Offre enregistrée']);
+    }
+
+    /**
+     * POST: Action produit sans identifiant (délègue à addProduct si création).
+     *
+     * @param Request $request Requête HTTP
+     * @param string $entity Type d'action
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addProductEntity(Request $request, $entity)
+    {
+        if ($entity === 'create' && Auth::check()) {
+            return $this->addProduct($request);
+        }
+
+        abort(404);
     }
 
     /**

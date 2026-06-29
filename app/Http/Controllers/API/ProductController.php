@@ -9,6 +9,7 @@ use App\Http\Resources\Product as ResourcesProduct;
 use App\Models\Cart;
 use App\Models\Payment;
 use App\Models\User;
+use App\Services\CartPaymentService;
 use stdClass;
 
 /**
@@ -85,7 +86,7 @@ class ProductController extends BaseController
      * @param  int $user_id
      * @return \Illuminate\Http\Response
      */
-    public function purchase(Request $request, $cart_id, $user_id)
+    public function purchase(Request $request, $cart_id, $user_id, CartPaymentService $cartPaymentService)
     {
         // FlexPay accessing data
         $gateway_mobile = config('services.flexpay.gateway_mobile');
@@ -171,14 +172,8 @@ class ProductController extends BaseController
                         ]);
                     }
 
-                    // The cart is updated only if the processing succeed
-                    $random_string = (string) random_int(1000000, 9999999);
-                    $generated_number = 'STRT-' . $random_string . '-' . date('Y.m.d');
-
-                    $cart->update([
-                        'payment_code' => $generated_number,
-                        'is_paid' => 1,
-                    ]);
+                    // Réserver un code de paiement sans marquer le panier payé (confirmation via webhook)
+                    $cartPaymentService->assignPendingPaymentCode($cart);
 
                     $object = new stdClass();
 
@@ -250,14 +245,8 @@ class ProductController extends BaseController
                         ]);
                     }
 
-                    // The cart is updated only if the processing succeed
-                    $random_string = (string) random_int(1000000, 9999999);
-                    $generated_number = 'STRT-' . $random_string . '-' . date('Y.m.d');
-
-                    $cart->update([
-                        'payment_code' => $generated_number,
-                        'is_paid' => 1
-                    ]);
+                    // Réserver un code de paiement sans marquer le panier payé (confirmation via webhook)
+                    $cartPaymentService->assignPendingPaymentCode($cart);
 
                     $object = new stdClass();
 
