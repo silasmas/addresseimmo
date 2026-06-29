@@ -36,6 +36,7 @@ git push origin main
 Write-Host "Synchronisation de la branche frontend avec main..."
 git checkout frontend
 git merge main -m "Sync backend depuis main"
+& (Join-Path $repoRoot "scripts\ensure-frontend-tracked.ps1")
 git checkout main
 
 Write-Host "OK — backend poussé sur main, branche frontend mise à jour localement."

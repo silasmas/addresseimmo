@@ -24,6 +24,7 @@ if ($backendDirty) {
 
 git checkout frontend
 git merge main -m "Sync backend depuis main"
+& (Join-Path $repoRoot "scripts\ensure-frontend-tracked.ps1")
 
 $frontendStatus = git status --porcelain -- frontend/
 if ($frontendStatus) {
