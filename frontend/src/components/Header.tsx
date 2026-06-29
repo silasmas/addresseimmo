@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   { label: "Annonces", href: "/annonces" },
@@ -9,9 +12,11 @@ const navItems = [
 ];
 
 /**
- * En-tête principal du site AddressImmo.
+ * En-tête principal du site AddressImmo avec état de connexion.
  */
 export function Header() {
+  const { user, isLoading, isAuthenticated } = useAuth();
+
   return (
     <header className="border-b border-[var(--line)] bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
@@ -36,12 +41,21 @@ export function Header() {
           >
             Publier
           </Link>
-          <Link
-            href="http://127.0.0.1:8000/login"
-            className="rounded-lg bg-[var(--green)] px-3 py-2 text-sm font-medium text-white"
-          >
-            Connexion
-          </Link>
+          {!isLoading && isAuthenticated && user ? (
+            <Link
+              href="/compte"
+              className="rounded-lg bg-[var(--green)] px-3 py-2 text-sm font-medium text-white"
+            >
+              {user.firstname}
+            </Link>
+          ) : (
+            <Link
+              href="/connexion"
+              className="rounded-lg bg-[var(--green)] px-3 py-2 text-sm font-medium text-white"
+            >
+              Connexion
+            </Link>
+          )}
         </div>
       </div>
     </header>
