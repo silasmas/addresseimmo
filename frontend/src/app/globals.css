@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@source "../app";
+@source "../components";
+@source "../contexts";
+@source "../lib";
+
 :root {
   --green: #078c20;
   --green-dark: #056817;

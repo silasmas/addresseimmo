@@ -77,11 +77,13 @@ async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise
     errors?: Record<string, string[]>;
   };
 
-  if (!response.ok || !payload.success) {
+  const isSuccess = payload.success !== false && response.ok;
+
+  if (!isSuccess) {
     const fieldErrors = payload.errors ?? {};
     const message =
       payload.message ??
-      (typeof payload.data === "string" ? payload.data : "Erreur API");
+      (typeof payload.data === "string" ? payload.data : `Erreur API (${response.status})`);
 
     throw new ApiError(message, response.status, fieldErrors);
   }
