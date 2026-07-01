@@ -8,6 +8,7 @@ use App\Filament\Resources\ProductResource\RelationManagers\{
 };
 use App\Models\Product;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -125,15 +126,23 @@ class ProductResource extends Resource
           'design' => 'Design',
           'moving' => 'Moving',
         ]),
-        Filter::make('services_only')->label('Services only')->query(fn ($q) => $q->where('is_service', 1)),
-        Filter::make('shared_only')->label('Shared only')->query(fn ($q) => $q->where('is_shared', 1)),
+        Filter::make('services_only')->label('Services only')
+          ->query(fn (Builder $query): Builder => $query->where('is_service', 1)),
+        Filter::make('shared_only')->label('Shared only')
+          ->query(fn (Builder $query): Builder => $query->where('is_shared', 1)),
         Filter::make('price_range')->schema([
           Forms\Components\TextInput::make('min')->numeric()->label('Min'),
           Forms\Components\TextInput::make('max')->numeric()->label('Max'),
-        ])->query(function ($q, array $data) {
-          return $q
-            ->when($data['min'] ?? null, fn ($qq, $v) => $qq->where('price', '>=', $v))
-            ->when($data['max'] ?? null, fn ($qq, $v) => $qq->where('price', '<=', $v));
+        ])->query(function (Builder $query, array $data): Builder {
+          return $query
+            ->when(
+              $data['min'] ?? null,
+              fn (Builder $query, $min): Builder => $query->where('price', '>=', $min),
+            )
+            ->when(
+              $data['max'] ?? null,
+              fn (Builder $query, $max): Builder => $query->where('price', '<=', $max),
+            );
         }),
       ])
       ->recordActions([

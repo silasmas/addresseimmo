@@ -6,6 +6,7 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers\ProductsRelationManager;
 use App\Models\Category;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
@@ -66,7 +67,7 @@ class CategoryResource extends Resource
       ])
       ->filters([
         Filter::make('services_only')->label('Services only')
-          ->query(fn ($q) => $q->where('for_service', 1)),
+          ->query(fn (Builder $query): Builder => $query->where('for_service', 1)),
       ])
       ->recordActions([EditAction::make()])
       ->toolbarActions([DeleteBulkAction::make()]);
