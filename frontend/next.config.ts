@@ -26,6 +26,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "backoffice.addrressimmo.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "frontend.addrressimmo.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "client.addrressimmo.com",
         pathname: "/**",
       },
