@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Back-office Filament : forcer Laravel si /admin ou /back-office est bloqué ou en conflit
+    RewriteRule ^admin(/.*)?$ index.php [L]
+    RewriteRule ^back-office(/.*)?$ index.php [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

@@ -48,7 +48,7 @@ class SystemDeployment extends Page
   {
     $user = auth()->user();
 
-    return $user !== null && $user->hasRole(config('install.admin_role'));
+    return $user !== null && $user->isSuperAdmin();
   }
 
   /**

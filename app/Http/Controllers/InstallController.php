@@ -190,6 +190,6 @@ class InstallController extends Controller
       ]);
     }
 
-    return redirect('/admin')->with('success', $message);
+    return redirect('/' . trim(config('install.admin_panel_path', 'back-office'), '/'))->with('success', $message);
   }
 }

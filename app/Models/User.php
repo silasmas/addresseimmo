@@ -68,7 +68,21 @@ class User extends Authenticatable implements FilamentUser, HasName
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasAnyRole(['Administrateur', 'Agent']);
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->hasRole('Agent');
+    }
+
+    /**
+     * Indique si l'utilisateur est super administrateur (tous droits back-office).
+     *
+     * @return bool
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole(config('install.admin_role', 'Administrateur'));
     }
 
     /**

@@ -25,7 +25,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path(config('install.admin_panel_path', 'back-office'))
             ->login()
             ->colors([
                 'primary' => Color::Amber,

@@ -1,0 +1,16 @@
+{
+  "framework": "laravel",
+  "documentRoot": "public",
+  "node": {
+    "version": "20",
+    "installCommand": "npm ci",
+    "buildCommand": "npm run build",
+    "outputDirectory": "build"
+  },
+  "php": {
+    "version": "8.3"
+  },
+  "notes": {
+    "fr": "Ne pas déployer Laravel comme app Node.js autonome. Utiliser l'hébergement PHP avec racine public/. Le build npm compile seulement les assets Vite."
+  }
+}

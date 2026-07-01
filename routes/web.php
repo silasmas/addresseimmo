@@ -10,6 +10,19 @@ use App\Http\Controllers\Web\PublicController;
 use App\Http\Controllers\InstallController;
 use Illuminate\Support\Facades\Route;
 
+$adminPanelPath = trim(config('install.admin_panel_path', 'back-office'), '/');
+
+Route::redirect('/admin', "/{$adminPanelPath}");
+Route::get('/admin/{path?}', function (?string $path = null) use ($adminPanelPath) {
+    $target = '/' . $adminPanelPath;
+
+    if ($path) {
+        $target .= '/' . $path;
+    }
+
+    return redirect($target);
+})->where('path', '.*');
+
 Route::prefix('install')->middleware('not.installed')->name('install.')->group(function () {
     Route::get('/', [InstallController::class, 'index'])->name('index');
     Route::post('/migrate', [InstallController::class, 'migrate'])->name('migrate');
@@ -47,7 +60,7 @@ Route::middleware('auth')->group(function () {
     // Products
     Route::post('/products', [PublicController::class, 'addProduct']);
     // Dashboard legacy → Filament
-    Route::redirect('/dashboard', '/admin')->name('dashboard.home');
+    Route::redirect('/dashboard', '/' . trim(config('install.admin_panel_path', 'back-office'), '/'))->name('dashboard.home');
     Route::post('/dashboard/role/{entity}/{id}', [AdminController::class, 'updateRoleEntity'])->whereNumber('id');
     // Account
     Route::get('/account', [PublicController::class, 'account'])->name('account.home');

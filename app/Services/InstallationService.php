@@ -58,7 +58,7 @@ class InstallationService
       'frontend_ready' => $installed && $databaseConnected && $pendingMigrations === 0 && $hasAdmin,
       'version' => config('install.version'),
       'install_url' => url('/install'),
-      'admin_url' => url('/admin'),
+      'admin_url' => url('/' . trim(config('install.admin_panel_path', 'back-office'), '/')),
     ];
   }
 
@@ -231,13 +231,6 @@ class InstallationService
    */
   public function createSuperAdmin(array $data): User
   {
-    (new AddressImmoSeeder())->run();
-
-    $adminRole = Role::firstOrCreate(
-      ['role_name' => config('install.admin_role')],
-      ['role_description' => 'Responsable de la gestion du fonctionnement de la plateforme.']
-    );
-
     $user = User::create([
       'firstname' => $data['firstname'],
       'lastname' => $data['lastname'] ?? null,
@@ -246,23 +239,36 @@ class InstallationService
       'password' => Hash::make($data['password']),
       'status' => 'activated',
       'currency' => $data['currency'] ?? 'USD',
+      'email_verified_at' => now(),
     ]);
 
-    $user->roles()->syncWithoutDetaching([
+    $this->assignSuperAdminRole($user);
+
+    return $user->fresh(['roles']);
+  }
+
+  /**
+   * Attribue le rôle super administrateur avec tous les droits Filament.
+   *
+   * @param User $user Utilisateur cible
+   */
+  public function assignSuperAdminRole(User $user): void
+  {
+    (new AddressImmoSeeder())->run();
+
+    $adminRole = Role::firstOrCreate(
+      ['role_name' => config('install.admin_role')],
+      ['role_description' => 'Responsable de la gestion du fonctionnement de la plateforme.']
+    );
+
+    $user->roles()->sync([
       $adminRole->id => ['is_selected' => 1],
     ]);
 
-    DB::table('role_user')
-      ->where('user_id', $user->id)
-      ->where('role_id', '!=', $adminRole->id)
-      ->update(['is_selected' => 0]);
-
-    DB::table('role_user')
-      ->where('user_id', $user->id)
-      ->where('role_id', $adminRole->id)
-      ->update(['is_selected' => 1]);
-
-    return $user->fresh(['roles']);
+    $user->update([
+      'status' => 'activated',
+      'email_verified_at' => $user->email_verified_at ?? now(),
+    ]);
   }
 
   /**

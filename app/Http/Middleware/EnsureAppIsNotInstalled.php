@@ -32,6 +32,6 @@ class EnsureAppIsNotInstalled
       return $next($request);
     }
 
-    return redirect('/admin');
+    return redirect('/' . trim(config('install.admin_panel_path', 'back-office'), '/'));
   }
 }

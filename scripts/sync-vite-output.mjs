@@ -1,23 +1,35 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * Copie public/build vers build/ pour les hébergeurs qui attendent ce dossier.
- * Laravel continue d'utiliser public/build via @vite.
+ * Copie public/build vers les dossiers attendus par Hostinger (build, dist).
+ * Laravel utilise toujours public/build via @vite.
  */
 const sourceDir = join(process.cwd(), "public", "build");
-const targetDir = join(process.cwd(), "build");
+const targets = ["build", "dist"];
 
 if (!existsSync(sourceDir)) {
   console.error("Erreur : public/build introuvable. Lancez d'abord vite build.");
   process.exit(1);
 }
 
-if (existsSync(targetDir)) {
-  rmSync(targetDir, { recursive: true, force: true });
+for (const folder of targets) {
+  const targetDir = join(process.cwd(), folder);
+
+  if (existsSync(targetDir)) {
+    rmSync(targetDir, { recursive: true, force: true });
+  }
+
+  mkdirSync(targetDir, { recursive: true });
+  cpSync(sourceDir, targetDir, { recursive: true });
+
+  writeFileSync(
+    join(targetDir, ".hostinger-build-ok"),
+    `Copie depuis public/build le ${new Date().toISOString()}\n`,
+    "utf8"
+  );
+
+  console.log(`OK — assets copiés vers ${folder}/`);
 }
 
-mkdirSync(targetDir, { recursive: true });
-cpSync(sourceDir, targetDir, { recursive: true });
-
-console.log("OK — assets Vite copiés vers build/ (compatibilité déploiement).");
+console.log("Build Hostinger prêt : build/, dist/ et public/build/");

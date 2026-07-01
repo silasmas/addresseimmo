@@ -297,7 +297,7 @@
         <input type="hidden" name="admin_email" value="{{ old('email') }}">
         <div class="actions">
           <button type="submit">Terminer l'installation</button>
-          <a class="btn btn-secondary" href="/admin">Aller au back-office</a>
+          <a class="btn btn-secondary" href="/{{ trim(config('install.admin_panel_path', 'back-office'), '/') }}">Aller au back-office</a>
         </div>
       </form>
     </div>
