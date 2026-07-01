@@ -14,7 +14,11 @@ class TopProductsTable extends BaseWidget
     public function table(Tables\Table $table): Tables\Table
     {
         $query = CustomerOrder::query()
-            ->select(['product_id', DB::raw('SUM(quantity) as total_qty'), DB::raw('COUNT(*) as lines')])
+            ->select([
+                'product_id',
+                DB::raw('SUM(quantity) as total_qty'),
+                DB::raw('COUNT(*) as lines_count'),
+            ])
             ->where('created_at', '>=', now()->subDays(30))
             ->groupBy('product_id')
             ->orderByDesc('total_qty');
@@ -24,7 +28,7 @@ class TopProductsTable extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('product.product_name')->label('Product')->limit(40),
                 Tables\Columns\TextColumn::make('total_qty')->label('Qty'),
-                Tables\Columns\TextColumn::make('lines')->label('Lines'),
+                Tables\Columns\TextColumn::make('lines_count')->label('Lines'),
             ])->paginated(false);
     }
 }

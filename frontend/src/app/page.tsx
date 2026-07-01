@@ -5,7 +5,7 @@ import { PropertyCard } from "@/components/PropertyCard";
 import { SearchBar } from "@/components/SearchBar";
 import { SectionHeader } from "@/components/SectionHeader";
 import { isVerifiedProduct } from "@/lib/format-product";
-import { getProducts } from "@/lib/api";
+import { getConfiguredApiUrl, getProducts } from "@/lib/api";
 import { HOME_MODULES, QUICK_FILTERS } from "@/lib/home-content";
 import type { Product } from "@/lib/types";
 
@@ -14,12 +14,13 @@ import type { Product } from "@/lib/types";
  */
 export default async function HomePage() {
   let products: Product[] = [];
+  let catalogError: string | null = null;
 
   try {
     const data = await getProducts({ per_page: "12" });
     products = data.items;
-  } catch {
-    products = [];
+  } catch (error) {
+    catalogError = error instanceof Error ? error.message : "API injoignable";
   }
 
   const popularProducts = products.slice(0, 3);
@@ -76,7 +77,7 @@ export default async function HomePage() {
           actionHref="/annonces"
         />
         {popularProducts.length === 0 ? (
-          <EmptyProductsMessage />
+          <EmptyProductsMessage error={catalogError} />
         ) : (
           <div className="property-grid">
             {popularProducts.map((product) => (
@@ -94,7 +95,7 @@ export default async function HomePage() {
           actionHref="/ventes-verifiees"
         />
         {verifiedDisplay.length === 0 ? (
-          <EmptyProductsMessage />
+          <EmptyProductsMessage error={catalogError} />
         ) : (
           <div className="property-grid">
             {verifiedDisplay.map((product) => (
@@ -112,7 +113,7 @@ export default async function HomePage() {
           actionHref="/annonces"
         />
         {products.length === 0 ? (
-          <EmptyProductsMessage />
+          <EmptyProductsMessage error={catalogError} />
         ) : (
           <div className="property-row">
             {products.map((product) => (
@@ -128,13 +129,33 @@ export default async function HomePage() {
 /**
  * Message affiché lorsque l'API ne renvoie aucune annonce.
  *
+ * @param props Erreur API optionnelle
  * @returns Bloc d'information API
  */
-function EmptyProductsMessage() {
+function EmptyProductsMessage({ error }: { error?: string | null }) {
+  const apiUrl = getConfiguredApiUrl();
+  const isLocalApi = apiUrl.includes("127.0.0.1") || apiUrl.includes("localhost");
+
   return (
-    <p className="notice">
-      Aucune annonce disponible. Démarrez l&apos;API AddressImmo :{" "}
-      <code>php artisan serve --port=8001</code>
-    </p>
+    <div className="notice">
+      {error ? (
+        <>
+          <strong>Impossible de charger les annonces.</strong>
+          <p>{error}</p>
+        </>
+      ) : (
+        <p>Aucune annonce disponible pour le moment.</p>
+      )}
+      <p>
+        API configurée : <code>{apiUrl}</code>
+      </p>
+      {isLocalApi ? (
+        <p>
+          En production, définissez <code>NEXT_PUBLIC_API_URL</code> et{" "}
+          <code>API_INTERNAL_URL</code> vers{" "}
+          <code>https://backoffice.addrressimmo.com/api/v1</code>, puis redéployez.
+        </p>
+      ) : null}
+    </div>
   );
 }

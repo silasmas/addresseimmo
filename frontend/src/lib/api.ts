@@ -29,11 +29,23 @@ interface ApiFetchOptions extends RequestInit {
  * @returns URL de base de l'API v1
  */
 function getApiUrl(): string {
-  if (typeof window === "undefined" && process.env.API_INTERNAL_URL) {
-    return process.env.API_INTERNAL_URL;
+  const publicUrl = process.env.NEXT_PUBLIC_API_URL;
+  const internalUrl = process.env.API_INTERNAL_URL;
+
+  if (typeof window === "undefined") {
+    return internalUrl ?? publicUrl ?? "http://127.0.0.1:8001/api/v1";
   }
 
-  return process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8001/api/v1";
+  return publicUrl ?? "http://127.0.0.1:8001/api/v1";
+}
+
+/**
+ * Retourne l'URL API affichée pour le diagnostic (pages d'erreur).
+ *
+ * @returns URL configurée ou valeur par défaut
+ */
+export function getConfiguredApiUrl(): string {
+  return getApiUrl();
 }
 
 /**
