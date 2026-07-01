@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\CartService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -41,6 +42,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         view()->composer('*', function ($view) use ($cartService) {
+            if (!$this->shouldShareLayoutData()) {
+                $view->with('current_locale', app()->getLocale());
+                $view->with('available_locales', config('app.available_locales'));
+
+                return;
+            }
+
             $sessionCartTotal = session()->has('cart') ? $cartService->getCartTotalFromSession() : 0;
             $current_user = null;
 
@@ -128,5 +136,25 @@ class AppServiceProvider extends ServiceProvider
             $view->with('current_locale', app()->getLocale());
             $view->with('available_locales', config('app.available_locales'));
         });
+    }
+
+    /**
+     * Indique si les données globales Blade peuvent être chargées depuis la BDD.
+     *
+     * @return bool True si les tables catalogue existent et hors installateur
+     */
+    private function shouldShareLayoutData(): bool
+    {
+        if (request()->is('install', 'install/*')) {
+            return false;
+        }
+
+        try {
+            return Schema::hasTable('categories')
+                && Schema::hasTable('products')
+                && Schema::hasTable('users');
+        } catch (\Throwable) {
+            return false;
+        }
     }
 }
