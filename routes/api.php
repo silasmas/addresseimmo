@@ -7,7 +7,9 @@ use App\Http\Controllers\API\V1\AuctionController;
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\CartController;
 use App\Http\Controllers\API\V1\CategoryController;
+use App\Http\Controllers\API\V1\InstallController as V1InstallController;
 use App\Http\Controllers\API\V1\LotteryController;
+use App\Http\Controllers\API\V1\OtpAuthController;
 use App\Http\Controllers\API\V1\ProductController as V1ProductController;
 use App\Http\Controllers\API\V1\VerifiedSaleController;
 use App\Http\Controllers\API\V1\YaOfeleController;
@@ -19,12 +21,19 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::prefix('v1')->middleware(['localization'])->group(function () {
-    Route::get('health', fn () => response()->json([
-        'success' => true,
-        'message' => 'AddressImmo API v1',
-        'data' => ['status' => 'ok'],
-    ]));
+    Route::get('health', function (\App\Services\InstallationService $installationService) {
+        $status = $installationService->getPublicStatus();
 
+        return response()->json([
+            'success' => true,
+            'message' => 'AddressImmo API v1',
+            'data' => array_merge(['status' => 'ok'], $status),
+        ]);
+    });
+
+    Route::get('install/status', [V1InstallController::class, 'status']);
+
+    Route::middleware('api.installed')->group(function () {
     Route::get('products', [V1ProductController::class, 'index']);
     Route::get('products/{id}', [V1ProductController::class, 'show'])->whereNumber('id');
     Route::get('categories', [CategoryController::class, 'index']);
@@ -41,6 +50,9 @@ Route::prefix('v1')->middleware(['localization'])->group(function () {
 
     Route::post('auth/register', [AuthController::class, 'register']);
     Route::post('auth/login', [AuthController::class, 'login']);
+    Route::post('auth/otp/register', [OtpAuthController::class, 'register']);
+    Route::post('auth/otp/send', [OtpAuthController::class, 'send']);
+    Route::post('auth/otp/verify', [OtpAuthController::class, 'verify']);
 
     Route::post('payments/webhook', [PaymentController::class, 'store'])->name('api.v1.payments.webhook');
 
@@ -53,6 +65,7 @@ Route::prefix('v1')->middleware(['localization'])->group(function () {
         Route::patch('cart/items/{orderId}', [CartController::class, 'update'])->whereNumber('orderId');
         Route::delete('cart/items/{orderId}', [CartController::class, 'destroy'])->whereNumber('orderId');
         Route::post('cart/purchase', [CartController::class, 'purchase']);
+    });
     });
 });
 

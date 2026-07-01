@@ -1,0 +1,109 @@
+================================================================================
+  RAPPORT D'AVANCEMENT ADDRESSIMMO — Phase 2
+  Date : 10 juin 2026
+  Document : rapport1
+================================================================================
+
+1. CONTEXTE ET OBJECTIF
+----------------------
+AddressImmo evolue d'une plateforme d'annonces immobilieres (Phase 1) vers une
+plateforme multi-modules (Phase 2) : annonces, encheres, loto immobilier,
+Ya Ofele Gratos, ventes verifiees.
+
+Architecture retenue :
+  - Backend  : Laravel 12 + Filament 4 (administration)
+  - API      : REST v1 + GraphQL (catalogue lecture)
+  - Frontend : Next.js 16 + TypeScript (experience utilisateur moderne)
+
+
+2. CE QUI EST LIVRE ET FONCTIONNEL
+----------------------------------
+
+2.1 Backend et base de donnees
+  - Montee de version Laravel 10 -> 12, Filament 3 -> 4
+  - 15+ migrations alignees sur la base client importee
+  - Commande migrate:sync pour bases deja peuplees
+  - Seeders demo : 15 annonces, 3 agences, encheres, loto, Ya Ofele, ventes verifiees
+  - Correction auth : colonne last_connection sur les utilisateurs
+
+2.2 API REST v1 (/api/v1/)
+  - Sante          : GET /health
+  - Catalogue      : GET /products, GET /products/{id}
+  - Categories     : GET /categories
+  - Auth classique : register, login, me, logout (Sanctum)
+  - Auth OTP       : POST auth/otp/register, send, verify (email ou SMS)
+  - Panier         : show, add, update, delete, purchase
+  - Phase 2        : auctions, lottery, ya-ofele, verified-sales (stubs + donnees demo)
+  - Paiement       : webhook FlexPay (prepare)
+
+2.3 GraphQL
+  - Lighthouse installe, schema catalogue produits en lecture
+
+2.4 Administration Filament
+  - Panel admin : http://127.0.0.1:8001/admin
+  - Gestion annonces, utilisateurs, roles, etc.
+
+2.5 Frontend Next.js (http://localhost:2000)
+  - Accueil        : Template Phase 2 (hero, recherche, modules, grilles API live)
+  - /annonces      : Catalogue avec recherche instantanee (debounce 350 ms)
+  - /agences       : Page dediee (placeholder)
+  - /connexion     : Auth par OTP en 2 etapes (email ou telephone)
+  - /inscription   : Inscription + validation OTP
+  - /compte        : Profil utilisateur
+  - Modules Phase 2: placeholders (navigation OK)
+
+2.6 Design et UX (ameliorations recentes)
+  - CSS template Phase 2 (header sticky, hero 2 colonnes, cartes badges, footer 4 colonnes)
+  - Navigation : un seul menu actif souligne a la fois (Annonces / Agences separes)
+  - Champs formulaire auth : bordures visibles, fond leger, focus vert
+  - Mode debug OTP visible en local (APP_DEBUG=true)
+
+2.7 Git et deploiement
+  - Branche main     : backend Laravel seul
+  - Branche frontend : backend + application Next.js
+  - Scripts PowerShell pour dev parallele et push separe
+  - Depot GitHub : silasmas/addresseimmo
+
+
+3. DEMONSTRATION RECOMMANDEE
+----------------------------
+Terminal 1 : php artisan serve --port=8001
+Terminal 2 : cd frontend && npm run dev -- --port=2000
+
+Parcours demo (15 min) :
+  1. Accueil -> design template, annonces reelles depuis l'API
+  2. /annonces -> taper dans la recherche (filtrage instantane)
+  3. Detail d'une annonce
+  4. Inscription -> recevoir OTP (code affiche en debug) -> compte
+  5. Connexion -> OTP par email ou telephone
+  6. Admin Filament -> gestion back-office
+  7. Apercu modules Phase 2 (pages placeholder)
+
+
+4. PROCHAINES ETAPES
+--------------------
+Priorite haute :
+  - Panier connecte + paiement FlexPay cote frontend
+  - Pages Phase 2 branchees sur l'API (encheres, loto, Ya Ofele, ventes verifiees)
+
+Priorite moyenne :
+  - Publier une annonce (formulaire frontend + API)
+  - Page agences complete (liste + fiche agence)
+  - Envoi SMS OTP en production (provider SMS)
+
+Priorite basse :
+  - Hebergement production, domaines, CI/CD, tests automatises
+
+
+5. SYNTHESE CLIENT
+------------------
+Phase actuelle : fondations techniques + vitrine connectee a l'API.
+
+Le socle backend est stabilise (Laravel 12, API documentee, admin operationnel).
+Le frontend reproduit le design valide Phase 2 et consomme les vraies annonces.
+L'authentification utilisateur passe par OTP (email/SMS) avec champs de formulaire
+plus lisibles. La navigation et la recherche catalogue ont ete affinees.
+
+Estimation d'avancement global : environ 50 % du perimetre Phase 2.
+
+================================================================================

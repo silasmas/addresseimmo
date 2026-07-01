@@ -24,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'localization' => \App\Http\Middleware\Localization::class,
             'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+            'installed' => \App\Http\Middleware\EnsureAppIsInstalled::class,
+            'not.installed' => \App\Http\Middleware\EnsureAppIsNotInstalled::class,
+            'api.installed' => \App\Http\Middleware\EnsureApiIsInstalled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

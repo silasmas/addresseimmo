@@ -7,8 +7,18 @@
 
 use App\Http\Controllers\Web\AdminController;
 use App\Http\Controllers\Web\PublicController;
+use App\Http\Controllers\InstallController;
 use Illuminate\Support\Facades\Route;
 
+Route::prefix('install')->middleware('not.installed')->name('install.')->group(function () {
+    Route::get('/', [InstallController::class, 'index'])->name('index');
+    Route::post('/migrate', [InstallController::class, 'migrate'])->name('migrate');
+    Route::post('/seed', [InstallController::class, 'seed'])->name('seed');
+    Route::post('/admin', [InstallController::class, 'createAdmin'])->name('admin');
+    Route::post('/finish', [InstallController::class, 'finish'])->name('finish');
+});
+
+Route::middleware('installed')->group(function () {
 Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
@@ -48,3 +58,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+});
