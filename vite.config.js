@@ -9,6 +9,13 @@ export default defineConfig({
                 'resources/js/app.js',
             ],
             refresh: true,
+            // Sortie Laravel standard : public/build (manifest + assets)
+            buildDirectory: 'build',
         }),
     ],
+    build: {
+        // Explicite pour les panneaux de déploiement (Hostinger, etc.)
+        outDir: 'public/build',
+        emptyOutDir: true,
+    },
 });

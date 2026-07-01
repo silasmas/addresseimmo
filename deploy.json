@@ -1,0 +1,20 @@
+{
+  "type": "laravel-vite",
+  "framework": "laravel",
+  "documentRoot": "public",
+  "build": {
+    "command": "npm ci && npm run build",
+    "nodeVersion": "20",
+    "outputDirectory": "public/build",
+    "fallbackOutputDirectory": "build",
+    "notes": "Vite écrit dans public/build. Le script postbuild copie aussi vers build/ si l'hébergeur l'exige."
+  },
+  "php": {
+    "version": "8.3",
+    "postDeploy": [
+      "php artisan config:cache",
+      "php artisan route:cache",
+      "php artisan view:cache"
+    ]
+  }
+}
