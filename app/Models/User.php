@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -19,7 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @author Xanders
  * @see https://team.xsamtech.com/xanderssamoth
  */
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasName
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -68,6 +69,34 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasAnyRole(['Administrateur', 'Agent']);
+    }
+
+    /**
+     * Nom affiché dans le back-office Filament (menu utilisateur).
+     *
+     * @return string Nom lisible, jamais null
+     */
+    public function getFilamentName(): string
+    {
+        $fullname = trim(($this->firstname ?? '') . ' ' . ($this->lastname ?? ''));
+
+        if ($fullname !== '') {
+            return $fullname;
+        }
+
+        if (!empty($this->username)) {
+            return $this->username;
+        }
+
+        if (!empty($this->email)) {
+            return $this->email;
+        }
+
+        if (!empty($this->phone)) {
+            return $this->phone;
+        }
+
+        return 'Utilisateur';
     }
 
     /**
@@ -134,7 +163,13 @@ class User extends Authenticatable implements FilamentUser
     /** Helpers */
     public function getFullnameAttribute(): string
     {
-        return trim(($this->firstname.' '.$this->lastname) ?: ($this->username ?? ''));
+        $fullname = trim(($this->firstname ?? '') . ' ' . ($this->lastname ?? ''));
+
+        if ($fullname !== '') {
+            return $fullname;
+        }
+
+        return $this->username ?? $this->email ?? $this->phone ?? '';
     }
     /**
      * MANY-TO-ONE
